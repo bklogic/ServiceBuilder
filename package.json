@@ -1,0 +1,369 @@
+{
+	"name": "servicebuilder",
+	"displayName": "servicebuilder",
+	"description": "service builder",
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.51.1"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onLanguage:json",
+		"onLanguage:jsonc",
+		"onCommand:servicebuilder.helloWorld",
+		"onView:servicebuilderExplorer"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "servicebuilderExplorer.openResource",
+				"title": "Open File"
+			},
+			{
+				"command": "servicebuilderExplorer.refresh",
+				"title": "Refresh Explorer",
+				"icon": {
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
+			},
+			{
+				"command": "servicebuilderExplorer.createApplication",
+				"title": "New Application",
+				"icon": {
+					"light": "resources/light/folder.svg",
+					"dark": "resources/dark/folder.svg"
+				}
+			},
+			{
+				"command": "servicebuilderExplorer.deployApplication",
+				"title": "Deploy Application",
+				"icon": {
+					"light": "resources/light/boolean.svg",
+					"dark": "resources/dark/boolean.svg"
+				}
+			},
+			{
+				"command": "servicebuilderExplorer.createModule",
+				"title": "New Module",
+				"icon": {
+					"light": "resources/light/folder.svg",
+					"dark": "resources/dark/folder.svg"
+				}
+			},
+			{
+				"command": "servicebuilderExplorer.deployModule",
+				"title": "Deploy Module",
+				"icon": {
+					"light": "resources/light/boolean.svg",
+					"dark": "resources/dark/boolean.svg"
+				}
+			},
+			{
+				"command": "servicebuilderExplorer.createCrudService",
+				"title": "New CRUD Service",
+				"icon": {
+					"light": "resources/light/document.svg",
+					"dark": "resources/dark/document.svg"
+				}
+			},
+			{
+				"command": "servicebuilderExplorer.createSqlService",
+				"title": "New SQL Service",
+				"icon": {
+					"light": "resources/light/document.svg",
+					"dark": "resources/dark/document.svg"
+				}
+			},
+			{
+				"command": "servicebuilderExplorer.createQueryService",
+				"title": "New Query Service",
+				"icon": {
+					"light": "resources/light/document.svg",
+					"dark": "resources/dark/document.svg"
+				}
+			},
+			{
+				"command": "servicebuilderExplorer.deployService",
+				"title": "Deploy service",
+				"icon": {
+					"light": "resources/light/boolean.svg",
+					"dark": "resources/dark/boolean.svg"
+				}
+			},
+			{
+				"command": "servicebuilderExplorer.copy",
+				"title": "Copy"
+			},
+			{
+				"command": "servicebuilderExplorer.paste",
+				"title": "Paste"
+			},
+			{
+				"command": "servicebuilderExplorer.rename",
+				"title": "Rename"
+			},
+			{
+				"command": "servicebuilderExplorer.delete",
+				"title": "Delete"
+			},
+			{
+				"command": "servicebuilderExplorer.generateCrud",
+				"title": "Generate CRUD from Table"
+			},
+			{
+				"command": "servicebuilderExplorer.genQueryInputOutput",
+				"title": "Generate Input and Output",
+				"icon": {
+					"light": "resources/light/number.svg",
+					"dark": "resources/dark/number.svg"
+				}
+			},
+			{
+				"command": "servicebuilderExplorer.bindQuery",
+				"title": "Bind Query",
+				"icon": {
+					"light": "resources/light/string.svg",
+					"dark": "resources/dark/string.svg"
+				}
+			},
+			{
+				"command": "servicebuilderExplorer.genSqlInputOutput",
+				"title": "Generate Input and Output"
+			},
+			{
+				"command": "servicebuilderExplorer.bindSqls",
+				"title": "Bind SQLs"
+			},
+			{
+				"command": "servicebuilderExplorer.genCrudObject",
+				"title": "Generate CRUD Object"
+			},
+			{
+				"command": "servicebuilderExplorer.bindCrudQuery",
+				"title": "Bind CRUD Query"
+			},
+			{
+				"command": "servicebuilderExplorer.bindCrudTables",
+				"title": "Bind CRUD Tables"
+			},
+			{
+				"command": "servicebuilderExplorer.generateCrud",
+				"title": "Generate CRUD from Table"
+			}
+		],
+		"views": {
+			"explorer": [
+				{
+					"id": "servicebuilderExplorer",
+					"name": "Service Builder"
+				}
+			]
+		},
+		"menus": {
+			"view/title": [
+				{
+					"command": "servicebuilderExplorer.refresh",
+					"when": "view == servicebuilderExplorer",
+					"group": "navigation"
+				},
+				{
+					"command": "servicebuilderExplorer.createApplication",
+					"when": "view == servicebuilderExplorer",
+					"group": "navigation"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "servicebuilderExplorer.createModule",
+					"when": "view == servicebuilderExplorer && viewItem == application",
+					"group": "inline@1"
+				},
+				{
+					"command": "servicebuilderExplorer.deployApplication",
+					"when": "view == servicebuilderExplorer && viewItem == application",
+					"group": "inline@2"
+				},
+				{
+					"command": "servicebuilderExplorer.createModule",
+					"when": "view == servicebuilderExplorer && viewItem == application",
+					"group": "1-new"
+				},
+				{
+					"command": "servicebuilderExplorer.deployApplication",
+					"when": "view == servicebuilderExplorer && viewItem == application",
+					"group": "2-deploy"
+				},
+				{
+					"command": "servicebuilderExplorer.copy",
+					"when": "view == servicebuilderExplorer && viewItem == application || viewItem == service",
+					"group": "5-cutcopypaste@2"
+				},
+				{
+					"command": "servicebuilderExplorer.paste",
+					"when": "view == servicebuilderExplorer && viewItem == application",
+					"group": "5-cutcopypaste@3"
+				},
+				{
+					"command": "servicebuilderExplorer.rename",
+					"when": "view == servicebuilderExplorer && viewItem == application",
+					"group": "6-modification@1"
+				},
+				{
+					"command": "servicebuilderExplorer.delete",
+					"when": "view == servicebuilderExplorer && viewItem == application",
+					"group": "6-modification@2"
+				},
+				{
+					"command": "servicebuilderExplorer.createQueryService",
+					"when": "view == servicebuilderExplorer && viewItem == module",
+					"group": "inline@1"
+				},
+				{
+					"command": "servicebuilderExplorer.createSqlService",
+					"when": "view == servicebuilderExplorer && viewItem == module",
+					"group": "inline@2"
+				},
+				{
+					"command": "servicebuilderExplorer.createCrudService",
+					"when": "view == servicebuilderExplorer && viewItem == module",
+					"group": "inline@3"
+				},
+				{
+					"command": "servicebuilderExplorer.deployModule",
+					"when": "view == servicebuilderExplorer && viewItem == module",
+					"group": "inline@4"
+				},
+				{
+					"command": "servicebuilderExplorer.createQueryService",
+					"when": "view == servicebuilderExplorer && viewItem == module",
+					"group": "1_new@1"
+				},
+				{
+					"command": "servicebuilderExplorer.createSqlService",
+					"when": "view == servicebuilderExplorer && viewItem == module",
+					"group": "1_new@2"
+				},
+				{
+					"command": "servicebuilderExplorer.createCrudService",
+					"when": "view == servicebuilderExplorer && viewItem == module",
+					"group": "1_new@3"
+				},
+				{
+					"command": "servicebuilderExplorer.deployModule",
+					"when": "view == servicebuilderExplorer && viewItem == module",
+					"group": "2_deploy"
+				},
+				{
+					"command": "servicebuilderExplorer.copy",
+					"when": "view == servicebuilderExplorer && viewItem == module",
+					"group": "5-cutcopypaste@2"
+				},
+				{
+					"command": "servicebuilderExplorer.paste",
+					"when": "view == servicebuilderExplorer && viewItem == module",
+					"group": "5-cutcopypaste@3"
+				},
+				{
+					"command": "servicebuilderExplorer.rename",
+					"when": "view == servicebuilderExplorer && viewItem == module",
+					"group": "6-modification@1"
+				},
+				{
+					"command": "servicebuilderExplorer.delete",
+					"when": "view == servicebuilderExplorer && viewItem == module",
+					"group": "6-modification@2"
+				},
+				{
+					"command": "servicebuilderExplorer.generateCrud",
+					"when": "view == servicebuilderExplorer && viewItem == module",
+					"group": "8-generate"
+				},
+				{
+					"command": "servicebuilderExplorer.genQueryInputOutput",
+					"when": "view == servicebuilderExplorer && viewItem == queryservice",
+					"group": "inline@1"
+				},
+				{
+					"command": "servicebuilderExplorer.bindQueryInputOutput",
+					"when": "view == servicebuilderExplorer && viewItem == queryservice",
+					"group": "inline@2"
+				},
+				{
+					"command": "servicebuilderExplorer.deployService",
+					"when": "view == servicebuilderExplorer && viewItem == queryservice",
+					"group": "inline@3"
+				},
+				{
+					"command": "servicebuilderExplorer.genQueryInputOutput",
+					"when": "view == servicebuilderExplorer && viewItem == queryservice",
+					"group": "1_action@1"
+				},
+				{
+					"command": "servicebuilderExplorer.bindQueryInputOutput",
+					"when": "view == servicebuilderExplorer && viewItem == queryservice || viewItem == sqlservice",
+					"group": "1_action@2"
+				},
+				{
+					"command": "servicebuilderExplorer.deployService",
+					"when": "view == servicebuilderExplorer && viewItem == queryservice",
+					"group": "2_deploy"
+				},
+				{
+					"command": "servicebuilderExplorer.copy",
+					"when": "view == servicebuilderExplorer && viewItem == queryservice",
+					"group": "5-cutcopypaste@2"
+				},
+				{
+					"command": "servicebuilderExplorer.paste",
+					"when": "view == servicebuilderExplorer && viewItem == queryservice",
+					"group": "5-cutcopypaste@3"
+				},
+				{
+					"command": "servicebuilderExplorer.rename",
+					"when": "view == servicebuilderExplorer && viewItem == queryservice",
+					"group": "6-modification@1"
+				},
+				{
+					"command": "servicebuilderExplorer.delete",
+					"when": "view == servicebuilderExplorer && viewItem == queryservice",
+					"group": "6-modification@2"
+				}
+			]
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"pretest": "npm run compile && npm run lint",
+		"lint": "eslint src --ext ts",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.55.0",
+		"@types/glob": "^7.1.3",
+		"@types/mocha": "^8.0.4",
+		"@types/node": "^12.11.7",
+		"eslint": "^7.19.0",
+		"@typescript-eslint/eslint-plugin": "^4.14.1",
+		"@typescript-eslint/parser": "^4.14.1",
+		"glob": "^7.1.6",
+		"mocha": "^8.2.1",
+		"typescript": "^4.1.3",
+		"vscode-test": "^1.5.0"
+	},
+	"dependencies": {
+		"jsonc-parser": "^0.4.2",
+		"ftp": "^0.3.10",
+		"mkdirp": "^0.5.1",
+		"rimraf": "^2.6.2",
+		"minimist": "^0.2.1"
+	},
+	"extensionDependencies": [
+		"vscode.git"
+	]
+}
