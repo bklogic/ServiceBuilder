@@ -16,10 +16,10 @@ export function applicationFile(applicationName: string, dbType: string): Uint8A
 export function dataSourceFile(dbType: string): Uint8Array {		
 	const content = {
 		"dbType": dbType,
-		"url": "mysql://host:port/database",
+		"url": "mysql://{host}:{port}/{database}",
 		"username": "",
 		"password": "",
-		"comments": "Complete url, username and password. Save the file to test database connection. Password will be encrypted on the server."
+		"comments": "Complete url, username and password. Test and save database connection with the editor buttons. Password will be encrypted on the server."
 	}
 	return toUint8Array(content);
 }

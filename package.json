@@ -177,6 +177,22 @@
 			{
 				"command": "servicebuilderExplorer.generateCrud",
 				"title": "Generate CRUD from Table"
+			},
+			{
+				"command": "servicebuilderExplorer.testDataSource",
+				"title": "Test Data Source Configuration",
+				"icon": {
+					"light": "resources/light/folder.svg",
+					"dark": "resources/dark/folder.svg"
+				}
+			},
+			{
+				"command": "servicebuilderExplorer.saveDataSource",
+				"title": "Save Data Source Configuration",
+				"icon": {
+					"light": "resources/light/folder.svg",
+					"dark": "resources/dark/folder.svg"
+				}
 			}
 		],
 		"views": {
@@ -476,7 +492,19 @@
 					"when": "view == servicebuilderExplorer && viewItem == crudservice",
 					"group": "6-modification@2"
 				}
-			]
+			],
+			"editor/title": [
+				{
+				  "command": "servicebuilderExplorer.testDataSource",
+				  "when": "resourceFilename == datasource.json",
+				  "group": "navigation@1"
+				},
+				{
+					"command": "servicebuilderExplorer.saveDataSource",
+					"when": "resourceFilename == datasource.json",
+					"group": "navigation@2"
+				}
+			]			
 		}
 	},
 	"scripts": {
