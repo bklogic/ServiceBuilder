@@ -94,6 +94,7 @@ export class ApplicationExplorer {
 		vscode.commands.registerCommand('servicebuilderExplorer.openResource', (resource) => this.openResource(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.refresh', () => this.refresh());
 		vscode.commands.registerCommand('servicebuilderExplorer.createApplication', () => this.onCreateApplication());
+		vscode.commands.registerCommand('servicebuilderExplorer.configDataSource', (resource) => this.onConfigDataSource(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.deployApplication', (resource) => this.deployApplication(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.createModule', (resource) => this.onCreateModule(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.deployModule', (resource) => this.deployModule(resource));
@@ -116,6 +117,10 @@ export class ApplicationExplorer {
 		vscode.window.showTextDocument(resource.uri, {preview: !this.doubleClick.check(resource)});
 	}
 
+	private openDataSource(app: Entry): void {
+		vscode.window.showTextDocument(vscode.Uri.joinPath(app.uri, 'src', 'datasource.json'), {preview: false});
+	}
+
 	private refresh(): void {
 		this.dataProvider.refresh();
 	}
@@ -135,6 +140,11 @@ export class ApplicationExplorer {
 					vscode.window.showErrorMessage("no application name specified.")
 				}
 			});
+	}
+
+	onConfigDataSource(app: Entry): void {
+		console.log("add data source. open datasource.file");
+		this.openDataSource(app)
 	}
 
 	private onCreateModule(app: Entry): void {

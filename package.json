@@ -39,6 +39,14 @@
 				}
 			},
 			{
+				"command": "servicebuilderExplorer.configDataSource",
+				"title": "Configure Data Source",
+				"icon": {
+					"light": "resources/light/folder.svg",
+					"dark": "resources/dark/folder.svg"
+				}
+			},
+			{
 				"command": "servicebuilderExplorer.deployApplication",
 				"title": "Deploy Application",
 				"icon": {
@@ -178,14 +186,19 @@
 			],
 			"view/item/context": [
 				{
-					"command": "servicebuilderExplorer.createModule",
+					"command": "servicebuilderExplorer.configDataSource",
 					"when": "view == servicebuilderExplorer && viewItem == application",
 					"group": "inline@1"
 				},
 				{
-					"command": "servicebuilderExplorer.deployApplication",
+					"command": "servicebuilderExplorer.createModule",
 					"when": "view == servicebuilderExplorer && viewItem == application",
 					"group": "inline@2"
+				},
+				{
+					"command": "servicebuilderExplorer.deployApplication",
+					"when": "view == servicebuilderExplorer && viewItem == application",
+					"group": "inline@3"
 				},
 				{
 					"command": "servicebuilderExplorer.createModule",
@@ -216,6 +229,11 @@
 					"command": "servicebuilderExplorer.delete",
 					"when": "view == servicebuilderExplorer && viewItem == application",
 					"group": "6-modification@2"
+				},
+				{
+					"command": "servicebuilderExplorer.configDataSource",
+					"when": "view == servicebuilderExplorer && viewItem == application",
+					"group": "9-operation@1"
 				},
 				{
 					"command": "servicebuilderExplorer.createQueryService",

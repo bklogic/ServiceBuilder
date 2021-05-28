@@ -21,17 +21,20 @@ export class ApplicationService {
 	 * @param uri application uri
 	 * @param name application name
 	 */
-	public createApplication(uri: vscode.Uri, name: string, dbType: string): void {
+	async createApplication(uri: vscode.Uri, name: string, dbType: string): Promise<void> {
 		// application foler
-		vscode.workspace.fs.createDirectory(uri);
+		await vscode.workspace.fs.createDirectory(uri);
 		// source folder
-		vscode.workspace.fs.createDirectory(vscode.Uri.joinPath(uri, 'src'));
+		await vscode.workspace.fs.createDirectory(vscode.Uri.joinPath(uri, 'src'));
 		// application file
-		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'src', 'application.json'), cs.applicationFile(name, dbType))
+		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'src', 'application.json'), cs.applicationFile(name, dbType))
 			// .then( () => {
 			// 	// init git repository
 			// 	this.initGit(uri);
 			// });
+		// datasource file
+		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'src', 'datasource.json'), cs.dataSourceFile(dbType))
+
 		// README file
 		//
 	}
@@ -235,7 +238,11 @@ export class ApplicationService {
 	async getChildrenForApplicationSrc(entry: Entry): Promise<Entry[]> {
 		let i = 1
 		const children = await vscode.workspace.fs.readDirectory(entry.uri);		
-		return children.map(([name, fileType]) => {
+		return children.filter(([name, fileType]) => {
+			return !(
+				name == 'datasource.json'
+			);
+		}).map(([name, fileType]) => {
 			let child: Entry = this.defaultEntity(name, fileType, entry);
 			if ( name === 'application.json') {
 				child.type = EntryType.ApplicationFile;
