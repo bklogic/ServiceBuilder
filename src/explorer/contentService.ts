@@ -3,51 +3,81 @@ import { ServiceType } from "./applicationService";
 import * as bs from "./builderService"
 
 
-export function applicationFile(applicationName: string): Uint8Array {		
+export function applicationFile(applicationName: string, dbType: string): Uint8Array {		
 	const content = {
-		applicationName: applicationName,
-		versions: bs.getBuilderVersions()
+		"name": applicationName,
+		"description": "application. Don't modify this file!",
+		"dbType": dbType,
+		"versions": bs.getBuilderVersions()
 	}
-	return Buffer.from(JSON.stringify(content), 'utf8');
+	return toUint8Array(content);
 }
 
 export function moduleFile(moduleName: string): Uint8Array {		
 	const content = {
-		moduleName: moduleName
+		"name": moduleName,
+		"description": "module. Don't modify this file!"
 	}
-	return Buffer.from(JSON.stringify(content), 'utf8');
+	return toUint8Array(content);
 }
 
 export function queryServiceFile(serviceName: string): Uint8Array {		
 	const content = {
-		serviceName: serviceName,
-		type: 'query'
+		"name": serviceName,
+		"type": "query",
+		"description": "query service. Don't modify this file except the dynamic field!",
+		"input": "./input.json",
+		"output": "./output.json",
+		"query": "./query.sql",
+		"dynamic": false,
+		"inputBindings": "./input-bindings.json",
+		"outputBindings": "./output-bindings.json"
 	}
-	return Buffer.from(JSON.stringify(content), 'utf8');
+	return toUint8Array(content);
 }
 
 export function sqlServiceFile(serviceName: string): Uint8Array {		
 	const content = {
-		serviceName: serviceName,
-		type: 'sql'
+		"name": serviceName,
+		"type": "sql",
+		"description": "sql service. Don't modify this file!",
+		"input": "./input.json",
+		"output": "./output.json",
+		"sqls": "./sqls.sql",
+		"query": "./query.sql",
+		"inputBindings": "./input-bindings.json",
+		"outputBindings": "./output-bindings.json"
 	}
-	return Buffer.from(JSON.stringify(content), 'utf8');
+	return toUint8Array(content);
 }
 
 export function crudServiceFile(serviceName: string): Uint8Array {		
 	const content = {
-		serviceName: serviceName,
-		type: 'crud'
-	}
-	return Buffer.from(JSON.stringify(content), 'utf8');
+		"name": serviceName,
+		"type": "crud",  
+		"description": "crud service. Don't modify this file!",
+		"object": "./object.json",  
+		"read": {
+			"query": "./read/query.sql",
+			"inputBinding": "./read/input-binding.json",  
+			"outputBinding": "./read/output-binding.json"
+		},
+		"write": {
+			"tables": "./write/tables.json"
+		}
+	} 
+	return toUint8Array(content);
 }
 
 export function tablesFile(): Uint8Array {		
 	const content = {
 	}
-	return Buffer.from(JSON.stringify(content), 'utf8');
+	return toUint8Array(content);
 }
 
+function toUint8Array(content: any): Uint8Array {
+	return Buffer.from(JSON.stringify(content, null, 4), 'utf8');
+}
 
 export interface ServiceDefintion {
 	name: string;
@@ -58,3 +88,4 @@ export interface ServiceDefintion {
 export interface QueryServiceDefintion extends ServiceDefintion {
 
 }
+

@@ -124,7 +124,15 @@ export class ApplicationExplorer {
 		vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "application name", prompt: "must be an alphanumberic"})
 			.then( name => {
 				if (name) {
-					this.createApplication(name);
+					vscode.window.showQuickPick(['mysql'], {ignoreFocusOut: true, placeHolder: "database type", canPickMany: false}).then( (dbType) => {
+						if (dbType) {
+							this.createApplication(name, dbType);
+						} else {
+							vscode.window.showErrorMessage("no database type selected.")
+						}
+					})
+				} else {
+					vscode.window.showErrorMessage("no application name specified.")
 				}
 			});
 	}
@@ -142,18 +150,18 @@ export class ApplicationExplorer {
 		vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: `${serviceType} service name`, prompt: "must be an alphanumberic"})
 			.then( name => {
 				if (name) {
-					this.createService(mod.uri, name, serviceType);
+					this.createService(mod, name, serviceType);
 				}
 			});
 	}
 
-	private createApplication(appName: string): void {
+	private createApplication(appName: string, dbType: string): void {
 		if (!vscode.workspace.workspaceFolders) {
 			vscode.window.showErrorMessage('No open workspace folder');
 			return;
 		}
 		const appUri = vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, appName);
-		this.appService.createApplication(appUri, appName)
+		this.appService.createApplication(appUri, appName, dbType)
 			// this.refresh();
 		}
 
@@ -174,8 +182,8 @@ export class ApplicationExplorer {
 	}
 
 
-	private createService(modUri: vscode.Uri, name: string, type: string): void {
-		this.appService.createService(modUri, name, type)
+	private createService(mod: Entry, name: string, type: string): void {
+		this.appService.createService(mod.uri, name, type)
 		// this.refresh();
 	}
 

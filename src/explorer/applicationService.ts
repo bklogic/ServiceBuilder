@@ -21,13 +21,13 @@ export class ApplicationService {
 	 * @param uri application uri
 	 * @param name application name
 	 */
-	public createApplication(uri: vscode.Uri, name: string): void {
+	public createApplication(uri: vscode.Uri, name: string, dbType: string): void {
 		// application foler
 		vscode.workspace.fs.createDirectory(uri);
 		// source folder
 		vscode.workspace.fs.createDirectory(vscode.Uri.joinPath(uri, 'src'));
 		// application file
-		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'src', 'application.json'), cs.applicationFile(name))
+		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'src', 'application.json'), cs.applicationFile(name, dbType))
 			// .then( () => {
 			// 	// init git repository
 			// 	this.initGit(uri);
@@ -72,90 +72,91 @@ export class ApplicationService {
 	 * @param name 	service name
 	 * @param type 	service type
 	 */
-	public createService(modUri: vscode.Uri, name: string, type: string): void {
+	async createService(modUri: vscode.Uri, name: string, type: string): Promise<void> {
 		const uri = vscode.Uri.joinPath(modUri, name)
 		switch (type) {
 			case 'query':
-				this.createQueryService(uri, name);
+				await this.createQueryService(uri, name);
 				break;
 			case 'sql':
-				this.createSqlService(uri, name);
+				await this.createSqlService(uri, name);
 				break;
 			case 'crud':
-				this.createCrudService(uri, name);
+				await this.createCrudService(uri, name);
 				break;
 			default:
 				throw new Error("Unsupported service type: " + type)
 		}
 	}
 
-	private createQueryService(uri: vscode.Uri, name: string): void {
+	async createQueryService(uri: vscode.Uri, name: string): Promise<void> {
 		// service folder
-		vscode.workspace.fs.createDirectory(uri);
-		// service file
-		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'service.json'), cs.queryServiceFile(name));
-		// input file
-		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'input.json'), new Uint8Array());
-		// output file
-		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'output.json'), new Uint8Array());
-		// query file
-		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'query.sql'), new Uint8Array());
-		// input binding file
-		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'input-bindings.json'), new Uint8Array());
-		// output binding file
-		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'output-bindings.json'), new Uint8Array());
-		// test files
-		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'test.json'), new Uint8Array());
+		await vscode.workspace.fs.createDirectory(uri);
+		Promise.all ([
+			// service file
+			vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'service.json'), cs.queryServiceFile(name)),
+			// input file
+			vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'input.json'), new Uint8Array()),
+			// output file
+			vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'output.json'), new Uint8Array()),
+			// query file
+			vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'query.sql'), new Uint8Array()),
+			// input binding file
+			vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'input-bindings.json'), new Uint8Array()),
+			// output binding file
+			vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'output-bindings.json'), new Uint8Array()),
+			// test files
+			vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'test.json'), new Uint8Array())
+		])
 	}
 
-	private createSqlService(uri: vscode.Uri, name: string): void {
+	async createSqlService(uri: vscode.Uri, name: string): Promise<void> {
 		// service folder
-		vscode.workspace.fs.createDirectory(uri);
+		await vscode.workspace.fs.createDirectory(uri);
 		// service file
-		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'service.json'), cs.sqlServiceFile(name));
+		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'service.json'), cs.sqlServiceFile(name));
 		// input file
-		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'input.json'), new Uint8Array());
+		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'input.json'), new Uint8Array());
 		// output file
-		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'output.json'), new Uint8Array());
+		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'output.json'), new Uint8Array());
 		// sqls file
-		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'sqls.sql'), new Uint8Array());
+		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'sqls.sql'), new Uint8Array());
 		// query file
-		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'query.sql'), new Uint8Array());
+		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'query.sql'), new Uint8Array());
 		// input binding file
-		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'input-bindings.json'), new Uint8Array());
+		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'input-bindings.json'), new Uint8Array());
 		// output binding file
-		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'output-bindings.json'), new Uint8Array());
+		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'output-bindings.json'), new Uint8Array());
 		// test files
-		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'test.json'), new Uint8Array());
+		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'test.json'), new Uint8Array());
 	}
 
-
-	private createCrudService(uri: vscode.Uri, name: string): void {
+	async createCrudService(uri: vscode.Uri, name: string): Promise<void> {
 		// service folder
-		vscode.workspace.fs.createDirectory(uri);
+		await vscode.workspace.fs.createDirectory(uri);
 		// service file
-		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'service.json'), cs.sqlServiceFile(name));
+		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'service.json'), cs.crudServiceFile(name));
 		// object file
-		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'object.json'), new Uint8Array());
+		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'object.json'), new Uint8Array());
 
 		// read folder
-		const readUri = vscode.Uri.joinPath(uri, 'read')
-		vscode.workspace.fs.createDirectory(readUri);
+		const readUri = await vscode.Uri.joinPath(uri, 'read')
+		await vscode.workspace.fs.createDirectory(readUri);
 		// query file
-		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(readUri, 'query.sql'), new Uint8Array());
+		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(readUri, 'query.sql'), new Uint8Array());
 		// input binding file
-		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(readUri, 'input-bindings.json'), new Uint8Array());
+		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(readUri, 'input-bindings.json'), new Uint8Array());
 		// output binding file
-		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(readUri, 'output-bindings.json'), new Uint8Array());
+		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(readUri, 'output-bindings.json'), new Uint8Array());
 
 		// write folder
-		const writeUri = vscode.Uri.joinPath(uri, 'write')
-		vscode.workspace.fs.createDirectory(writeUri);
+		const writeUri = await vscode.Uri.joinPath(uri, 'write')
+		await vscode.workspace.fs.createDirectory(writeUri);
 		// tables file
-		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(writeUri, 'tables.json'), cs.tablesFile());
+		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(writeUri, 'tables.json'), new Uint8Array());
 
 		// test files
-		vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'test.json'), new Uint8Array());
+		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'test.json'), new Uint8Array());
 	}
 
 
@@ -330,11 +331,11 @@ export class ApplicationService {
 					child.seqNo = 0
 					break
 				case 'test.json':
-					child.type = EntryType.ServiceFile
+					child.type = EntryType.TestFile
 					child.seqNo = 1000
 					break
 				case 'object.json':
-					child.type = EntryType.ServiceFile
+					child.type = EntryType.Component
 					child.seqNo = 1
 					break
 				case 'read': 	
@@ -368,7 +369,7 @@ export class ApplicationService {
 						child.seqNo = 2	
 						break		
 					case 'output-bindings':
-						child.seqNo = 2
+						child.seqNo = 3
 						break		
 				}
 			} 
