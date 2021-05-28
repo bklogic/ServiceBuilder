@@ -93,6 +93,10 @@ export class ApplicationExplorer {
 		context.subscriptions.push(this.treeView);
 		vscode.commands.registerCommand('servicebuilderExplorer.openResource', (resource) => this.openResource(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.refresh', () => this.refresh());
+		vscode.commands.registerCommand('servicebuilderExplorer.rename', (resource) => this.onRename(resource));
+		vscode.commands.registerCommand('servicebuilderExplorer.delete', (resource) => this.delete(resource));
+		vscode.commands.registerCommand('servicebuilderExplorer.copy', (resource) => this.copy(resource));
+		vscode.commands.registerCommand('servicebuilderExplorer.paste', (resource) => this.paste(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.createApplication', () => this.onCreateApplication());
 		vscode.commands.registerCommand('servicebuilderExplorer.configDataSource', (resource) => this.onConfigDataSource(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.deployApplication', (resource) => this.deployApplication(resource));
@@ -101,13 +105,15 @@ export class ApplicationExplorer {
 		vscode.commands.registerCommand('servicebuilderExplorer.createQueryService', (resource) => this.onCreateService(resource, 'query'));
 		vscode.commands.registerCommand('servicebuilderExplorer.createSqlService', (resource) => this.onCreateService(resource, 'sql'));
 		vscode.commands.registerCommand('servicebuilderExplorer.createCrudService', (resource) => this.onCreateService(resource, 'crud'));
-		vscode.commands.registerCommand('servicebuilderExplorer.rename', (resource) => this.onRename(resource));
-		vscode.commands.registerCommand('servicebuilderExplorer.delete', (resource) => this.delete(resource));
-		vscode.commands.registerCommand('servicebuilderExplorer.copy', (resource) => this.copy(resource));
-		vscode.commands.registerCommand('servicebuilderExplorer.paste', (resource) => this.paste(resource));
-		vscode.commands.registerCommand('servicebuilderExplorer.generate', (resource) => this.onGenerateCrud(resource));
+		vscode.commands.registerCommand('servicebuilderExplorer.generateCrud', (resource) => this.onGenerateCrud(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.genQueryInputOutput', (resource) => this.genQueryInputOutput(resource));
-		vscode.commands.registerCommand('servicebuilderExplorer.bindQueryInputOutput', (resource) => this.bindQueryInputOutput(resource));
+		vscode.commands.registerCommand('servicebuilderExplorer.genQueryInputOutputBindings', (resource) => this.genQueryInputOutputBindings(resource));
+		vscode.commands.registerCommand('servicebuilderExplorer.genSqlInputOutput', (resource) => this.genSqlInputOutput(resource));
+		vscode.commands.registerCommand('servicebuilderExplorer.genSqlInputOutputBindings', (resource) => this.genSqlInputOutputBindings(resource));
+		vscode.commands.registerCommand('servicebuilderExplorer.genCrudObject', (resource) => this.genCrudObject(resource));
+		vscode.commands.registerCommand('servicebuilderExplorer.genCrudInputOutputBindings', (resource) => this.genCrudInputOutputBindings(resource));
+		vscode.commands.registerCommand('servicebuilderExplorer.genCrudTableBindings', (resource) => this.genCrudTableBindings(resource));
+		vscode.commands.registerCommand('servicebuilderExplorer.deployService', (resource) => this.deployService(resource));
 
 		// // this.provider.watch(this.workspaceUri, { recursive: true, excludes:[]} );
 		// const fsw = vscode.workspace.createFileSystemWatcher(new vscode.RelativePattern(vscode.workspace.rootPath, '*'), false, false, false);
@@ -165,41 +171,43 @@ export class ApplicationExplorer {
 			});
 	}
 
-	private createApplication(appName: string, dbType: string): void {
+	async createApplication(appName: string, dbType: string): Promise<void> {
 		if (!vscode.workspace.workspaceFolders) {
 			vscode.window.showErrorMessage('No open workspace folder');
 			return;
 		}
 		const appUri = vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, appName);
-		this.appService.createApplication(appUri, appName, dbType)
-			// this.refresh();
-		}
+		await this.appService.createApplication(appUri, appName, dbType)
+		this.refresh();
+	}
 
 	private deployApplication(app: Entry): void {
-
+		console.log("deploy application")
 	}
 
 	async createModule(app: Entry, modName: string): Promise<void> {
 		await this.appService.createModule(app.uri, modName)
+		this.refresh();
+
 		const entry = await this.dataProvider.getModule(modName, app)
 		if (entry) {
 			this.treeView.reveal(entry, {expand: true, focus: true})
 		}	
 	}
 
-	private deployModule(app: Entry): void {
-
+	private deployModule(mod: Entry): void {
+		console.log("deploy module")
 	}
 
 
-	private createService(mod: Entry, name: string, type: string): void {
-		this.appService.createService(mod.uri, name, type)
-		// this.refresh();
+	async createService(mod: Entry, name: string, type: string): Promise<void> {
+		await this.appService.createService(mod.uri, name, type)
+		this.refresh();
 	}
 
 
-	private deployService(app: Entry): void {
-
+	private deployService(service: Entry): void {
+		console.log("deploy service")
 	}
 
 	private delete(entry: Entry): void {
@@ -236,8 +244,28 @@ export class ApplicationExplorer {
 		console.log("generate query input and output")
 	}
 
-	bindQueryInputOutput(service: Entry) {
-		console.log("bind query input and output")		
+	genQueryInputOutputBindings(service: Entry) {
+		console.log("generate query input and output bindings")		
+	}
+
+	genSqlInputOutput(service: Entry) {
+		console.log("generate sql input and output")
+	}
+
+	genSqlInputOutputBindings(service: Entry) {
+		console.log("generate sql input and output bindings")		
+	}
+
+	genCrudObject(service: Entry) {
+		console.log("generate crud object")
+	}
+
+	genCrudInputOutputBindings(service: Entry) {
+		console.log("generate crud input and output bindings")		
+	}
+
+	genCrudTableBindings(service: Entry) {
+		console.log("generate crud table bindings")		
 	}
 
 }
