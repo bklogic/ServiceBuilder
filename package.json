@@ -179,7 +179,7 @@
 				"title": "Generate CRUD from Table"
 			},
 			{
-				"command": "servicebuilderExplorer.testDataSource",
+				"command": "servicebuilderEditor.testDataSource",
 				"title": "Test Data Source Configuration",
 				"icon": {
 					"light": "resources/light/folder.svg",
@@ -187,8 +187,8 @@
 				}
 			},
 			{
-				"command": "servicebuilderExplorer.saveDataSource",
-				"title": "Save Data Source Configuration",
+				"command": "servicebuilderEditor.applyDataSource",
+				"title": "Apply Data Source Configuration",
 				"icon": {
 					"light": "resources/light/folder.svg",
 					"dark": "resources/dark/folder.svg"
@@ -495,16 +495,16 @@
 			],
 			"editor/title": [
 				{
-				  "command": "servicebuilderExplorer.testDataSource",
-				  "when": "resourceFilename == datasource.json",
-				  "group": "navigation@1"
+					"command": "servicebuilderEditor.testDataSource",
+					"when": "resourceFilename == datasource.json",
+					"group": "navigation@1"
 				},
 				{
-					"command": "servicebuilderExplorer.saveDataSource",
+					"command": "servicebuilderEditor.applyDataSource",
 					"when": "resourceFilename == datasource.json",
 					"group": "navigation@2"
 				}
-			]			
+			]
 		}
 	},
 	"scripts": {
