@@ -1,6 +1,6 @@
 
 import * as vscode from 'vscode';
-import {DataSource, DataSourceService} from './dataSourceService'
+import {DataSource, DataSourceService} from './dataSourceService';
 
 export class DataSourceEditor {
 

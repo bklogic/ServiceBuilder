@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { TreeDataProvider } from "vscode";
-import {ApplicationService, Entry, EntryType, ServiceType} from "./applicationService"
+import {ApplicationService, Entry, EntryType, ServiceType} from "./applicationService";
 
 
 export class ApplicationDataProvider implements TreeDataProvider<Entry> {
@@ -20,7 +20,7 @@ export class ApplicationDataProvider implements TreeDataProvider<Entry> {
 		if (element.fileType === vscode.FileType.File) {
 			treeItem.command = { command: 'servicebuilderExplorer.openResource', title: "Open File", arguments: [element] };
 		}
-		treeItem.id = element.uri.path
+		treeItem.id = element.uri.path;
 		treeItem.description = false;
 		treeItem.contextValue = element.type.toString();
 		return treeItem;
@@ -44,7 +44,7 @@ export class ApplicationDataProvider implements TreeDataProvider<Entry> {
 				name: 'workspace',
 				parent: null,
 				seqNo: 0
-			}
+			};
 		}
 		// return chilren of element
 		return this.appService.getChildren(element);
@@ -63,18 +63,18 @@ export class ApplicationDataProvider implements TreeDataProvider<Entry> {
 	}
 
 	async getChild(entry: Entry, childName: string): Promise<Entry | undefined> {
-		const children = await this.getChildren(entry)
-		const child = await children.find(e => {e.name === childName})
-		return child
+		const children = await this.getChildren(entry);
+		const child = await children.find(e => {e.name === childName;});
+		return child;
 	}
 
 	async getModule(name: string, app: Entry): Promise<Entry | undefined> {
 		// src
-		const src = await this.getChild(app, 'src')
-		if (!src) return undefined
+		const src = await this.getChild(app, 'src');
+		if (!src) { return undefined; }
 		// module
-		const mod = await this.getChild(src, name)
-		return mod
+		const mod = await this.getChild(src, name);
+		return mod;
 	}
 }
 
@@ -89,7 +89,7 @@ export class ApplicationExplorer {
 	constructor(context: vscode.ExtensionContext) {
 		this.appService = new ApplicationService();
 		this.dataProvider = new ApplicationDataProvider();
-		this.treeView = vscode.window.createTreeView('servicebuilderExplorer', { treeDataProvider: this.dataProvider, showCollapseAll: true })
+		this.treeView = vscode.window.createTreeView('servicebuilderExplorer', { treeDataProvider: this.dataProvider, showCollapseAll: true });
 		context.subscriptions.push(this.treeView);
 		vscode.commands.registerCommand('servicebuilderExplorer.openResource', (resource) => this.openResource(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.refresh', () => this.refresh());
@@ -114,6 +114,7 @@ export class ApplicationExplorer {
 		vscode.commands.registerCommand('servicebuilderExplorer.genCrudInputOutputBindings', (resource) => this.genCrudInputOutputBindings(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.genCrudTableBindings', (resource) => this.genCrudTableBindings(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.deployService', (resource) => this.deployService(resource));
+		vscode.commands.registerCommand('servicebuilderExplorer.addTest', (resource) => this.addTest(resource));
 
 		// // this.provider.watch(this.workspaceUri, { recursive: true, excludes:[]} );
 		// const fsw = vscode.workspace.createFileSystemWatcher(new vscode.RelativePattern(vscode.workspace.rootPath, '*'), false, false, false);
@@ -139,18 +140,18 @@ export class ApplicationExplorer {
 						if (dbType) {
 							this.createApplication(name, dbType);
 						} else {
-							vscode.window.showErrorMessage("no database type selected.")
+							vscode.window.showErrorMessage("no database type selected.");
 						}
-					})
+					});
 				} else {
-					vscode.window.showErrorMessage("no application name specified.")
+					vscode.window.showErrorMessage("no application name specified.");
 				}
 			});
 	}
 
 	onConfigDataSource(app: Entry): void {
 		console.log("add data source. open datasource.file");
-		this.openDataSource(app)
+		this.openDataSource(app);
 	}
 
 	private onCreateModule(app: Entry): void {
@@ -177,42 +178,42 @@ export class ApplicationExplorer {
 			return;
 		}
 		const appUri = vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, appName);
-		await this.appService.createApplication(appUri, appName, dbType)
+		await this.appService.createApplication(appUri, appName, dbType);
 		this.refresh();
 	}
 
 	private deployApplication(app: Entry): void {
-		console.log("deploy application")
+		console.log("deploy application");
 	}
 
 	async createModule(app: Entry, modName: string): Promise<void> {
-		await this.appService.createModule(app.uri, modName)
+		await this.appService.createModule(app.uri, modName);
 		this.refresh();
 
-		const entry = await this.dataProvider.getModule(modName, app)
+		const entry = await this.dataProvider.getModule(modName, app);
 		if (entry) {
-			this.treeView.reveal(entry, {expand: true, focus: true})
+			this.treeView.reveal(entry, {expand: true, focus: true});
 		}	
 	}
 
 	private deployModule(mod: Entry): void {
-		console.log("deploy module")
+		console.log("deploy module");
 	}
 
 
 	async createService(mod: Entry, name: string, type: string): Promise<void> {
-		await this.appService.createService(mod.uri, name, type)
+		await this.appService.createService(mod.uri, name, type);
 		this.refresh();
 	}
 
 
 	private deployService(service: Entry): void {
-		console.log("deploy service")
+		console.log("deploy service");
 	}
 
 	private delete(entry: Entry): void {
 		this.appService.delete(entry.uri);
-		this.dataProvider.fire(entry);
+		this.refresh();
 	}
 
 	private onRename(entry: Entry): void {
@@ -241,31 +242,40 @@ export class ApplicationExplorer {
 	}
 
 	genQueryInputOutput(service: Entry) {
-		console.log("generate query input and output")
+		console.log("generate query input and output");
 	}
 
 	genQueryInputOutputBindings(service: Entry) {
-		console.log("generate query input and output bindings")		
+		console.log("generate query input and output bindings");
 	}
 
 	genSqlInputOutput(service: Entry) {
-		console.log("generate sql input and output")
+		console.log("generate sql input and output");
 	}
 
 	genSqlInputOutputBindings(service: Entry) {
-		console.log("generate sql input and output bindings")		
+		console.log("generate sql input and output bindings");	
 	}
 
 	genCrudObject(service: Entry) {
-		console.log("generate crud object")
+		console.log("generate crud object");
 	}
 
 	genCrudInputOutputBindings(service: Entry) {
-		console.log("generate crud input and output bindings")		
+		console.log("generate crud input and output bindings");
 	}
 
 	genCrudTableBindings(service: Entry) {
-		console.log("generate crud table bindings")		
+		console.log("generate crud table bindings");
+	}
+
+	addTest(testFolder: Entry) {
+		try {
+			this.appService.addTest(testFolder);
+			this.refresh();
+		} catch(error){
+			vscode.window.showErrorMessage(error.message);
+		}
 	}
 
 }

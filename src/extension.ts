@@ -3,6 +3,7 @@
 import * as vscode from 'vscode';
 import { ApplicationExplorer } from './explorer/applicationExplorer';
 import { DataSourceEditor } from './editor/dataSourceEditor';
+import { TestEditor } from './editor/testEditor';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -26,7 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	new ApplicationExplorer(context);
 	new DataSourceEditor(context);
-
+	new TestEditor(context);
 }
 
 // this method is called when your extension is deactivated

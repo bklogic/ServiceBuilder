@@ -193,6 +193,22 @@
 					"light": "resources/light/folder.svg",
 					"dark": "resources/dark/folder.svg"
 				}
+			},
+			{
+				"command": "servicebuilderExplorer.addTest",
+				"title": "Add Test",
+				"icon": {
+					"light": "resources/light/string.svg",
+					"dark": "resources/dark/string.svg"
+				}
+			},
+			{
+				"command": "servicebuilderEditor.runTest",
+				"title": "Run Test",
+				"icon": {
+					"light": "resources/light/number.svg",
+					"dark": "resources/dark/number.svg"
+				}
 			}
 		],
 		"views": {
@@ -491,6 +507,16 @@
 					"command": "servicebuilderExplorer.delete",
 					"when": "view == servicebuilderExplorer && viewItem == crudservice",
 					"group": "6-modification@2"
+				},
+				{
+					"command": "servicebuilderExplorer.addTest",
+					"when": "view == servicebuilderExplorer && viewItem == tests",
+					"group": "inline"
+				},
+				{
+					"command": "servicebuilderExplorer.delete",
+					"when": "view == servicebuilderExplorer && viewItem == testfile",
+					"group": "inline"
 				}
 			],
 			"editor/title": [
@@ -503,6 +529,11 @@
 					"command": "servicebuilderEditor.applyDataSource",
 					"when": "resourceFilename == datasource.json",
 					"group": "navigation@2"
+				},
+				{
+					"command": "servicebuilderEditor.runTest",
+					"when": "resourceFilename =~ /^test\\d{2}.json$/",
+					"group": "navigation"
 				}
 			]
 		}

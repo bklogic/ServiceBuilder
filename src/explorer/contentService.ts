@@ -1,6 +1,6 @@
 
 import { ServiceType } from "./applicationService";
-import * as bs from "./builderService"
+import * as bs from "./builderService";
 
 
 export function applicationFile(applicationName: string, dbType: string): Uint8Array {		
@@ -9,7 +9,7 @@ export function applicationFile(applicationName: string, dbType: string): Uint8A
 		"description": "application. Don't modify this file!",
 		"dbType": dbType,
 		"versions": bs.getBuilderVersions()
-	}
+	};
 	return toUint8Array(content);
 }
 
@@ -20,7 +20,7 @@ export function dataSourceFile(dbType: string): Uint8Array {
 		"username": "",
 		"password": "",
 		"comments": "Complete url, username and password. Test and save database connection with the editor buttons. Password will be encrypted on the server."
-	}
+	};
 	return toUint8Array(content);
 }
 
@@ -28,7 +28,7 @@ export function moduleFile(moduleName: string): Uint8Array {
 	const content = {
 		"name": moduleName,
 		"description": "module. Don't modify this file!"
-	}
+	};
 	return toUint8Array(content);
 }
 
@@ -43,7 +43,7 @@ export function queryServiceFile(serviceName: string): Uint8Array {
 		"dynamic": false,
 		"inputBindings": "./input-bindings.json",
 		"outputBindings": "./output-bindings.json"
-	}
+	};
 	return toUint8Array(content);
 }
 
@@ -58,7 +58,7 @@ export function sqlServiceFile(serviceName: string): Uint8Array {
 		"query": "./query.sql",
 		"inputBindings": "./input-bindings.json",
 		"outputBindings": "./output-bindings.json"
-	}
+	};
 	return toUint8Array(content);
 }
 
@@ -76,12 +76,29 @@ export function crudServiceFile(serviceName: string): Uint8Array {
 		"write": {
 			"tables": "./write/tables.json"
 		}
-	} 
+	} ;
 	return toUint8Array(content);
 }
 
 export function tablesFile(): Uint8Array {		
 	const content = {
+	};
+	return toUint8Array(content);
+}
+
+export function testFile(input: any, serviceType: string): Uint8Array {
+	let content;
+	if (serviceType === 'crud') {
+		content = {
+			name: 'enter a name for the test',
+			input: input,
+			operation: 'enter a crud operation for the test: read, create, update or delete'
+		};	
+	} else {
+		content = {
+			name: 'enter a name for the test',
+			input: input
+		};	
 	}
 	return toUint8Array(content);
 }
@@ -100,3 +117,8 @@ export interface QueryServiceDefintion extends ServiceDefintion {
 
 }
 
+export interface TestInput {
+	name: string;
+	input: any;
+	operation: string
+}

@@ -2,7 +2,7 @@
 export function getBuilderVersions(): Versions {
     return {
         specification: '0.0.0', engine: '0.0.0', builder: '0.0.0'
-    }
+    };
 }
 
 
