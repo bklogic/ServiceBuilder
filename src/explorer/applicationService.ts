@@ -178,7 +178,19 @@ export class ApplicationService {
 		const input = await this.readFile(inputUri);
 		const content =cs.testFile(input, service.serviceType);
 		vscode.workspace.fs.writeFile(newFileUri, content);
-}
+    }
+
+	async duplicateTest(sourceTest: Entry): Promise<void> {
+		// target test uri
+		if (!sourceTest.parent) {
+			return;
+		}
+		const newFileName = await this.newTestFileName(sourceTest.parent);
+		const newFileUri = vscode.Uri.joinPath(sourceTest.parent.uri, newFileName);
+
+		// duplicate test
+		vscode.workspace.fs.copy(sourceTest.uri, newFileUri);
+    }
 
 	/**
 	 * 
@@ -187,6 +199,7 @@ export class ApplicationService {
 	public delete(uri: vscode.Uri): void {
 		vscode.workspace.fs.delete(uri, {recursive: true, useTrash: false});
 	}
+
 
 	public rename(uri: vscode.Uri, newUri: vscode.Uri): void {
 		vscode.workspace.fs.rename(uri, newUri, {overwrite: false});

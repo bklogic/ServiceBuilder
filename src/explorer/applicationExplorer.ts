@@ -115,6 +115,7 @@ export class ApplicationExplorer {
 		vscode.commands.registerCommand('servicebuilderExplorer.genCrudTableBindings', (resource) => this.genCrudTableBindings(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.deployService', (resource) => this.deployService(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.addTest', (resource) => this.addTest(resource));
+		vscode.commands.registerCommand('servicebuilderExplorer.duplicateTest', (resource) => this.duplicateTest(resource));
 
 		// // this.provider.watch(this.workspaceUri, { recursive: true, excludes:[]} );
 		// const fsw = vscode.workspace.createFileSystemWatcher(new vscode.RelativePattern(vscode.workspace.rootPath, '*'), false, false, false);
@@ -272,6 +273,15 @@ export class ApplicationExplorer {
 	addTest(testFolder: Entry) {
 		try {
 			this.appService.addTest(testFolder);
+			this.refresh();
+		} catch(error){
+			vscode.window.showErrorMessage(error.message);
+		}
+	}
+
+	duplicateTest(test: Entry) {
+		try {
+			this.appService.duplicateTest(test);
 			this.refresh();
 		} catch(error){
 			vscode.window.showErrorMessage(error.message);

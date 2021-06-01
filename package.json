@@ -203,6 +203,10 @@
 				}
 			},
 			{
+				"command": "servicebuilderExplorer.duplicateTest",
+				"title": "Duplicate"
+			},
+			{
 				"command": "servicebuilderEditor.runTest",
 				"title": "Run Test",
 				"icon": {
@@ -514,9 +518,14 @@
 					"group": "inline"
 				},
 				{
+					"command": "servicebuilderExplorer.duplicateTest",
+					"when": "view == servicebuilderExplorer && viewItem == testfile",
+					"group": "inline@1"
+				},
+				{
 					"command": "servicebuilderExplorer.delete",
 					"when": "view == servicebuilderExplorer && viewItem == testfile",
-					"group": "inline"
+					"group": "inline@2"
 				}
 			],
 			"editor/title": [
@@ -534,6 +543,23 @@
 					"command": "servicebuilderEditor.runTest",
 					"when": "resourceFilename =~ /^test\\d{2}.json$/",
 					"group": "navigation"
+				}
+			],
+			"editor/context": [
+				{
+					"command": "servicebuilderEditor.testDataSource",
+					"when": "resourceFilename == datasource.json",
+					"group": "a_datasource@1"
+				},
+				{
+					"command": "servicebuilderEditor.applyDataSource",
+					"when": "resourceFilename == datasource.json",
+					"group": "a_datasource@2"
+				},
+				{
+					"command": "servicebuilderEditor.runTest",
+					"when": "resourceFilename =~ /^test\\d{2}.json$/",
+					"group": "a_test"
 				}
 			]
 		}
