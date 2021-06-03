@@ -259,16 +259,28 @@ export class ApplicationExplorer {
 	}
 
 	private onRename(entry: Entry): void {
+		this.treeView.reveal(entry, {select: true});
 		vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: `new ${entry.type} name`, prompt: "must be an alphanumberic"})
 			.then( name => {
-				if (name && entry.parent) {
-					this.rename(entry.uri, vscode.Uri.joinPath(entry.parent.uri, name));
+				if (name) {
+					this.rename(entry, name);
 				}
 			});
 	}
 
-	private rename(uri: vscode.Uri, newUri: vscode.Uri): void {
-		this.appService.rename(uri, newUri);
+	async rename(entry: Entry, name: string): Promise<void> {
+		let newEntry: Entry;
+		if (entry.parent) { 
+			await this.appService.rename(entry.uri, vscode.Uri.joinPath(entry.parent.uri, name));
+			this.dataProvider.fire(entry.parent);
+			newEntry = this.appService.defaultEntry(name, entry.fileType, entry.parent);
+		} else {
+			await this.appService.rename(entry.uri, vscode.Uri.joinPath(this.dataProvider.workfolder.uri, name));
+			this.refresh();
+			newEntry = this.appService.defaultEntry(name, entry.fileType, this.dataProvider.workfolder);
+			newEntry.parent = null;
+		}
+		this.treeView.reveal(newEntry, {focus: true});
 	}
 
 	private copy(entry: Entry) {

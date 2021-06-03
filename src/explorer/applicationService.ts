@@ -221,8 +221,8 @@ export class ApplicationService {
 	}
 
 
-	public rename(uri: vscode.Uri, newUri: vscode.Uri): void {
-		vscode.workspace.fs.rename(uri, newUri, {overwrite: false});
+	async rename(uri: vscode.Uri, newUri: vscode.Uri): Promise<void> {
+		await vscode.workspace.fs.rename(uri, newUri, {overwrite: false});
 	}
 
 	public copy(source: vscode.Uri, target: vscode.Uri) {
