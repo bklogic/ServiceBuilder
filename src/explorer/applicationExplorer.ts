@@ -249,8 +249,9 @@ export class ApplicationExplorer {
 		this.refresh();
 		// reveal application
 		const entry = await this.dataProvider.getChild(workfolder, appName);
-		if (!entry) {return;}
-		this.treeView.reveal(entry, {expand: 2, focus: true, select: true});
+		if (entry) {
+			this.treeView.reveal(entry, {expand: 2, focus: true, select: false});
+		}
 	}
 
 	async deployApplication(app: Entry): Promise<void> {
@@ -263,8 +264,9 @@ export class ApplicationExplorer {
 		this.dataProvider.fire(app);
 		// reveal module
 		const entry = await this.dataProvider.getModule(modName, app);
-		if (!entry) {return;}
-		this.treeView.reveal(entry, {expand: 2, focus: true, select: false});
+		if (entry) {
+			this.treeView.reveal(entry, {expand: 2, focus: true, select: false});
+		}
 	}
 
 	private deployModule(mod: Entry): void {
@@ -278,8 +280,9 @@ export class ApplicationExplorer {
 		this.dataProvider.fire(mod);
 		// reveal service
 		const entry = await this.dataProvider.getChild(mod, name);
-		if (!entry) {return;}
-		this.treeView.reveal(entry, {expand: 2, focus: true, select: false});
+		if (entry) {
+			this.treeView.reveal(entry, {expand: 2, focus: true, select: false});
+		}
 	}
 
 
