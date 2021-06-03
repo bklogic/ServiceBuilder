@@ -19,7 +19,7 @@ export function dataSourceFile(dbType: string): Uint8Array {
 		"url": "mysql://{host}:{port}/{database}",
 		"username": "",
 		"password": "",
-		"comments": "Complete url, username and password. Test and save database connection with the editor buttons. Password will be encrypted on the server."
+		"comments": "Complete url, username and password. Use editor buttons to test and save data source configuration. Password will be encrypted on the server."
 	};
 	return toUint8Array(content);
 }

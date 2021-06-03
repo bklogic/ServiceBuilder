@@ -69,6 +69,9 @@ export class ApplicationDataProvider implements TreeDataProvider<Entry> {
 				break;
 			default:
 				treeItem.tooltip = element.name.replace('.sql', '').replace('.json', '');
+				if (['application', 'module', 'service'].includes(treeItem.tooltip)) {
+					treeItem.tooltip = treeItem.tooltip + ' file';
+				}
 			}
 		treeItem.id = element.uri.path;
 		treeItem.label = element.name;
@@ -217,7 +220,6 @@ export class ApplicationExplorer {
 	}
 
 	onConfigDataSource(app: Entry): void {
-		console.log("add data source. open datasource.file");
 		this.openDataSource(app);
 	}
 
@@ -240,42 +242,30 @@ export class ApplicationExplorer {
 	}
 
 	async createApplication(appName: string, dbType: string): Promise<void> {
-		// if (!vscode.workspace.workspaceFolders) {
-		// 	vscode.window.showErrorMessage('No open workspace folder');
-		// 	return;
-		// }
-		// const appUri = vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, appName);
-		const appUri = vscode.Uri.joinPath(this.dataProvider.workfolder.uri, appName);
+		// create application
+		const workfolder = this.dataProvider.workfolder;
+		const appUri = vscode.Uri.joinPath(workfolder.uri, appName);
 		await this.appService.createApplication(appUri, appName, dbType);
-		// await this.refresh();
-
-		const entry = await this.dataProvider.getApplication(appName);
+		// this.dataProvider.fire(workfolder);
+		this.refresh();
+		// reveal application
+		const entry = await this.dataProvider.getChild(workfolder, appName);
 		if (!entry) {return;}
-		this.treeView.reveal(entry, {expand: 3, focus: true, select: true});
-		// if (entry) {
-		// 	this.treeView.reveal(entry, {expand: 3, focus: true, select: true});
-		// }	
+		this.treeView.reveal(entry, {expand: 2, focus: true, select: true});
 	}
 
 	async deployApplication(app: Entry): Promise<void> {
-		console.log("deploy application");
-		if (!app.parent) {return;}
-		let entry = await this.dataProvider.getChild(app.parent, 'demo07');
-		if (!entry) {return;}
-		// this.treeView.reveal(entry, {expand: true, focus: true});
-		this.treeView.reveal(app, {expand: true, focus: true});
+			console.log("deploy application");
 	}
 
 	async createModule(app: Entry, modName: string): Promise<void> {
+		// create module
 		await this.appService.createModule(app.uri, modName);
-		// this.refresh();
-
+		this.dataProvider.fire(app);
+		// reveal module
 		const entry = await this.dataProvider.getModule(modName, app);
 		if (!entry) {return;}
-		this.treeView.reveal(entry, {expand: true, focus: true});
-		// if (entry) {
-		// 	this.treeView.reveal(app, {expand: 3, focus: true});
-		// }	
+		this.treeView.reveal(entry, {expand: 2, focus: true, select: false});
 	}
 
 	private deployModule(mod: Entry): void {
@@ -284,8 +274,13 @@ export class ApplicationExplorer {
 
 
 	async createService(mod: Entry, name: string, type: string): Promise<void> {
+		// create service
 		await this.appService.createService(mod.uri, name, type);
-		this.refresh();
+		this.dataProvider.fire(mod);
+		// reveal service
+		const entry = await this.dataProvider.getChild(mod, name);
+		if (!entry) {return;}
+		this.treeView.reveal(entry, {expand: 2, focus: true, select: false});
 	}
 
 
@@ -393,4 +388,8 @@ export class DoubleClick {
 		return result;
 	}
 
+}
+
+export function sleep(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
 }
