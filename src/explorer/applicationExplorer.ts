@@ -218,9 +218,21 @@ export class ApplicationExplorer {
 	}
 
 	async createApplication(appName: string, dbType: string): Promise<void> {
-		const app = await this.appService.createApplication(this.dataProvider.workfolder, appName, dbType);
-		this.refresh();
-		this.treeView.reveal(app, {expand: 2, focus: true, select: false});
+		try {
+			const app = await this.appService.createApplication(this.dataProvider.workfolder, appName, dbType);
+			this.refresh();
+			this.treeView.reveal(app, {expand: 2, focus: true, select: true});	
+		} catch (error) {
+			let message: string;
+			switch (error.code) {
+				case 'FileExists':
+					message = 'Application name exists.';
+					break;
+				default:
+					message = error.message;
+			}
+			vscode.window.showErrorMessage(message);
+		}
 	}
 
 	async deployApplication(app: Entry): Promise<void> {
@@ -228,9 +240,21 @@ export class ApplicationExplorer {
 	}
 
 	async createModule(app: Entry, modName: string): Promise<void> {
-		const mod = await this.appService.createModule(app, modName);
-		this.dataProvider.fire(app);
-		this.treeView.reveal(mod, {expand: 2, focus: true, select: false});
+		try {
+			const mod = await this.appService.createModule(app, modName);
+			this.dataProvider.fire(app);
+			this.treeView.reveal(mod, {expand: 2, focus: true, select: true});	
+		} catch (error) {
+			let message: string;
+			switch (error.code) {
+				case 'FileExists':
+					message = 'Module name exists.';
+					break;
+				default:
+					message = error.message;
+			}
+			vscode.window.showErrorMessage(message);
+		}
 	}
 
 	private deployModule(mod: Entry): void {
@@ -239,9 +263,21 @@ export class ApplicationExplorer {
 
 
 	async createService(mod: Entry, name: string, type: string): Promise<void> {
-		const service = await this.appService.createService(mod, name, type);
-		this.dataProvider.fire(mod);
-		this.treeView.reveal(service, {expand: 2, focus: true, select: false});
+		try {
+			const service = await this.appService.createService(mod, name, type);
+			this.dataProvider.fire(mod);
+			this.treeView.reveal(service, {expand: 2, focus: true, select: true});	
+		} catch (error) {
+			let message: string;
+			switch (error.code) {
+				case 'FileExists':
+					message = 'Service name exists.';
+					break;
+				default:
+					message = error.message;
+			}
+			vscode.window.showErrorMessage(message);
+		}
 	}
 
 
@@ -250,12 +286,16 @@ export class ApplicationExplorer {
 	}
 
 	async delete(entry: Entry): Promise<void> {
-		await this.appService.delete(entry.uri);
-		if (entry.parent) {
-			this.dataProvider.fire(entry.parent);
-			this.treeView.reveal(entry.parent, {focus: true, select: true});
-		} else {
-			this.refresh();
+		try {
+			await this.appService.delete(entry.uri);
+			if (entry.parent) {
+				this.dataProvider.fire(entry.parent);
+				this.treeView.reveal(entry.parent, {focus: true, select: true});
+			} else {
+				this.refresh();
+			}	
+		} catch (error) {
+			vscode.window.showErrorMessage(error.message);
 		}
 	}
 

@@ -25,6 +25,11 @@ export class ApplicationService {
 	async createApplication(workfolder: Entry, name: string, dbType: string): Promise<Entry> {
 		const app = this.defaultEntry(name, vscode.FileType.Directory, workfolder);
 		app.parent = null;
+		// check name not exists
+		const exists = await this.fileExists(app.uri);
+		if (exists) {
+			throw vscode.FileSystemError.FileExists();
+		}
 		// application foler
 		await vscode.workspace.fs.createDirectory(app.uri);
 		// source folder
@@ -71,15 +76,20 @@ export class ApplicationService {
 	 * @param name 	module name
 	 */
 	async createModule(app: Entry, modName: string): Promise<Entry> {
-		// mod entry
-		const src = this.defaultEntry('src', vscode.FileType.Directory, app);
-		const mod = this.defaultEntry(modName, vscode.FileType.Directory, src);
-		// module folder
-		await vscode.workspace.fs.createDirectory(mod.uri);
-		// module file
-		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(mod.uri, 'module.json'), cs.moduleFile(modName));
-		// return
-		return mod;
+			// mod entry
+			const src = this.defaultEntry('src', vscode.FileType.Directory, app);
+			const mod = this.defaultEntry(modName, vscode.FileType.Directory, src);
+			// check if module name exists
+			const exists = await this.fileExists(mod.uri);
+			if (exists) {
+				throw vscode.FileSystemError.FileExists();
+			}
+			// module folder
+			await vscode.workspace.fs.createDirectory(mod.uri);
+			// module file
+			await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(mod.uri, 'module.json'), cs.moduleFile(modName));
+			// return
+			return mod;
 	}
 
 	/**
@@ -90,6 +100,12 @@ export class ApplicationService {
 	 */
 	async createService(mod: Entry, name: string, type: string): Promise<Entry> {
 		const service = this.defaultEntry(name, vscode.FileType.Directory, mod);
+		// check name not exists
+		const exists = await this.fileExists(service.uri);
+		if (exists) {
+			throw vscode.FileSystemError.FileExists();
+		}
+		// create service
 		switch (type) {
 			case 'query':
 				await this.createQueryService(service.uri, name);
@@ -233,6 +249,17 @@ export class ApplicationService {
 		vscode.workspace.fs.rename(source, target, {overwrite: false});
 	}
 
+	async fileExists(uri: vscode.Uri): Promise<boolean> {
+		let exists = true;
+		try {
+			const stat = await vscode.workspace.fs.stat(uri);
+		} catch (error) {
+			if (error.code === 'FileNotFound') {
+				return false;
+			}
+		}
+		return exists;
+	}
 
 	public async getChildren(entry: Entry): Promise<Entry[]> {
 		switch (entry.type) {
