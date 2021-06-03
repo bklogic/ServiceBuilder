@@ -250,7 +250,12 @@ export class ApplicationExplorer {
 
 	async delete(entry: Entry): Promise<void> {
 		await this.appService.delete(entry.uri);
-		this.refresh();
+		if (entry.parent) {
+			this.dataProvider.fire(entry.parent);
+			this.treeView.reveal(entry.parent, {focus: true, select: true});
+		} else {
+			this.refresh();
+		}
 	}
 
 	private onRename(entry: Entry): void {
