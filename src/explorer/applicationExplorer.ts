@@ -121,32 +121,7 @@ export class ApplicationDataProvider implements TreeDataProvider<Entry> {
 		};
 		return entry;
 	}
-
-	async getChild(entry: Entry, childName: string): Promise<Entry | null> {
-		let children = await this.getChildren(entry);
-		children = await children.filter(e => { return e.name === childName;});
-		if (children.length > 0) {
-			return children[0];
-		} else {
-			return null;
-		}
-	}
-
-	async getApplication(name: string): Promise<Entry | null> {
-		const app = this.getChild(this.workfolder, name);
-		return app;
-	}
-
-	async getModule(name: string, app: Entry): Promise<Entry | null> {
-		// src
-		const src = await this.getChild(app, 'src');
-		if (!src) { return null; }
-		// module
-		const mod = await this.getChild(src, name);
-		return mod;
-	}
 }
-
 
 export class ApplicationExplorer {
 
@@ -242,16 +217,9 @@ export class ApplicationExplorer {
 	}
 
 	async createApplication(appName: string, dbType: string): Promise<void> {
-		// create application
-		const workfolder = this.dataProvider.workfolder;
-		const appUri = vscode.Uri.joinPath(workfolder.uri, appName);
-		await this.appService.createApplication(appUri, appName, dbType);
+		const app = await this.appService.createApplication(this.dataProvider.workfolder, appName, dbType);
 		this.refresh();
-		// reveal application
-		const entry = await this.dataProvider.getChild(workfolder, appName);
-		if (entry) {
-			this.treeView.reveal(entry, {expand: 2, focus: true, select: false});
-		}
+		this.treeView.reveal(app, {expand: 2, focus: true, select: false});
 	}
 
 	async deployApplication(app: Entry): Promise<void> {
@@ -259,14 +227,9 @@ export class ApplicationExplorer {
 	}
 
 	async createModule(app: Entry, modName: string): Promise<void> {
-		// create module
-		await this.appService.createModule(app.uri, modName);
+		const mod = await this.appService.createModule(app, modName);
 		this.dataProvider.fire(app);
-		// reveal module
-		const entry = await this.dataProvider.getModule(modName, app);
-		if (entry) {
-			this.treeView.reveal(entry, {expand: 2, focus: true, select: false});
-		}
+		this.treeView.reveal(mod, {expand: 2, focus: true, select: false});
 	}
 
 	private deployModule(mod: Entry): void {
@@ -275,14 +238,9 @@ export class ApplicationExplorer {
 
 
 	async createService(mod: Entry, name: string, type: string): Promise<void> {
-		// create service
-		await this.appService.createService(mod.uri, name, type);
+		const service = await this.appService.createService(mod, name, type);
 		this.dataProvider.fire(mod);
-		// reveal service
-		const entry = await this.dataProvider.getChild(mod, name);
-		if (entry) {
-			this.treeView.reveal(entry, {expand: 2, focus: true, select: false});
-		}
+		this.treeView.reveal(service, {expand: 2, focus: true, select: false});
 	}
 
 
@@ -348,19 +306,26 @@ export class ApplicationExplorer {
 		console.log("generate crud table bindings");
 	}
 
-	addTest(testFolder: Entry) {
+	async addTest(testFolder: Entry): Promise<void> {
 		try {
-			this.appService.addTest(testFolder);
-			this.refresh();
+			const testFile = await this.appService.addTest(testFolder);
+			this.dataProvider.fire(testFolder);
+			this.treeView.reveal(testFile, {focus: true, select: false});
+			vscode.window.showTextDocument(testFile.uri, {preview: false});
 		} catch(error){
 			vscode.window.showErrorMessage(error.message);
 		}
 	}
 
-	duplicateTest(test: Entry) {
+	async duplicateTest(test: Entry): Promise<void> {
 		try {
-			this.appService.duplicateTest(test);
-			this.refresh();
+			const testFile = await this.appService.duplicateTest(test);
+			if (!testFile.parent) {
+				return;
+			}
+			this.dataProvider.fire(testFile.parent);
+			this.treeView.reveal(testFile, {focus: true, select: false});
+			vscode.window.showTextDocument(testFile.uri, {preview: false});
 		} catch(error){
 			vscode.window.showErrorMessage(error.message);
 		}

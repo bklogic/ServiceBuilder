@@ -21,22 +21,27 @@ export class ApplicationService {
 	 * @param uri application uri
 	 * @param name application name
 	 */
-	async createApplication(uri: vscode.Uri, name: string, dbType: string): Promise<void> {
+	async createApplication(workfolder: Entry, name: string, dbType: string): Promise<Entry> {
+		const app = this.defaultEntry(name, vscode.FileType.Directory, workfolder);
+		app.parent = null;
 		// application foler
-		await vscode.workspace.fs.createDirectory(uri);
+		await vscode.workspace.fs.createDirectory(app.uri);
 		// source folder
-		await vscode.workspace.fs.createDirectory(vscode.Uri.joinPath(uri, 'src'));
+		await vscode.workspace.fs.createDirectory(vscode.Uri.joinPath(app.uri, 'src'));
 		// application file
-		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'src', 'application.json'), cs.applicationFile(name, dbType));
+		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(app.uri, 'src', 'application.json'), cs.applicationFile(name, dbType));
 			// .then( () => {
 			// 	// init git repository
 			// 	this.initGit(uri);
 			// });
 		// datasource file
-		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'src', 'datasource.json'), cs.dataSourceFile(dbType));
+		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(app.uri, 'src', 'datasource.json'), cs.dataSourceFile(dbType));
 
 		// README file
+		// await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(app.uri, 'src', 'README'), cs.dataSourceFile(dbType));
 		//
+		// return
+		return app;
 	}
 
 	private initGit(appUri: vscode.Uri): void {
@@ -61,12 +66,16 @@ export class ApplicationService {
 	 * @param uri 	module uri
 	 * @param name 	module name
 	 */
-	async createModule(appUri: vscode.Uri, modName: string): Promise<void> {
+	async createModule(app: Entry, modName: string): Promise<Entry> {
+		// mod entry
+		const src = this.defaultEntry('src', vscode.FileType.Directory, app);
+		const mod = this.defaultEntry(modName, vscode.FileType.Directory, src);
 		// module folder
-		const modUri = vscode.Uri.joinPath(appUri, 'src/' + modName);
-		await vscode.workspace.fs.createDirectory(modUri);
+		await vscode.workspace.fs.createDirectory(mod.uri);
 		// module file
-		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(modUri, 'module.json'), cs.moduleFile(modName));
+		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(mod.uri, 'module.json'), cs.moduleFile(modName));
+		// return
+		return mod;
 	}
 
 	/**
@@ -75,27 +84,28 @@ export class ApplicationService {
 	 * @param name 	service name
 	 * @param type 	service type
 	 */
-	async createService(modUri: vscode.Uri, name: string, type: string): Promise<void> {
-		const uri = vscode.Uri.joinPath(modUri, name);
+	async createService(mod: Entry, name: string, type: string): Promise<Entry> {
+		const service = this.defaultEntry(name, vscode.FileType.Directory, mod);
 		switch (type) {
 			case 'query':
-				await this.createQueryService(uri, name);
+				await this.createQueryService(service.uri, name);
 				break;
 			case 'sql':
-				await this.createSqlService(uri, name);
+				await this.createSqlService(service.uri, name);
 				break;
 			case 'crud':
-				await this.createCrudService(uri, name);
+				await this.createCrudService(service.uri, name);
 				break;
 			default:
 				throw new Error("Unsupported service type: " + type);
 		}
+		return service;
 	}
 
 	async createQueryService(uri: vscode.Uri, name: string): Promise<void> {
 		// service folder
 		await vscode.workspace.fs.createDirectory(uri);
-		Promise.all ([
+		await Promise.all ([
 			// service file
 			vscode.workspace.fs.writeFile(vscode.Uri.joinPath(uri, 'service.json'), cs.queryServiceFile(name)),
 			// input file
@@ -162,14 +172,14 @@ export class ApplicationService {
 		await vscode.workspace.fs.createDirectory(vscode.Uri.joinPath(uri, 'tests'));
 	}
 
-	async addTest(testFolder: Entry): Promise<void> {
+	async addTest(testFolder: Entry): Promise<Entry> {
 		const newFileName = await this.newTestFileName(testFolder);
 		const newFileUri = vscode.Uri.joinPath(testFolder.uri, newFileName);
 
 		// input uri
 		const service = testFolder.parent;
-		if (!service?.serviceType) {
-			return;
+		if (!service?.serviceType) { // never happen unless bug
+			return {} as Entry;
 		}
 		const inputFileName = (service.serviceType === 'crud') ? 'object.json' : 'input.json';
 		const inputUri = vscode.Uri.joinPath(service.uri, inputFileName);
@@ -177,19 +187,25 @@ export class ApplicationService {
 		// input and test file
 		const input = await this.readFile(inputUri);
 		const content =cs.testFile(input, service.serviceType);
-		vscode.workspace.fs.writeFile(newFileUri, content);
+		await vscode.workspace.fs.writeFile(newFileUri, content);
+
+		//return
+		return this.defaultEntry(newFileName, vscode.FileType.File, testFolder);
     }
 
-	async duplicateTest(sourceTest: Entry): Promise<void> {
+	async duplicateTest(sourceTest: Entry): Promise<Entry> {
 		// target test uri
-		if (!sourceTest.parent) {
-			return;
+		if (!sourceTest.parent) { // never unless bug
+			return {} as Entry;
 		}
 		const newFileName = await this.newTestFileName(sourceTest.parent);
 		const newFileUri = vscode.Uri.joinPath(sourceTest.parent.uri, newFileName);
 
 		// duplicate test
-		vscode.workspace.fs.copy(sourceTest.uri, newFileUri);
+		await vscode.workspace.fs.copy(sourceTest.uri, newFileUri);
+
+		//return
+		return this.defaultEntry(newFileName, vscode.FileType.File, sourceTest.parent);
     }
 
 	/**
@@ -244,7 +260,7 @@ export class ApplicationService {
 	async getChildrenForWorkspaceFolder(entry: Entry): Promise<Entry[]> {
 		const children = await vscode.workspace.fs.readDirectory(entry.uri);
 		return children.map(([name, fileType]) => {
-			let child: Entry = this.defaultEntity(name, fileType, entry);
+			let child: Entry = this.defaultEntry(name, fileType, entry);
 			child.parent = null;  // workfolder is not true node
 			if (fileType === vscode.FileType.Directory) {
 				child.type = EntryType.Application;
@@ -260,7 +276,7 @@ export class ApplicationService {
 				name === '.git'
 			);
 		}).map(([name, fileType]) => {
-			let child: Entry = this.defaultEntity(name, fileType, entry);
+			let child: Entry = this.defaultEntry(name, fileType, entry);
 			if (fileType === vscode.FileType.Directory && name === 'src') {
 				child.type = EntryType.ApplicationSrc;
 			} 
@@ -276,7 +292,7 @@ export class ApplicationService {
 				name === 'datasource.json'
 			);
 		}).map(([name, fileType]) => {
-			let child: Entry = this.defaultEntity(name, fileType, entry);
+			let child: Entry = this.defaultEntry(name, fileType, entry);
 			if ( name === 'application.json') {
 				child.type = EntryType.ApplicationFile;
 				child.seqNo = 0;
@@ -296,7 +312,7 @@ export class ApplicationService {
 		const children = await vscode.workspace.fs.readDirectory(entry.uri);
 		const entries = await Promise.all(
 			children.map(async ([name, fileType]) => {
-				let child: Entry = this.defaultEntity(name, fileType, entry);
+				let child: Entry = this.defaultEntry(name, fileType, entry);
 				if ( name === 'module.json') {
 					child.type = EntryType.ModuleFile;
 					child.seqNo = 0;
@@ -321,7 +337,7 @@ export class ApplicationService {
 		let i = 1;
 		const children = await vscode.workspace.fs.readDirectory(entry.uri);
 		return children.map(([name, fileType]) => {
-			let child: Entry = this.defaultEntity(name, fileType, entry);
+			let child: Entry = this.defaultEntry(name, fileType, entry);
 			const componentName = name.replace('.json', '').replace('.sql', '');
 		    if ( name === 'service.json') {
 				child.type = EntryType.ServiceFile;
@@ -364,7 +380,7 @@ export class ApplicationService {
 	async getChildrenForCrudService(entry: Entry): Promise<Entry[]> {
 		const children = await vscode.workspace.fs.readDirectory(entry.uri);
 		return children.map(([name, fileType]) => {
-			let child: Entry = this.defaultEntity(name, fileType, entry);
+			let child: Entry = this.defaultEntry(name, fileType, entry);
 			switch (name) {
 				case 'service.json':
 					child.type = EntryType.ServiceFile;
@@ -396,7 +412,7 @@ export class ApplicationService {
 	async getChildrenForRead(entry: Entry): Promise<Entry[]> {
 		const children = await vscode.workspace.fs.readDirectory(entry.uri);
 		return children.map(([name, fileType]) => {
-			let child: Entry = this.defaultEntity(name, fileType, entry);
+			let child: Entry = this.defaultEntry(name, fileType, entry);
 			const componentName = name.replace('.json', '').replace('.sql', '');
 			if (this.componentNames.includes(componentName)) {
 				child.type = EntryType.Component;
@@ -423,7 +439,7 @@ export class ApplicationService {
 		let i = 2;
 		const children = await vscode.workspace.fs.readDirectory(entry.uri);
 		return children.map(([name, fileType]) => {
-			let child: Entry = this.defaultEntity(name, fileType, entry);
+			let child: Entry = this.defaultEntry(name, fileType, entry);
 			const componentName = name.replace('.json', '').replace('.sql', '');
 			if (this.componentNames.includes(componentName)) {
 				child.type = EntryType.Component;
@@ -448,7 +464,7 @@ export class ApplicationService {
 	async getChildrenForTests(entry: Entry): Promise<Entry[]> {
 		const children = await vscode.workspace.fs.readDirectory(entry.uri);
 		return children.map(([name, fileType]) => {
-			let child: Entry = this.defaultEntity(name, fileType, entry);
+			let child: Entry = this.defaultEntry(name, fileType, entry);
 			if (fileType === vscode.FileType.File && name.match(/^test\d{2}.json$/)) {
 				child.type = EntryType.TestFile;
 			}
@@ -459,11 +475,11 @@ export class ApplicationService {
 	async getChildrenForOther(entry: Entry): Promise<Entry[]> {
 		const children = await vscode.workspace.fs.readDirectory(entry.uri);
 		return children.map(([name, fileType]) => {
-			return this.defaultEntity(name, fileType, entry);
+			return this.defaultEntry(name, fileType, entry);
 		});	
 	}
 
-	defaultEntity(name: string, fileType: vscode.FileType, parent: Entry): Entry {
+	defaultEntry(name: string, fileType: vscode.FileType, parent: Entry): Entry {
 		return { 
 			uri: vscode.Uri.joinPath(parent.uri, name), 
 			type: EntryType.Other, 
