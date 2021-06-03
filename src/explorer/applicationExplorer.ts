@@ -246,7 +246,6 @@ export class ApplicationExplorer {
 		const workfolder = this.dataProvider.workfolder;
 		const appUri = vscode.Uri.joinPath(workfolder.uri, appName);
 		await this.appService.createApplication(appUri, appName, dbType);
-		// this.dataProvider.fire(workfolder);
 		this.refresh();
 		// reveal application
 		const entry = await this.dataProvider.getChild(workfolder, appName);

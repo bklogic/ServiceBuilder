@@ -245,6 +245,7 @@ export class ApplicationService {
 		const children = await vscode.workspace.fs.readDirectory(entry.uri);
 		return children.map(([name, fileType]) => {
 			let child: Entry = this.defaultEntity(name, fileType, entry);
+			child.parent = null;  // workfolder is not true node
 			if (fileType === vscode.FileType.Directory) {
 				child.type = EntryType.Application;
 			} 
