@@ -1,4 +1,6 @@
+import { SSL_OP_EPHEMERAL_RSA } from 'constants';
 import * as vscode from 'vscode';
+import * as path from 'path';
 import { TreeDataProvider } from "vscode";
 import {ApplicationService, Entry, EntryType, ServiceType} from "./applicationService";
 
@@ -7,9 +9,11 @@ export class ApplicationDataProvider implements TreeDataProvider<Entry> {
 	private _onDidChangeTreeData: vscode.EventEmitter<Entry | undefined | void> = new vscode.EventEmitter<Entry | undefined | void>();
 	readonly onDidChangeTreeData: vscode.Event<Entry | undefined | void> = this._onDidChangeTreeData.event;
 	private appService: ApplicationService;
+	workfolder: Entry;
 
 	constructor() {
 		this.appService = new ApplicationService();
+		this.workfolder = this.getWorkfolderEntry();
 	}
 
 	getTreeItem(element: Entry): vscode.TreeItem | Thenable<vscode.TreeItem> {
@@ -20,38 +24,70 @@ export class ApplicationDataProvider implements TreeDataProvider<Entry> {
 		if (element.fileType === vscode.FileType.File) {
 			treeItem.command = { command: 'servicebuilderExplorer.openResource', title: "Open File", arguments: [element] };
 		}
+		switch (element.type) {
+			case EntryType.Application:
+				treeItem.iconPath = {
+					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'folder.svg'), 
+					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'folder.svg')
+				};
+				treeItem.tooltip = 'application';
+				break;
+			case EntryType.Module:
+				treeItem.iconPath = {
+					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'folder.svg'), 
+					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'folder.svg')
+				};
+				treeItem.tooltip = 'module';
+				break;
+			case EntryType.QueryService:
+				treeItem.iconPath = {
+					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'window.svg'), 
+					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'window.svg')
+				};
+				treeItem.tooltip = 'query service';
+				break;
+			case EntryType.SqlService:
+				treeItem.iconPath = {
+					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'server-process.svg'), 
+					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'server-process.svg')
+				};
+				treeItem.tooltip = 'sql service';
+				break;			
+			case EntryType.CrudService:
+				treeItem.iconPath = {
+					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'symbol-method.svg'), 
+					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'symbol-method.svg')
+				};
+				treeItem.tooltip = 'crud service';
+				break;			
+			case EntryType.Tests:
+				treeItem.iconPath = {
+					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'beaker.svg'), 
+					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'beaker.svg')
+				};
+				treeItem.tooltip = 'tests';
+				break;
+			default:
+				treeItem.tooltip = element.name.replace('.sql', '').replace('.json', '');
+			}
 		treeItem.id = element.uri.path;
+		treeItem.label = element.name;
 		treeItem.description = false;
 		treeItem.contextValue = element.type.toString();
 		return treeItem;
 	}
 
 	getChildren(element?: Entry): Promise<Entry[]> {
-		// if no workspace folders
-		if (!vscode.workspace.workspaceFolders) {
-			// return new Promise<Entry[]>( (resolve, reject) => { resolve([]); } );
-			return Promise.resolve([]);
-		}
 		// otherwise, set element to workspace folder if element is passed in
 		if (!element) {
-			const workspaceFolder = vscode.workspace.workspaceFolders.filter(folder => folder.uri.scheme === 'file')[0];
-			element = { 
-				uri: workspaceFolder.uri, 
-				type: EntryType.Workfolder,
-				serviceType: null, 
-				componentType: null, 
-				fileType: vscode.FileType.Directory, 
-				name: 'workspace',
-				parent: null,
-				seqNo: 0
-			};
+			element = this.workfolder;
 		}
 		// return chilren of element
 		return this.appService.getChildren(element);
 	}
 
 	getParent?(element: Entry): vscode.ProviderResult<Entry> {
-		throw new Error('Method not implemented.');
+		return element.parent;
 	}
 
 	refresh(): void {
@@ -62,16 +98,46 @@ export class ApplicationDataProvider implements TreeDataProvider<Entry> {
 		this._onDidChangeTreeData.fire(entry);
 	}
 
-	async getChild(entry: Entry, childName: string): Promise<Entry | undefined> {
-		const children = await this.getChildren(entry);
-		const child = await children.find(e => {e.name === childName;});
-		return child;
+	getWorkfolderEntry(): Entry {
+		// if no workspace folders
+		if (!vscode.workspace.workspaceFolders) {
+			// throw Error("No workfolder");
+			return {} as Entry;
+		}
+		// otherwise, set element to workspace folder if element is passed in
+		const workspaceFolder = vscode.workspace.workspaceFolders.filter(folder => folder.uri.scheme === 'file')[0];
+		const entry = { 
+			uri: workspaceFolder.uri, 
+			type: EntryType.Workfolder,
+			serviceType: null, 
+			componentType: null, 
+			fileType: vscode.FileType.Directory, 
+			name: 'workspace',
+			parent: null,
+			seqNo: 0
+		};
+		return entry;
 	}
 
-	async getModule(name: string, app: Entry): Promise<Entry | undefined> {
+	async getChild(entry: Entry, childName: string): Promise<Entry | null> {
+		let children = await this.getChildren(entry);
+		children = await children.filter(e => { return e.name === childName;});
+		if (children.length > 0) {
+			return children[0];
+		} else {
+			return null;
+		}
+	}
+
+	async getApplication(name: string): Promise<Entry | null> {
+		const app = this.getChild(this.workfolder, name);
+		return app;
+	}
+
+	async getModule(name: string, app: Entry): Promise<Entry | null> {
 		// src
 		const src = await this.getChild(app, 'src');
-		if (!src) { return undefined; }
+		if (!src) { return null; }
 		// module
 		const mod = await this.getChild(src, name);
 		return mod;
@@ -125,7 +191,7 @@ export class ApplicationExplorer {
 		vscode.window.showTextDocument(resource.uri, {preview: !this.doubleClick.check(resource)});
 	}
 
-	private openDataSource(app: Entry): void {
+	openDataSource(app: Entry): void {
 		vscode.window.showTextDocument(vscode.Uri.joinPath(app.uri, 'src', 'datasource.json'), {preview: false});
 	}
 
@@ -174,27 +240,42 @@ export class ApplicationExplorer {
 	}
 
 	async createApplication(appName: string, dbType: string): Promise<void> {
-		if (!vscode.workspace.workspaceFolders) {
-			vscode.window.showErrorMessage('No open workspace folder');
-			return;
-		}
-		const appUri = vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, appName);
+		// if (!vscode.workspace.workspaceFolders) {
+		// 	vscode.window.showErrorMessage('No open workspace folder');
+		// 	return;
+		// }
+		// const appUri = vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, appName);
+		const appUri = vscode.Uri.joinPath(this.dataProvider.workfolder.uri, appName);
 		await this.appService.createApplication(appUri, appName, dbType);
-		this.refresh();
+		// await this.refresh();
+
+		const entry = await this.dataProvider.getApplication(appName);
+		if (!entry) {return;}
+		this.treeView.reveal(entry, {expand: 3, focus: true, select: true});
+		// if (entry) {
+		// 	this.treeView.reveal(entry, {expand: 3, focus: true, select: true});
+		// }	
 	}
 
-	private deployApplication(app: Entry): void {
+	async deployApplication(app: Entry): Promise<void> {
 		console.log("deploy application");
+		if (!app.parent) {return;}
+		let entry = await this.dataProvider.getChild(app.parent, 'demo07');
+		if (!entry) {return;}
+		// this.treeView.reveal(entry, {expand: true, focus: true});
+		this.treeView.reveal(app, {expand: true, focus: true});
 	}
 
 	async createModule(app: Entry, modName: string): Promise<void> {
 		await this.appService.createModule(app.uri, modName);
-		this.refresh();
+		// this.refresh();
 
 		const entry = await this.dataProvider.getModule(modName, app);
-		if (entry) {
-			this.treeView.reveal(entry, {expand: true, focus: true});
-		}	
+		if (!entry) {return;}
+		this.treeView.reveal(entry, {expand: true, focus: true});
+		// if (entry) {
+		// 	this.treeView.reveal(app, {expand: 3, focus: true});
+		// }	
 	}
 
 	private deployModule(mod: Entry): void {
@@ -212,8 +293,8 @@ export class ApplicationExplorer {
 		console.log("deploy service");
 	}
 
-	private delete(entry: Entry): void {
-		this.appService.delete(entry.uri);
+	async delete(entry: Entry): Promise<void> {
+		await this.appService.delete(entry.uri);
 		this.refresh();
 	}
 

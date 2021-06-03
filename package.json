@@ -34,72 +34,72 @@
 				"command": "servicebuilderExplorer.createApplication",
 				"title": "New Application",
 				"icon": {
-					"light": "resources/light/folder.svg",
-					"dark": "resources/dark/folder.svg"
+					"light": "resources/light/new-folder.svg",
+					"dark": "resources/dark/new-folder.svg"
 				}
 			},
 			{
 				"command": "servicebuilderExplorer.configDataSource",
 				"title": "Configure Data Source",
 				"icon": {
-					"light": "resources/light/folder.svg",
-					"dark": "resources/dark/folder.svg"
+					"light": "resources/light/database.svg",
+					"dark": "resources/dark/database.svg"
 				}
 			},
 			{
 				"command": "servicebuilderExplorer.deployApplication",
 				"title": "Deploy Application",
 				"icon": {
-					"light": "resources/light/boolean.svg",
-					"dark": "resources/dark/boolean.svg"
+					"light": "resources/light/server.svg",
+					"dark": "resources/dark/server.svg"
 				}
 			},
 			{
 				"command": "servicebuilderExplorer.createModule",
 				"title": "New Module",
 				"icon": {
-					"light": "resources/light/folder.svg",
-					"dark": "resources/dark/folder.svg"
+					"light": "resources/light/new-folder.svg",
+					"dark": "resources/dark/new-folder.svg"
 				}
 			},
 			{
 				"command": "servicebuilderExplorer.deployModule",
 				"title": "Deploy Module",
 				"icon": {
-					"light": "resources/light/boolean.svg",
-					"dark": "resources/dark/boolean.svg"
+					"light": "resources/light/server.svg",
+					"dark": "resources/dark/server.svg"
 				}
 			},
 			{
 				"command": "servicebuilderExplorer.createCrudService",
 				"title": "New CRUD Service",
 				"icon": {
-					"light": "resources/light/document.svg",
-					"dark": "resources/dark/document.svg"
+					"light": "resources/light/symbol-method.svg",
+					"dark": "resources/dark/symbol-method.svg"
 				}
 			},
 			{
 				"command": "servicebuilderExplorer.createSqlService",
 				"title": "New SQL Service",
 				"icon": {
-					"light": "resources/light/document.svg",
-					"dark": "resources/dark/document.svg"
+					"light": "resources/light/server-process.svg",
+					"dark": "resources/dark/server-process.svg"
 				}
 			},
 			{
 				"command": "servicebuilderExplorer.createQueryService",
 				"title": "New Query Service",
 				"icon": {
-					"light": "resources/light/document.svg",
-					"dark": "resources/dark/document.svg"
+					"light": "resources/light/window.svg",
+					"dark": "resources/dark/window.svg"
 				}
 			},
 			{
 				"command": "servicebuilderExplorer.deployService",
 				"title": "Deploy Service",
 				"icon": {
-					"light": "resources/light/boolean.svg",
-					"dark": "resources/dark/boolean.svg"
+					"light": "resources/light/server.svg",
+					"dark": "resources/dark/server.svg"
 				}
 			},
 			{
@@ -116,62 +116,66 @@
 			},
 			{
 				"command": "servicebuilderExplorer.delete",
-				"title": "Delete"
+				"title": "Delete",
+				"icon": {
+					"light": "resources/light/trash.svg",
+					"dark": "resources/dark/trash.svg"
+				}
 			},
 			{
 				"command": "servicebuilderExplorer.genQueryInputOutput",
 				"title": "Generate Input and Output",
 				"icon": {
-					"light": "resources/light/number.svg",
-					"dark": "resources/dark/number.svg"
+					"light": "resources/light/note.svg",
+					"dark": "resources/dark/note.svg"
 				}
 			},
 			{
 				"command": "servicebuilderExplorer.genQueryInputOutputBindings",
 				"title": "Generate Input and Output Bindings",
 				"icon": {
-					"light": "resources/light/string.svg",
-					"dark": "resources/dark/string.svg"
+					"light": "resources/light/references.svg",
+					"dark": "resources/dark/references.svg"
 				}
 			},
 			{
 				"command": "servicebuilderExplorer.genSqlInputOutput",
 				"title": "Generate Input and Output",
 				"icon": {
-					"light": "resources/light/number.svg",
-					"dark": "resources/dark/number.svg"
+					"light": "resources/light/note.svg",
+					"dark": "resources/dark/note.svg"
 				}
 			},
 			{
 				"command": "servicebuilderExplorer.genSqlInputOutputBindings",
 				"title": "Generate Input and Output Bindings",
 				"icon": {
-					"light": "resources/light/string.svg",
-					"dark": "resources/dark/string.svg"
+					"light": "resources/light/references.svg",
+					"dark": "resources/dark/references.svg"
 				}
 			},
 			{
 				"command": "servicebuilderExplorer.genCrudObject",
 				"title": "Generate Object",
 				"icon": {
-					"light": "resources/light/number.svg",
-					"dark": "resources/dark/number.svg"
+					"light": "resources/light/note.svg",
+					"dark": "resources/dark/note.svg"
 				}
 			},
 			{
 				"command": "servicebuilderExplorer.genCrudInputOutputBindings",
 				"title": "Generate Input and Output Bindings",
 				"icon": {
-					"light": "resources/light/string.svg",
-					"dark": "resources/dark/string.svg"
+					"light": "resources/light/references.svg",
+					"dark": "resources/dark/references.svg"
 				}
 			},
 			{
 				"command": "servicebuilderExplorer.genCrudTableBindings",
 				"title": "Generate Table Bindings",
 				"icon": {
-					"light": "resources/light/boolean.svg",
-					"dark": "resources/dark/boolean.svg"
+					"light": "resources/light/multiple-windows.svg",
+					"dark": "resources/dark/multiple-windows.svg"
 				}
 			},
 			{
@@ -182,36 +186,40 @@
 				"command": "servicebuilderEditor.testDataSource",
 				"title": "Test Data Source Configuration",
 				"icon": {
-					"light": "resources/light/folder.svg",
-					"dark": "resources/dark/folder.svg"
+					"light": "resources/light/play.svg",
+					"dark": "resources/dark/play.svg"
 				}
 			},
 			{
 				"command": "servicebuilderEditor.applyDataSource",
-				"title": "Apply Data Source Configuration",
+				"title": "Save and Apply Data Source Configuration",
 				"icon": {
-					"light": "resources/light/folder.svg",
-					"dark": "resources/dark/folder.svg"
+					"light": "resources/light/save-all.svg",
+					"dark": "resources/dark/save-all.svg"
 				}
 			},
 			{
 				"command": "servicebuilderExplorer.addTest",
 				"title": "Add Test",
 				"icon": {
-					"light": "resources/light/string.svg",
-					"dark": "resources/dark/string.svg"
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
 				}
 			},
 			{
 				"command": "servicebuilderExplorer.duplicateTest",
-				"title": "Duplicate"
+				"title": "Duplicate",
+				"icon": {
+					"light": "resources/light/copy.svg",
+					"dark": "resources/dark/copy.svg"
+				}
 			},
 			{
 				"command": "servicebuilderEditor.runTest",
 				"title": "Run Test",
 				"icon": {
-					"light": "resources/light/number.svg",
-					"dark": "resources/dark/number.svg"
+					"light": "resources/light/play.svg",
+					"dark": "resources/dark/play.svg"
 				}
 			}
 		],

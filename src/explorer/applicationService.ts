@@ -196,8 +196,8 @@ export class ApplicationService {
 	 * 
 	 * @param uri delete application, module or service
 	 */
-	public delete(uri: vscode.Uri): void {
-		vscode.workspace.fs.delete(uri, {recursive: true, useTrash: false});
+	async delete(uri: vscode.Uri): Promise<void> {
+		await vscode.workspace.fs.delete(uri, {recursive: true, useTrash: false});
 	}
 
 
