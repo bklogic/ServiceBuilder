@@ -1,5 +1,6 @@
 import { TextDecoder } from 'util';
 import * as vscode from 'vscode';
+import * as path from 'path';
 import * as cs from './contentService';
 import {GitExtension} from './git.d';
 
@@ -38,9 +39,12 @@ export class ApplicationService {
 		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(app.uri, 'src', 'datasource.json'), cs.dataSourceFile(dbType));
 
 		// README file
-		// await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(app.uri, 'src', 'README'), cs.dataSourceFile(dbType));
-		//
-		// return
+		const templatePath = path.join(__filename, '..', '..', '..', 'resources', 'README.md');
+		const templateUri = vscode.Uri.parse('file:' + templatePath, true);
+		const readmeUri = vscode.Uri.joinPath(app.uri, 'src', 'README.md');
+		await vscode.workspace.fs.copy(templateUri, readmeUri);
+
+		// return 
 		return app;
 	}
 
