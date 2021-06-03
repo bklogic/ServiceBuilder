@@ -1,6 +1,7 @@
 import { SSL_OP_EPHEMERAL_RSA } from 'constants';
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as fs from 'fs';
 import { TreeDataProvider } from "vscode";
 import {ApplicationService, Entry, EntryType, ServiceType} from "./applicationService";
 
@@ -269,18 +270,30 @@ export class ApplicationExplorer {
 	}
 
 	async rename(entry: Entry, name: string): Promise<void> {
-		let newEntry: Entry;
-		if (entry.parent) { 
-			await this.appService.rename(entry.uri, vscode.Uri.joinPath(entry.parent.uri, name));
-			this.dataProvider.fire(entry.parent);
-			newEntry = this.appService.defaultEntry(name, entry.fileType, entry.parent);
-		} else {
-			await this.appService.rename(entry.uri, vscode.Uri.joinPath(this.dataProvider.workfolder.uri, name));
-			this.refresh();
-			newEntry = this.appService.defaultEntry(name, entry.fileType, this.dataProvider.workfolder);
-			newEntry.parent = null;
+		try {
+			let newEntry: Entry;
+			if (entry.parent) { 
+				await this.appService.rename(entry.uri, vscode.Uri.joinPath(entry.parent.uri, name));
+				this.dataProvider.fire(entry.parent);
+				newEntry = this.appService.defaultEntry(name, entry.fileType, entry.parent);
+			} else {
+				await this.appService.rename(entry.uri, vscode.Uri.joinPath(this.dataProvider.workfolder.uri, name));
+				this.refresh();
+				newEntry = this.appService.defaultEntry(name, entry.fileType, this.dataProvider.workfolder);
+				newEntry.parent = null;
+			}
+			this.treeView.reveal(newEntry, {focus: true});	
+		} catch (error) {
+			let message: string;
+			switch (error.code) {
+				case 'FileExists':
+					message = 'Name exists.';
+					break;
+				default:
+					message = error.message;
+			}
+			vscode.window.showErrorMessage(message);
 		}
-		this.treeView.reveal(newEntry, {focus: true});
 	}
 
 	private copy(entry: Entry) {
