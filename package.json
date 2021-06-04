@@ -50,8 +50,8 @@
 				"command": "servicebuilderExplorer.deployApplication",
 				"title": "Deploy Application",
 				"icon": {
-					"light": "resources/light/server.svg",
-					"dark": "resources/dark/server.svg"
+					"light": "resources/light/sync.svg",
+					"dark": "resources/dark/sync.svg"
 				}
 			},
 			{
@@ -66,8 +66,8 @@
 				"command": "servicebuilderExplorer.deployModule",
 				"title": "Deploy Module",
 				"icon": {
-					"light": "resources/light/server.svg",
-					"dark": "resources/dark/server.svg"
+					"light": "resources/light/sync.svg",
+					"dark": "resources/dark/sync.svg"
 				}
 			},
 			{
@@ -98,8 +98,8 @@
 				"command": "servicebuilderExplorer.deployService",
 				"title": "Deploy Service",
 				"icon": {
-					"light": "resources/light/server.svg",
-					"dark": "resources/dark/server.svg"
+					"light": "resources/light/sync.svg",
+					"dark": "resources/dark/sync.svg"
 				}
 			},
 			{
@@ -550,7 +550,7 @@
 				{
 					"command": "servicebuilderEditor.runTest",
 					"when": "resourceFilename =~ /^test\\d{2}.json$/",
-					"group": "navigation"
+					"group": "navigation@1"
 				}
 			],
 			"editor/context": [

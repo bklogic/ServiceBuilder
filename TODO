@@ -1,10 +1,10 @@
-Explorer:
+✔ Explorer: @done(21-06-03 15:19)
     ☐ icons
     ☐ reveal application, module and service upon creation
     ☐ README.md
     ☐ 
 
-Data Source:
+✔ Data Source: @done(21-06-03 15:18)
     ☐ editor button
     ☐ test
     ☐ save
@@ -12,3 +12,12 @@ Data Source:
 Generate Commands:
     ☐ HTTP request
     ☐ 
+
+Remote:
+    ☐ test remote setup
+    ☐ test code-server setup
+
+Misc:
+    ☐ editor button location
+    ☐ explorer tooltip
+    
