@@ -34,3 +34,35 @@ export interface Resource {
     module: string;
     service: string;
 }
+
+/**
+ * Misc 
+ */
+export function sleep(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+}
+
+export class DoubleClick {
+	clickInterval = 500;
+	lastClick = 0;
+	lastItem: any = null;
+
+	constructor(clickInterval?: number) {
+		if (clickInterval) {
+			this.clickInterval = clickInterval;
+		}
+	}
+
+	check(item: any): boolean {
+		const thisClick = new Date().getTime();
+		let result = false;
+		if ( item === this.lastItem && (thisClick  - this.lastClick) < this.clickInterval ) {
+			result = true;
+		}
+		this.lastClick = thisClick;
+		this.lastItem = item;
+		return result;
+	}
+
+}
+

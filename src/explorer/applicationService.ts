@@ -22,7 +22,7 @@ export class ApplicationService {
 	 * @param uri application uri
 	 * @param name application name
 	 */
-	async createApplication(workfolder: Entry, name: string, dbType: string): Promise<Entry> {
+	async createApplication(workfolder: Entry, name: string, dbType: string, versions: any): Promise<Entry> {
 		const app = this.defaultEntry(name, vscode.FileType.Directory, workfolder);
 		app.parent = null;
 		// check name not exists
@@ -35,7 +35,7 @@ export class ApplicationService {
 		// source folder
 		await vscode.workspace.fs.createDirectory(vscode.Uri.joinPath(app.uri, 'src'));
 		// application file
-		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(app.uri, 'src', 'application.json'), cs.applicationFile(name, dbType));
+		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(app.uri, 'src', 'application.json'), cs.applicationFile(name, dbType, versions));
 			// .then( () => {
 			// 	// init git repository
 			// 	this.initGit(uri);
@@ -582,21 +582,37 @@ export interface Entry {
 }
 
 export enum EntryType {
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	Workfolder = 'workfolder',
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	Application = 'application', 
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	ApplicationSrc = 'applicationsrc', 
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	ApplicationFile = 'applicationfile', 
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	Module = 'module', 
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	ModuleFile = 'modulefile', 
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	QueryService = 'queryservice', 
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	SqlService = 'sqlservice', 
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	CrudService = 'crudservice', 
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	ServiceFile = 'servicefile', 
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	Tests = 'tests',
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	TestFile = 'testfile',
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	Read = 'read',
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	Write = 'write',
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	Component = 'component',
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	Other = 'other'
 }
 

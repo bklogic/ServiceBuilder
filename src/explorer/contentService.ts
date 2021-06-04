@@ -1,13 +1,10 @@
 
-import * as bs from "../core/builderService";
-
-
-export function applicationFile(applicationName: string, dbType: string): Uint8Array {		
+export function applicationFile(applicationName: string, dbType: string, versions: any): Uint8Array {		
 	const content = {
 		"name": applicationName,
 		"description": "application. Don't modify this file!",
 		"dbType": dbType,
-		"versions": bs.getBuilderVersions()
+		"versions": versions
 	};
 	return toUint8Array(content);
 }
