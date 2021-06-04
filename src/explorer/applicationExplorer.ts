@@ -3,7 +3,10 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import { TreeDataProvider } from "vscode";
-import {ApplicationService, Entry, EntryType, ServiceType} from "./applicationService";
+import {ApplicationService, Entry, EntryType} from "./applicationService";
+import {
+    BuilderService
+} from '../core/builderService';
 
 
 export class ApplicationDataProvider implements TreeDataProvider<Entry> {
@@ -129,10 +132,12 @@ export class ApplicationExplorer {
 	private dataProvider: ApplicationDataProvider;
 	private treeView: vscode.TreeView<Entry>;
 	private appService: ApplicationService;
+	private builderService: BuilderService;
 	private doubleClick = new DoubleClick();
 
-	constructor(context: vscode.ExtensionContext) {
+	constructor(context: vscode.ExtensionContext, builderService: BuilderService) {
 		this.appService = new ApplicationService();
+		this.builderService = builderService;
 		this.dataProvider = new ApplicationDataProvider();
 		this.treeView = vscode.window.createTreeView('servicebuilderExplorer', { treeDataProvider: this.dataProvider, showCollapseAll: true });
 		context.subscriptions.push(this.treeView);

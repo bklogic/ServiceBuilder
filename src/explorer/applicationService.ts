@@ -600,18 +600,18 @@ export enum EntryType {
 	Other = 'other'
 }
 
-export enum ServiceType {
-	Query = 'query', 
-	Sql = 'sql', 
-	Crud = 'crud'
-}
+// export enum ServiceType {
+// 	Query = 'query', 
+// 	Sql = 'sql', 
+// 	Crud = 'crud'
+// }
 
-export enum ComponentType {
-	Input = 'input', 
-	Output = 'output', 
-	Object = 'object', 
-	InputBindings = 'inputbindings', 
-	OutputBindings = 'outputbindings', 
-	Query = 'query', 
-	Sqls = 'sqls'
-}
+// export enum ComponentType {
+// 	Input = 'input', 
+// 	Output = 'output', 
+// 	Object = 'object', 
+// 	InputBindings = 'inputbindings', 
+// 	OutputBindings = 'outputbindings', 
+// 	Query = 'query', 
+// 	Sqls = 'sqls'
+// }

@@ -1,11 +1,17 @@
 import * as vscode from 'vscode';
 import {TestService} from './testService';
+import {
+    BuilderService, 
+    TestServiceRequest, TestServiceResult
+} from '../core/builderService';
 
 export class TestEditor {
     private testService: TestService;
+    private builderService: BuilderService; 
 
-    constructor(context: vscode.ExtensionContext) {
+    constructor(context: vscode.ExtensionContext, buildService: BuilderService) {
         this.testService = new TestService();
+        this.builderService = buildService;
 		vscode.commands.registerCommand('servicebuilderEditor.addTest', (resource) => this.addTest(resource.path));
 		vscode.commands.registerCommand('servicebuilderEditor.runTest', (resource) => this.runTest(resource));
     }

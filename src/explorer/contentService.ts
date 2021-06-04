@@ -1,6 +1,5 @@
 
-import { ServiceType } from "./applicationService";
-import * as bs from "./builderService";
+import * as bs from "../core/builderService";
 
 
 export function applicationFile(applicationName: string, dbType: string): Uint8Array {		

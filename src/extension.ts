@@ -1,20 +1,35 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { BuilderService } from './core/builderService';
 import { ApplicationExplorer } from './explorer/applicationExplorer';
 import { DataSourceEditor } from './editor/dataSourceEditor';
 import { TestEditor } from './editor/testEditor';
 
 // this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+	// construct builder service
+	const builderService = new BuilderService();
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "servicebuilder" is now active!');
-	new ApplicationExplorer(context);
-	new DataSourceEditor(context);
-	new TestEditor(context);
+	// register viewVersion command
+	let disposable = vscode.commands.registerCommand('servicebuilder.versions', () => {
+		const versions = builderService.getBuilderVersions()
+			.then( versions => {
+				const msg = `Specification: ${versions.specification} | Engine: ${versions.engine} | Builder: ${versions.builder}.`;
+				vscode.window.showInformationMessage(msg);
+			});
+	});	
+	context.subscriptions.push(disposable);
+
+	// explorer
+	new ApplicationExplorer(context, builderService);
+
+	// editors
+	new DataSourceEditor(context, builderService);
+	new TestEditor(context, builderService);
+
+	// complete
+	console.log('service builder is now active!');
 }
 
 // this method is called when your extension is deactivated
