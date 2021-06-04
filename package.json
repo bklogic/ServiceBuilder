@@ -10,9 +10,6 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onLanguage:json",
-		"onLanguage:jsonc",
-		"onCommand:servicebuilder.helloWorld",
 		"onView:servicebuilderExplorer"
 	],
 	"main": "./out/extension.js",
