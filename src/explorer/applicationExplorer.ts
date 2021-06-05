@@ -3,7 +3,13 @@ import * as util from '../core/util';
 import {ApplicationDataProvider} from './applicationDataProvider';
 import {ApplicationService, Entry, EntryType} from "./applicationService";
 import {
-    BuilderService
+	BindCrudQueryRequest,
+	BindCrudTableRequest,
+	BindQueryRequest,
+	BindQueryResult,
+	BindSqlsRequest,
+    BuilderService,
+	Table
 } from '../core/builderService';
 
 export class ApplicationExplorer {
@@ -45,12 +51,9 @@ export class ApplicationExplorer {
 		vscode.commands.registerCommand('servicebuilderExplorer.deployService', (resource) => this.deployService(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.addTest', (resource) => this.addTest(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.duplicateTest', (resource) => this.duplicateTest(resource));
-
-		// // this.provider.watch(this.workspaceUri, { recursive: true, excludes:[]} );
-		// const fsw = vscode.workspace.createFileSystemWatcher(new vscode.RelativePattern(vscode.workspace.rootPath, '*'), false, false, false);
 	}
 
-	private openResource(resource: Entry): void {
+	openResource(resource: Entry): void {
 		vscode.window.showTextDocument(resource.uri, {preview: !this.doubleClick.check(resource)});
 	}
 
@@ -58,11 +61,11 @@ export class ApplicationExplorer {
 		vscode.window.showTextDocument(vscode.Uri.joinPath(app.uri, 'src', 'datasource.json'), {preview: false});
 	}
 
-	private refresh(): void {
+	refresh(): void {
 		this.dataProvider.refresh();
 	}
 
-	private onCreateApplication(): void {
+	onCreateApplication(): void {
 		vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "application name", prompt: "must be an alphanumberic"})
 			.then( name => {
 				if (name) {
@@ -83,7 +86,7 @@ export class ApplicationExplorer {
 		this.openDataSource(app);
 	}
 
-	private onCreateModule(app: Entry): void {
+	onCreateModule(app: Entry): void {
 		vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "module name", prompt: "must be an alphanumberic"})
 			.then( name => {
 				if (name) {
@@ -92,7 +95,7 @@ export class ApplicationExplorer {
 			});
 	}
 
-	private onCreateService(mod: Entry, serviceType: string): void {
+	onCreateService(mod: Entry, serviceType: string): void {
 		vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: `${serviceType} service name`, prompt: "must be an alphanumberic"})
 			.then( name => {
 				if (name) {
@@ -229,36 +232,146 @@ export class ApplicationExplorer {
 		console.log('paste ' + entry.type);
 	}
 
-	private onGenerateCrud(module: Entry) {
+	onGenerateCrud(module: Entry) {
 		console.log('generate CRUD ...');
 	}
 
-	genQueryInputOutput(service: Entry) {
+	async genQueryInputOutput(service: Entry) {
 		console.log("generate query input and output");
 	}
 
-	genQueryInputOutputBindings(service: Entry) {
-		console.log("generate query input and output bindings");
+	async genQueryInputOutputBindings(service: Entry) {
+		try {
+			// prepare request
+			const [input, output, query] = await Promise.all([
+				this.appService.readJsonFile(vscode.Uri.joinPath(service.uri, 'input.json')),
+				this.appService.readJsonFile(vscode.Uri.joinPath(service.uri, 'output.json')),
+				this.appService.readSqlFile(vscode.Uri.joinPath(service.uri, 'query.sql'))
+			]);
+			const request: BindQueryRequest = {
+				applicationUri: util.applicaitionUriForService(service.uri.path),
+				input, output, queryString: query
+			};
+			// call service
+			const result = await this.builderService.bindQuery(request);
+			// process result
+			const inputBidningsUri = vscode.Uri.joinPath(service.uri, 'input-bindings.json');
+			const outputBidningsUri = vscode.Uri.joinPath(service.uri, 'output-bindings.json');
+			await this.appService.writeJsonFile(inputBidningsUri, result.inputBindings);
+			await this.appService.writeJsonFile(outputBidningsUri, result.outputBindings);
+			vscode.window.showTextDocument(inputBidningsUri, {preview: false});
+			vscode.window.showTextDocument(outputBidningsUri, {preview: false});
+			// inform user
+			vscode.window.showInformationMessage('input and output bindings are generated');
+		} catch (error) {
+			console.error('Error in generating query input and output bindings', error);
+			vscode.window.showErrorMessage(error.message);
+		}
 	}
 
-	genSqlInputOutput(service: Entry) {
+	async genSqlInputOutput(service: Entry): Promise<void> {
 		console.log("generate sql input and output");
 	}
 
-	genSqlInputOutputBindings(service: Entry) {
-		console.log("generate sql input and output bindings");	
+	async genSqlInputOutputBindings(service: Entry): Promise<void> {
+		try {
+			// prepare request
+			const [input, output, sqls, query] = await Promise.all([
+				this.appService.readJsonFile(vscode.Uri.joinPath(service.uri, 'input.json')),
+				this.appService.readJsonFile(vscode.Uri.joinPath(service.uri, 'output.json')),
+				this.appService.readSqlFile(vscode.Uri.joinPath(service.uri, 'sqls.sql')),
+				this.appService.readSqlFile(vscode.Uri.joinPath(service.uri, 'query.sql'))
+			]);
+			const request: BindSqlsRequest = {
+				applicationUri: util.applicaitionUriForService(service.uri.path),
+				input, output, sqlsString: sqls, queryString: query
+			};
+			// call service
+			const result = await this.builderService.bindSql(request);
+			// process result
+			const inputBidningsUri = vscode.Uri.joinPath(service.uri, 'input-bindings.json');
+			const outputBidningsUri = vscode.Uri.joinPath(service.uri, 'output-bindings.json');
+			await this.appService.writeJsonFile(inputBidningsUri, result.inputBindings);
+			await this.appService.writeJsonFile(outputBidningsUri, result.outputBindings);
+			vscode.window.showTextDocument(inputBidningsUri, {preview: false});
+			vscode.window.showTextDocument(outputBidningsUri, {preview: false});
+			// inform user
+			vscode.window.showInformationMessage('input and output bindings are generated');
+		} catch (error) {
+			console.error('Error in generating sqls input and output bindings', error);
+			vscode.window.showErrorMessage(error.message);
+		}
 	}
 
-	genCrudObject(service: Entry) {
+	async genCrudObject(service: Entry): Promise<void> {
 		console.log("generate crud object");
 	}
 
-	genCrudInputOutputBindings(service: Entry) {
-		console.log("generate crud input and output bindings");
+	async genCrudInputOutputBindings(service: Entry): Promise<void> {
+		try {
+			// prepare request
+			const [object, query] = await Promise.all([
+				this.appService.readJsonFile(vscode.Uri.joinPath(service.uri, 'object.json')),
+				this.appService.readSqlFile(vscode.Uri.joinPath(service.uri, 'read', 'query.sql'))
+			]);
+			const request: BindCrudQueryRequest = {
+				applicationUri: util.applicaitionUriForService(service.uri.path),
+				object, queryString: query
+			};
+			// call service
+			const result = await this.builderService.bindCrudQuery(request);
+			// process result
+			const inputBidningsUri = vscode.Uri.joinPath(service.uri, 'read', 'input-bindings.json');
+			const outputBidningsUri = vscode.Uri.joinPath(service.uri, 'read', 'output-bindings.json');
+			await this.appService.writeJsonFile(inputBidningsUri, result.inputBindings);
+			await this.appService.writeJsonFile(outputBidningsUri, result.outputBindings);
+			vscode.window.showTextDocument(inputBidningsUri, {preview: false});
+			vscode.window.showTextDocument(outputBidningsUri, {preview: false});
+			// inform user
+			vscode.window.showInformationMessage('input and output bindings are generated');
+		} catch (error) {
+			console.error('Error in generating crud input and output bindings', error);
+			vscode.window.showErrorMessage(error.message);
+		}
 	}
 
-	genCrudTableBindings(service: Entry) {
-		console.log("generate crud table bindings");
+	async genCrudTableBindings(service: Entry): Promise<void> {
+		try {
+			// prepare request
+			const [query, outputBindings] = await Promise.all([
+				this.appService.readSqlFile(vscode.Uri.joinPath(service.uri, 'read', 'query.sql')),
+				this.appService.readJsonFile(vscode.Uri.joinPath(service.uri, 'read', 'output-bindings.json'))
+			]);
+			const request: BindCrudTableRequest = {
+				applicationUri: util.applicaitionUriForService(service.uri.path),
+				outputBindings, crudQueryString: query
+			};
+			// call service
+			const tables: Table[] = await this.builderService.bindCrudTable(request);
+			// process result
+			const tableContent = [];
+			for (let table of tables) {
+				// table
+				tableContent.push({
+					"name": table.table,
+					"alias": table.alias,
+					"object": table.object,
+					"rootTable": table.rootTable,
+					"columns": `./${table.table}.columns.json`
+				});
+				// columns
+				let columnFileName = `${table.table}.columns.json`;
+				this.appService.writeJsonFile(vscode.Uri.joinPath(service.uri, 'write', columnFileName), table.columns);
+			}
+			const tablesUri = vscode.Uri.joinPath(service.uri, 'write', 'tables.json');
+			await this.appService.writeJsonFile(tablesUri, tableContent);
+			vscode.window.showTextDocument(tablesUri, {preview: false});
+			// inform user
+			vscode.window.showInformationMessage('table bindings are generated');
+		} catch (error) {
+			console.error('Error in generating crud tables bindings', error);
+			vscode.window.showErrorMessage(error.message);
+		}
 	}
 
 	async addTest(testFolder: Entry): Promise<void> {

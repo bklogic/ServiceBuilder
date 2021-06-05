@@ -44,7 +44,29 @@ export class BuilderService {
 	/**
 	 * Explorer
 	 */
+	async bindQuery(request: BindQueryRequest): Promise<BindQueryResult> {
+		const url = '/bind/bindQuery';
+		const result = await this.http.post(url, request);
+		return result;
+	}
 
+	async bindSql(request: BindSqlsRequest): Promise<BindSqlsResult> {
+		const url = '/bind/bindSqls';
+		const result = await this.http.post(url, request);
+		return result;
+	}
+
+	async bindCrudQuery(request: BindCrudQueryRequest): Promise<BindCrudQueryResult> {
+		const url = '/bind/bindCrudQuery';
+		const result = await this.http.post(url, request);
+		return result;
+	}
+
+	async bindCrudTable(request: BindCrudTableRequest): Promise<Table[]> {
+		const url = '/bind/bindCrudTable';
+		const result = await this.http.post(url, request);
+		return result;
+	}
 
 }
 
@@ -99,4 +121,82 @@ export interface TestException {
 	name: string;
 	type: string;
 	message: string;
+}
+
+export interface BindQueryRequest {
+	applicationUri: string;
+	queryString: string [];
+	input: any;
+	output: any
+}
+
+export interface BindQueryResult {
+	inputBindings: InputBinding[];
+	outputBindings: OutputBinding[];
+}
+
+export interface InputBinding {
+	parameter: string;
+	field: string;
+}
+
+export interface OutputBinding {
+	column: string;
+	field: string;
+}
+
+export interface BindSqlsRequest {
+	applicationUri: string;
+	sqlsString: string [];
+	queryString: string [];
+	input: any;
+	output: any
+}
+
+export interface BindSqlsResult {
+	inputBindings: InputBinding[];
+	outputBindings: OutputBinding[];
+}
+
+export interface BindCrudQueryRequest {
+	applicationUri: string;
+	queryString: string [];
+	object: any
+}
+
+export interface BindCrudQueryResult {
+	inputBindings: InputBinding[];
+	outputBindings: OutputBinding[];
+}
+
+export interface BindCrudTableRequest {
+	applicationUri: string;
+	crudQueryString: string[];
+	outputBindings: OutputBinding[];
+}
+
+export interface Table {
+	table: string;
+	alias: string;
+	object: string;
+	operationIndicator: string;
+	columns: Column[];
+	rootTable: boolean;
+}
+
+export interface Column {
+	column: string;
+	field: string;
+	position: number;
+	dataType: string;
+	insertValue: string;
+	updateValue: string;
+	key: boolean;
+	autoGenerate: boolean;
+	notNull: boolean;
+	version: boolean;
+	softDelete: boolean;
+	keyEligible: boolean;
+	versionEligible: boolean;
+	softDeleteEligible: boolean;
 }

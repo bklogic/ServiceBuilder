@@ -29,7 +29,9 @@ export class HttpService {
             const response = await axios.post(url, data, this.config);
             return response.data;
           } catch (error) {
-            console.error(error);
+            console.error('http post error', error, error.response.data.message);
+            error.message = error.message + ' | ' + error.response.data.message;
+            throw error;
           }    
     }
 

@@ -1,6 +1,7 @@
 import { TextDecoder } from 'util';
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as util from '../core/util';
 import * as cs from './contentService';
 import {GitExtension} from './git.d';
 
@@ -205,7 +206,7 @@ export class ApplicationService {
 		const inputUri = vscode.Uri.joinPath(service.uri, inputFileName);
 
 		// input and test file
-		const input = await this.readFile(inputUri);
+		const input = await this.readJsonFile(inputUri);
 		const content =cs.testFile(input, service.serviceType);
 		await vscode.workspace.fs.writeFile(newFileUri, content);
 
@@ -529,13 +530,26 @@ export class ApplicationService {
 		return service.type;
 	}
 
-	async readFile(uri: vscode.Uri): Promise<any> {
+	async readJsonFile(uri: vscode.Uri): Promise<any> {
 		const uint8Array = await vscode.workspace.fs.readFile(uri);
 		if (uint8Array.length === 0) {
 			return {};
 		}
 		const data = JSON.parse(new TextDecoder().decode(uint8Array));
 		return data;
+	}
+
+	async readSqlFile(uri: vscode.Uri): Promise<string[]> {
+		const doc = await vscode.workspace.openTextDocument(uri);
+		const lines : string[] = [];
+		for (let i = 0; i < doc.lineCount; i++) {
+			lines.push(doc.lineAt(i).text);
+		}
+		return lines;
+	}
+
+	async writeJsonFile(uri: vscode.Uri, content: any): Promise<void> {
+		await vscode.workspace.fs.writeFile(uri, util.toUint8Array(content));
 	}
 
 	entryType(serviceType?: string): EntryType {
