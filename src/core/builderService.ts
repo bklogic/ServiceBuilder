@@ -35,8 +35,8 @@ export class BuilderService {
 	/**
 	 * Test
 	 */
-	async testService(request: TestServiceRequest): Promise<TestDataSourceResult> {
-		const url = '/test/testDataSource';
+	async testService(request: TestServiceRequest): Promise<TestServiceResult> {
+		const url = '/test/testService';
 		const result = await this.http.post(url, request);
 		return result;
 	}
@@ -64,6 +64,24 @@ export class BuilderService {
 
 	async bindCrudTable(request: BindCrudTableRequest): Promise<Table[]> {
 		const url = '/bind/bindCrudTable';
+		const result = await this.http.post(url, request);
+		return result;
+	}
+
+	async deployApplication(request: DeployRequest): Promise<DeployResult> {
+		const url = '/deploy/deployApplication';
+		const result = await this.http.post(url, request);
+		return result;
+	}
+
+	async deployModule(request: DeployRequest): Promise<DeployResult> {
+		const url = '/deploy/deployModule';
+		const result = await this.http.post(url, request);
+		return result;
+	}
+
+	async deployService(request: DeployRequest): Promise<DeployResult> {
+		const url = '/deploy/deployService';
 		const result = await this.http.post(url, request);
 		return result;
 	}
@@ -96,10 +114,6 @@ export interface DataSourceConfig {
 	jdbcUrl: string;
 	username: string;
 	password: string;	
-}
-
-export interface DeployResult {
-	succeed: boolean
 }
 
 export interface TestServiceRequest {
@@ -199,4 +213,15 @@ export interface Column {
 	keyEligible: boolean;
 	versionEligible: boolean;
 	softDeleteEligible: boolean;
+}
+
+export interface DeployRequest {
+	deployType: string;
+	applicationUri: string;
+	moduleName: string;
+	serviceName: string;
+}
+
+export interface DeployResult {
+	succeed: boolean
 }

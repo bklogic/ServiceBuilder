@@ -9,6 +9,7 @@ import {
 	BindQueryResult,
 	BindSqlsRequest,
     BuilderService,
+	DeployRequest,
 	Table
 } from '../core/builderService';
 
@@ -124,7 +125,20 @@ export class ApplicationExplorer {
 	}
 
 	async deployApplication(app: Entry): Promise<void> {
-			console.log("deploy application");
+		try {
+			// prepare request
+			const request: DeployRequest = {
+				deployType: 'deploy',
+				applicationUri: util.applicaitionUriForApplication(app.uri.path)
+			} as DeployRequest;
+			// call service
+			await this.builderService.deployApplication(request);
+			// inform user
+			vscode.window.showInformationMessage('application is deployed.');
+		} catch (error) {
+			console.error('Error in deploying application', error);
+			vscode.window.showErrorMessage(error.message);
+		}
 	}
 
 	async createModule(app: Entry, modName: string): Promise<void> {
@@ -145,8 +159,22 @@ export class ApplicationExplorer {
 		}
 	}
 
-	private deployModule(mod: Entry): void {
-		console.log("deploy module");
+	async deployModule(mod: Entry): Promise<void> {
+		try {
+			// prepare request
+			const request: DeployRequest = {
+				deployType: 'deploy',
+				applicationUri: util.applicaitionUriForModule(mod.uri.path),
+				moduleName: mod.name
+			} as DeployRequest;
+			// call service
+			await this.builderService.deployModule(request);
+			// inform user
+			vscode.window.showInformationMessage('module is deployed.');
+		} catch (error) {
+			console.error('Error in deploying module', error);
+			vscode.window.showErrorMessage(error.message);
+		}
 	}
 
 
@@ -168,9 +196,24 @@ export class ApplicationExplorer {
 		}
 	}
 
-
-	private deployService(service: Entry): void {
-		console.log("deploy service");
+	async deployService(service: Entry): Promise<void> {
+		try {
+			// prepare request
+			const resource: util.Resource = util.fromService(service.uri.path);
+			const request: DeployRequest = {
+				deployType: 'deploy',
+				applicationUri: `${resource.workspace}/${resource.application}`,
+				moduleName: resource.module,
+				serviceName: resource.service
+			} as DeployRequest;
+			// call service
+			await this.builderService.deployService(request);
+			// inform user
+			vscode.window.showInformationMessage('service is deployed.');
+		} catch (error) {
+			console.error('Error in deploying service', error);
+			vscode.window.showErrorMessage(error.message);
+		}
 	}
 
 	async delete(entry: Entry): Promise<void> {
@@ -253,7 +296,7 @@ export class ApplicationExplorer {
 				input, output, queryString: query
 			};
 			// call service
-			const result = await this.builderService.bindQuery(request);
+			const result: BindQueryResult = await this.builderService.bindQuery(request);
 			// process result
 			const inputBidningsUri = vscode.Uri.joinPath(service.uri, 'input-bindings.json');
 			const outputBidningsUri = vscode.Uri.joinPath(service.uri, 'output-bindings.json');

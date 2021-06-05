@@ -1,31 +1,46 @@
 import * as vscode from 'vscode';
-import {TestService} from './testService';
+import * as util from '../core/util';
 import {
     BuilderService, 
     TestServiceRequest, TestServiceResult
 } from '../core/builderService';
 
 export class TestEditor {
-    private testService: TestService;
     private builderService: BuilderService; 
+    private outputChannel;
 
     constructor(context: vscode.ExtensionContext, buildService: BuilderService) {
-        this.testService = new TestService();
         this.builderService = buildService;
-		vscode.commands.registerCommand('servicebuilderEditor.addTest', (resource) => this.addTest(resource.path));
-		vscode.commands.registerCommand('servicebuilderEditor.runTest', (resource) => this.runTest(resource));
+        this.outputChannel = vscode.window.createOutputChannel('Service Builder Test');
+		vscode.commands.registerCommand('servicebuilderEditor.runTest', (resource) => this.runTest(resource.path));
     }
 
-    addTest(resource: string) {
-        console.log('add test...');
+    async runTest(path: string) {
+		try {
+            // create output channel
+			// prepare request
+            const resource = util.fromTest(path);
+            const test: Test = await util.readJsonFile(vscode.Uri.parse(path));
+			const request: TestServiceRequest = {
+				applicationUri: `${resource.workspace}/${resource.application}`,
+                moduleName: resource.module,
+                serviceName: resource.service,
+                input: test.input,
+                operation: test.operation,
+                withCommit: true
+            };
+			// call service
+			const result: TestServiceResult = await this.builderService.testService(request);
+			// process result
+            let output = (result.succeed) ? result.output : result.exception;
+            this.outputChannel.clear();
+            this.outputChannel.append(JSON.stringify(output, null, 4));
+            this.outputChannel.show();
+		} catch (error) {
+			console.error('Error in testing service', error);
+			vscode.window.showErrorMessage(error.message);
+		}
     }
-
-    runTest(test: any) {
-        console.log('run test...');
-        console.log(test);
-        // this.testService.runTest();
-    }
-
 }
 
 export interface Test {
