@@ -112,10 +112,14 @@ export class ApplicationExplorer {
 
 	async createApplication(appName: string, dbType: string): Promise<void> {
 		try {
+			// create application
 			const versions = await this.builderService.getBuilderVersions();
 			const app = await this.appService.createApplication(this.dataProvider.workfolder, appName, dbType, versions);
+			// reveal
 			this.refresh();
-			this.treeView.reveal(app, {expand: 2, focus: true, select: true});	
+			this.treeView.reveal(app, {expand: 2, focus: true, select: true});
+			// deploy application
+			this.deployApplication(app);
 		} catch (error) {
 			let message: string;
 			switch (error.code) {
@@ -148,9 +152,13 @@ export class ApplicationExplorer {
 
 	async createModule(app: Entry, modName: string): Promise<void> {
 		try {
+			// create module
 			const mod = await this.appService.createModule(app, modName);
+			// reveal module
 			this.dataProvider.fire(app);
 			this.treeView.reveal(mod, {expand: 2, focus: true, select: true});	
+			// deploy module
+			this.deployModule(mod);
 		} catch (error) {
 			let message: string;
 			switch (error.code) {
@@ -477,17 +485,34 @@ export class ApplicationExplorer {
 				});
 				// columns
 				let columnFileName = `${table.table}.columns.json`;
-				this.appService.writeJsonFile(vscode.Uri.joinPath(service.uri, 'write', columnFileName), table.columns);
+				await this.appService.writeJsonFile(vscode.Uri.joinPath(service.uri, 'write', columnFileName), table.columns);
 			}
 			const tablesUri = vscode.Uri.joinPath(service.uri, 'write', 'tables.json');
 			await this.appService.writeJsonFile(tablesUri, tableContent);
 			vscode.window.showTextDocument(tablesUri, {preview: false});
+			this.revealTables(service);
 			// inform user
 			vscode.window.showInformationMessage('table bindings are generated');
 		} catch (error) {
 			console.error('Error in generating crud tables bindings', error);
 			vscode.window.showErrorMessage(error.message);
 		}
+	}
+
+	revealTables(service: Entry): void {
+		const write = {
+			uri: vscode.Uri.joinPath(service.uri, 'write'),
+			name: 'write',
+			type: EntryType.Write,
+			parent: service
+		} as Entry;
+		const tables = {
+			uri: vscode.Uri.joinPath(write.uri, 'tables.json'),
+			name: 'tables',
+			type: EntryType.Component,
+			parent: write
+		} as Entry;
+		this.treeView.reveal(tables, {expand: true, select: true});
 	}
 
 	async addTest(testFolder: Entry): Promise<void> {

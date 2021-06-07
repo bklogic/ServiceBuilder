@@ -17,7 +17,15 @@ export class TestEditor {
 
     async runTest(path: string) {
 		try {
-            // create output channel
+            // save test
+            const editor = vscode.window.activeTextEditor;
+            if (!editor) {
+                console.log('No active test editor');
+                vscode.window.showErrorMessage('No active editor. Please click the test editor and try again');
+                return;
+            }
+            await editor.document.save();
+
 			// prepare request
             const resource = util.fromTest(path);
             const test: Test = await util.readJsonFile(vscode.Uri.parse(path));
@@ -32,10 +40,11 @@ export class TestEditor {
 			// call service
 			const result: TestServiceResult = await this.builderService.testService(request);
 			// process result
-            let output = (result.succeed) ? result.output : result.exception;
             this.outputChannel.clear();
+            let output = (result.succeed) ? result.output : result.exception;
+            this.outputChannel.appendLine( (result.succeed) ? 'TEST OUTPUT: ' : 'TEST EXCEPTION: ');
             this.outputChannel.append(JSON.stringify(output, null, 4));
-            this.outputChannel.show();
+            this.outputChannel.show(false);
 		} catch (error) {
 			console.error('Error in testing service', error);
 			vscode.window.showErrorMessage(error.message);
