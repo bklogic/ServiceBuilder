@@ -9,9 +9,11 @@
     ☐ test
     ☐ save
 
-Generate Commands:
-    ☐ HTTP request
-    ☐ 
+Gen Commands:
+    ✔ HTTP request @done(21-06-04 22:14)
+    ☐ Generate CRUD from table
+    ☐ Generate input, output from query/sql
+    ☐ Generate object from query
 
 Remote:
     ☐ test remote setup
@@ -20,4 +22,8 @@ Remote:
 Misc:
     ☐ editor button location
     ☐ explorer tooltip
+    ☐ deploy application upon creation
+    ☐ auto-save befoe test
+    ☐ add OUTPUT/EXCEPTION to test output
+    ☐ refresh write after table binding
     

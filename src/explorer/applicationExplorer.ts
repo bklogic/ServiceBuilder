@@ -10,6 +10,11 @@ import {
 	BindSqlsRequest,
     BuilderService,
 	DeployRequest,
+	GenerateInputOutputRequest,
+	GenerateInputOutputResult,
+	GenerateObjectRequest,
+	GenerateObjectResult,
+	NameConvention,
 	Table
 } from '../core/builderService';
 
@@ -280,7 +285,30 @@ export class ApplicationExplorer {
 	}
 
 	async genQueryInputOutput(service: Entry) {
-		console.log("generate query input and output");
+		try {
+			// prepare request
+			const query = await this.appService.readSqlFile(vscode.Uri.joinPath(service.uri, 'query.sql'));
+			const request: GenerateInputOutputRequest = {
+				applicationUri: util.applicaitionUriForService(service.uri.path),
+				queryString: query,
+				sqlsString:[],
+				nameConvention: NameConvention.CAMEL
+			} ;
+			// call service
+			const result: GenerateInputOutputResult = await this.builderService.genQueryInputOutput(request);
+			// process result
+			const inputUri = vscode.Uri.joinPath(service.uri, 'input.json');
+			const outputUri = vscode.Uri.joinPath(service.uri, 'output.json');
+			await this.appService.writeJsonFile(inputUri, result.input);
+			await this.appService.writeJsonFile(outputUri, result.output);
+			vscode.window.showTextDocument(inputUri, {preview: false});
+			vscode.window.showTextDocument(outputUri, {preview: false});
+			// inform user
+			vscode.window.showInformationMessage('input and output are generated');
+		} catch (error) {
+			console.error('Error in generating query input and output', error);
+			vscode.window.showErrorMessage(error.message);
+		}
 	}
 
 	async genQueryInputOutputBindings(service: Entry) {
@@ -305,15 +333,41 @@ export class ApplicationExplorer {
 			vscode.window.showTextDocument(inputBidningsUri, {preview: false});
 			vscode.window.showTextDocument(outputBidningsUri, {preview: false});
 			// inform user
-			vscode.window.showInformationMessage('input and output bindings are generated');
+			vscode.window.showInformationMessage('input and output are generated');
 		} catch (error) {
-			console.error('Error in generating query input and output bindings', error);
+			console.error('Error in generating sql input and output', error);
 			vscode.window.showErrorMessage(error.message);
 		}
 	}
 
 	async genSqlInputOutput(service: Entry): Promise<void> {
-		console.log("generate sql input and output");
+		try {
+			// prepare request
+			const [query, sqls] = await Promise.all([
+				this.appService.readSqlFile(vscode.Uri.joinPath(service.uri, 'query.sql')),
+				this.appService.readSqlFile(vscode.Uri.joinPath(service.uri, 'sqls.sql'))
+			]);
+			const request: GenerateInputOutputRequest = {
+				applicationUri: util.applicaitionUriForService(service.uri.path),
+				queryString: query,
+				sqlsString: sqls,
+				nameConvention: NameConvention.CAMEL
+			} ;
+			// call service
+			const result: GenerateInputOutputResult = await this.builderService.genSqlInputOutput(request);
+			// process result
+			const inputUri = vscode.Uri.joinPath(service.uri, 'input.json');
+			const outputUri = vscode.Uri.joinPath(service.uri, 'output.json');
+			await this.appService.writeJsonFile(inputUri, result.input);
+			await this.appService.writeJsonFile(outputUri, result.output);
+			vscode.window.showTextDocument(inputUri, {preview: false});
+			vscode.window.showTextDocument(outputUri, {preview: false});
+			// inform user
+			vscode.window.showInformationMessage('input and output bindings are generated');
+		} catch (error) {
+			console.error('Error in generating query input and output bindings', error);
+			vscode.window.showErrorMessage(error.message);
+		}
 	}
 
 	async genSqlInputOutputBindings(service: Entry): Promise<void> {
@@ -347,7 +401,26 @@ export class ApplicationExplorer {
 	}
 
 	async genCrudObject(service: Entry): Promise<void> {
-		console.log("generate crud object");
+		try {
+			// prepare request
+			const query = await this.appService.readSqlFile(vscode.Uri.joinPath(service.uri, 'read', 'query.sql'));
+			const request: GenerateObjectRequest = {
+				applicationUri: util.applicaitionUriForService(service.uri.path),
+				queryString: query,
+				nameConvention: NameConvention.CAMEL
+			} ;
+			// call service
+			const result: GenerateObjectResult = await this.builderService.genCrudObject(request);
+			// process result
+			const objectUri = vscode.Uri.joinPath(service.uri, 'object.json');
+			await this.appService.writeJsonFile(objectUri, result.object);
+			vscode.window.showTextDocument(objectUri, {preview: false});
+			// inform user
+			vscode.window.showInformationMessage('object is generated');
+		} catch (error) {
+			console.error('Error in generating crud object', error);
+			vscode.window.showErrorMessage(error.message);
+		}
 	}
 
 	async genCrudInputOutputBindings(service: Entry): Promise<void> {

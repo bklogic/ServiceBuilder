@@ -68,6 +68,24 @@ export class BuilderService {
 		return result;
 	}
 
+	async genQueryInputOutput(request: GenerateInputOutputRequest): Promise<GenerateInputOutputResult> {
+		const url = '/gen/generateQueryInputOutput';
+		const result = await this.http.post(url, request);
+		return result;
+	}
+
+	async genSqlInputOutput(request: GenerateInputOutputRequest): Promise<GenerateInputOutputResult> {
+		const url = '/gen/generateSqlInputOutput';
+		const result = await this.http.post(url, request);
+		return result;
+	}
+
+	async genCrudObject(request: GenerateObjectRequest): Promise<GenerateObjectResult> {
+		const url = '/gen/generateCrudObject';
+		const result = await this.http.post(url, request);
+		return result;
+	}
+
 	async deployApplication(request: DeployRequest): Promise<DeployResult> {
 		const url = '/deploy/deployApplication';
 		const result = await this.http.post(url, request);
@@ -214,6 +232,36 @@ export interface Column {
 	versionEligible: boolean;
 	softDeleteEligible: boolean;
 }
+
+export interface GenerateInputOutputRequest {
+	applicationUri: string;
+	queryString: string [];
+	sqlsString: string [];
+	nameConvention: NameConvention;
+}
+
+export interface GenerateInputOutputResult {
+	input: any;
+	output: any;
+}
+
+export interface GenerateObjectRequest {
+	applicationUri: string;
+	queryString: string [];
+	nameConvention: NameConvention;
+}
+
+export interface GenerateObjectResult {
+	object: any;
+}
+
+export enum NameConvention {
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	NONE = 'NONE',
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	CAMEL = 'CAMEL'
+}
+
 
 export interface DeployRequest {
 	deployType: string;
