@@ -546,6 +546,7 @@ export class ApplicationExplorer {
 			type: EntryType.Write,
 			parent: service
 		} as Entry;
+		this.dataProvider.fire(write);
 		const tables = {
 			uri: vscode.Uri.joinPath(write.uri, 'tables.json'),
 			name: 'tables',
@@ -599,6 +600,14 @@ export class ApplicationExplorer {
         await util.writeJsonFile(vscode.Uri.joinPath(mod.uri, crud.serviceName, 'read', 'output-bindings.json'), crud.outputBindings);
         // table
 		this.createTables(vscode.Uri.joinPath(mod.uri, crud.serviceName), crud.tables);
+		// reveal table
+		const service = {
+			uri: vscode.Uri.joinPath(mod.uri, crud.serviceName),
+			type: EntryType.CrudService,
+			fileType: vscode.FileType.Directory,
+			parent: mod
+		} as Entry;
+		this.revealTables(service);
     }
     
     async createTables(serviceUri: vscode.Uri, tables: Table[]): Promise<void> {
