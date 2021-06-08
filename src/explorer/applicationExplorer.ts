@@ -10,12 +10,17 @@ import {
 	BindSqlsRequest,
     BuilderService,
 	DeployRequest,
+	GenerateCrudOptions,
+	GenerateCrudRequest,
+	GenerateCrudResult,
 	GenerateInputOutputRequest,
 	GenerateInputOutputResult,
 	GenerateObjectRequest,
 	GenerateObjectResult,
+	GetTableListRequest,
 	NameConvention,
-	Table
+	Table,
+	WhereClauseType
 } from '../core/builderService';
 
 export class ApplicationExplorer {
@@ -138,7 +143,7 @@ export class ApplicationExplorer {
 			// prepare request
 			const request: DeployRequest = {
 				deployType: 'deploy',
-				applicationUri: util.applicaitionUriForApplication(app.uri.path)
+				applicationUri: util.applicationUriForApplication(app.uri.path)
 			} as DeployRequest;
 			// call service
 			await this.builderService.deployApplication(request);
@@ -177,7 +182,7 @@ export class ApplicationExplorer {
 			// prepare request
 			const request: DeployRequest = {
 				deployType: 'deploy',
-				applicationUri: util.applicaitionUriForModule(mod.uri.path),
+				applicationUri: util.applicationUriForModule(mod.uri.path),
 				moduleName: mod.name
 			} as DeployRequest;
 			// call service
@@ -288,8 +293,43 @@ export class ApplicationExplorer {
 		console.log('paste ' + entry.type);
 	}
 
-	onGenerateCrud(module: Entry) {
-		console.log('generate CRUD ...');
+	async onGenerateCrud(module: Entry) {
+		// get table list
+		const applicationUri = util.applicationUriForModule(module.uri.path);
+		const request: GetTableListRequest = {
+			applicationUri
+		};
+		const tables = await this.builderService.getTableList(request);
+
+		// displace table pick
+		vscode.window.showQuickPick(tables, {ignoreFocusOut: true, placeHolder: "tables", canPickMany: true}).then( (tbls) => {
+			const options: GenerateCrudOptions = {
+				whereClause: WhereClauseType.keys, fieldNameConvention: NameConvention.CAMEL
+			};
+			if (tbls) {
+				this.generateCrud(module, applicationUri, tbls, options);
+			} else {
+				vscode.window.showInformationMessage('no table selected');
+			}
+		});
+	}
+
+	async generateCrud(module: Entry, applicationUri: string, tableNames: string[], options: GenerateCrudOptions) {
+		try {
+			// prepare request
+			const request: GenerateCrudRequest = {
+				applicationUri, tableNames, options
+			} ;
+			// call service
+			const results: GenerateCrudResult[] = await this.builderService.genCruds(request);
+			// process result
+			this.createCruds(module, results);
+			// inform user
+			vscode.window.showInformationMessage('CRUD services are generated');
+		} catch (error) {
+			console.error('Error in generating crud services', error);
+			vscode.window.showErrorMessage(error.message);
+		}
 	}
 
 	async genQueryInputOutput(service: Entry) {
@@ -297,7 +337,7 @@ export class ApplicationExplorer {
 			// prepare request
 			const query = await this.appService.readSqlFile(vscode.Uri.joinPath(service.uri, 'query.sql'));
 			const request: GenerateInputOutputRequest = {
-				applicationUri: util.applicaitionUriForService(service.uri.path),
+				applicationUri: util.applicationUriForService(service.uri.path),
 				queryString: query,
 				sqlsString:[],
 				nameConvention: NameConvention.CAMEL
@@ -328,7 +368,7 @@ export class ApplicationExplorer {
 				this.appService.readSqlFile(vscode.Uri.joinPath(service.uri, 'query.sql'))
 			]);
 			const request: BindQueryRequest = {
-				applicationUri: util.applicaitionUriForService(service.uri.path),
+				applicationUri: util.applicationUriForService(service.uri.path),
 				input, output, queryString: query
 			};
 			// call service
@@ -356,7 +396,7 @@ export class ApplicationExplorer {
 				this.appService.readSqlFile(vscode.Uri.joinPath(service.uri, 'sqls.sql'))
 			]);
 			const request: GenerateInputOutputRequest = {
-				applicationUri: util.applicaitionUriForService(service.uri.path),
+				applicationUri: util.applicationUriForService(service.uri.path),
 				queryString: query,
 				sqlsString: sqls,
 				nameConvention: NameConvention.CAMEL
@@ -388,7 +428,7 @@ export class ApplicationExplorer {
 				this.appService.readSqlFile(vscode.Uri.joinPath(service.uri, 'query.sql'))
 			]);
 			const request: BindSqlsRequest = {
-				applicationUri: util.applicaitionUriForService(service.uri.path),
+				applicationUri: util.applicationUriForService(service.uri.path),
 				input, output, sqlsString: sqls, queryString: query
 			};
 			// call service
@@ -413,7 +453,7 @@ export class ApplicationExplorer {
 			// prepare request
 			const query = await this.appService.readSqlFile(vscode.Uri.joinPath(service.uri, 'read', 'query.sql'));
 			const request: GenerateObjectRequest = {
-				applicationUri: util.applicaitionUriForService(service.uri.path),
+				applicationUri: util.applicationUriForService(service.uri.path),
 				queryString: query,
 				nameConvention: NameConvention.CAMEL
 			} ;
@@ -439,7 +479,7 @@ export class ApplicationExplorer {
 				this.appService.readSqlFile(vscode.Uri.joinPath(service.uri, 'read', 'query.sql'))
 			]);
 			const request: BindCrudQueryRequest = {
-				applicationUri: util.applicaitionUriForService(service.uri.path),
+				applicationUri: util.applicationUriForService(service.uri.path),
 				object, queryString: query
 			};
 			// call service
@@ -467,7 +507,7 @@ export class ApplicationExplorer {
 				this.appService.readJsonFile(vscode.Uri.joinPath(service.uri, 'read', 'output-bindings.json'))
 			]);
 			const request: BindCrudTableRequest = {
-				applicationUri: util.applicaitionUriForService(service.uri.path),
+				applicationUri: util.applicationUriForService(service.uri.path),
 				outputBindings, crudQueryString: query
 			};
 			// call service
@@ -539,6 +579,46 @@ export class ApplicationExplorer {
 			vscode.window.showErrorMessage(error.message);
 		}
 	}
+
+    async createCruds(mod: Entry, cruds: GenerateCrudResult[]): Promise<void> {
+        for (let crud of cruds) {
+            this.createCrud(mod, crud);
+        }
+    }
+
+    async createCrud(mod: Entry, crud: GenerateCrudResult): Promise<void> {
+		// create service
+		await this.createService(mod, crud.serviceName, 'crud');
+        // object
+        await util.writeJsonFile(vscode.Uri.joinPath(mod.uri, crud.serviceName, 'object.json'), crud.object);
+        // query
+        await util.writeSqlFile(vscode.Uri.joinPath(mod.uri, crud.serviceName, 'read', 'query.sql'), crud.crudQuery);
+        // input bindings
+        await util.writeJsonFile(vscode.Uri.joinPath(mod.uri, crud.serviceName, 'read', 'input-bindings.json'), crud.inputBindings);       
+        // output bindings
+        await util.writeJsonFile(vscode.Uri.joinPath(mod.uri, crud.serviceName, 'read', 'output-bindings.json'), crud.outputBindings);
+        // table
+		this.createTables(vscode.Uri.joinPath(mod.uri, crud.serviceName), crud.tables);
+    }
+    
+    async createTables(serviceUri: vscode.Uri, tables: Table[]): Promise<void> {
+		const tableContent = [];
+		for (let table of tables) {
+			// table
+			tableContent.push({
+				"name": table.table,
+				"alias": table.alias,
+				"object": table.object,
+				"rootTable": table.rootTable,
+				"columns": `./${table.table}.columns.json`
+			});
+			// columns
+			let columnFileName = `${table.table}.columns.json`;
+			await this.appService.writeJsonFile(vscode.Uri.joinPath(serviceUri, 'write', columnFileName), table.columns);
+		}
+		const tablesUri = vscode.Uri.joinPath(serviceUri, 'write', 'tables.json');
+		await this.appService.writeJsonFile(tablesUri, tableContent);
+    }
 
 }
 

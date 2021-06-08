@@ -53,7 +53,7 @@ export class DataSourceEditor {
                 // deploy data source
                 const dataSource = JSON.parse(editor.document.getText()) as DataSource;
                 const dataSourceConfig: DataSourceConfig = {
-                    applicationUri: util.applicaitionUriForDataSource(editor.document.uri.path),
+                    applicationUri: util.applicationUriForDataSource(editor.document.uri.path),
                     dbType: dataSource.dbType,
                     jdbcUrl: 'jdbc:' + dataSource.url,
                     username: dataSource.username,

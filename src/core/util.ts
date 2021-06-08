@@ -1,19 +1,19 @@
 import { TextDecoder } from 'util';
 import * as vscode from 'vscode';
 
-export function applicaitionUriForDataSource(dataSourcePath: string) {
+export function applicationUriForDataSource(dataSourcePath: string) {
     return applicationUri(fromDataSource(dataSourcePath));
 }
 
-export function applicaitionUriForApplication(appPath: string) {
+export function applicationUriForApplication(appPath: string) {
     return applicationUri(fromApplication(appPath));
 }
 
-export function applicaitionUriForModule(modPath: string) {
+export function applicationUriForModule(modPath: string) {
     return applicationUri(fromModule(modPath));
 }
 
-export function applicaitionUriForService(servicePath: string) {
+export function applicationUriForService(servicePath: string) {
     return applicationUri(fromService(servicePath));
 }
 
@@ -102,6 +102,38 @@ export interface Resource {
 }
 
 /**
+ * File
+ */
+ export async function readJsonFile(uri: vscode.Uri): Promise<any> {
+	const uint8Array = await vscode.workspace.fs.readFile(uri);
+	if (uint8Array.length === 0) {
+		return {};
+	}
+	const data = JSON.parse(new TextDecoder().decode(uint8Array));
+	return data;
+}
+
+export async function writeJsonFile(uri: vscode.Uri, content: any): Promise<void> {
+    await vscode.workspace.fs.writeFile(uri, toUint8Array(content));
+}
+
+export async function readSqlFile(uri: vscode.Uri): Promise<string[]> {
+    const doc = await vscode.workspace.openTextDocument(uri);
+    const lines : string[] = [];
+    for (let i = 0; i < doc.lineCount; i++) {
+        lines.push(doc.lineAt(i).text);
+    }
+    return lines;
+}
+
+export async function writeSqlFile(uri: vscode.Uri, lines: string[]): Promise<void> {
+    const doc = await vscode.workspace.openTextDocument(uri);
+    const text = lines.join('\n');
+    await vscode.workspace.fs.writeFile(uri, Buffer.from(text, 'utf8'));
+}
+
+
+/**
  * Misc 
  */
 export function sleep(ms: number) {
@@ -112,14 +144,6 @@ export function toUint8Array(content: any): Uint8Array {
 	return Buffer.from(JSON.stringify(content, null, 4), 'utf8');
 }
 
-export async function readJsonFile(uri: vscode.Uri): Promise<any> {
-	const uint8Array = await vscode.workspace.fs.readFile(uri);
-	if (uint8Array.length === 0) {
-		return {};
-	}
-	const data = JSON.parse(new TextDecoder().decode(uint8Array));
-	return data;
-}
 
 export class DoubleClick {
 	clickInterval = 500;

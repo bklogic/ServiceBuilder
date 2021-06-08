@@ -86,6 +86,18 @@ export class BuilderService {
 		return result;
 	}
 
+	async getTableList(request: GetTableListRequest): Promise<string[]> {
+		const url = '/sql/getTableList';
+		const tables = await this.http.post(url, request);
+		return tables;
+	}
+
+	async genCruds(request: GenerateCrudRequest): Promise<GenerateCrudResult[]> {
+		const url = '/gen/generateCruds';
+		const result = await this.http.post(url, request);
+		return result;
+	}
+
 	async deployApplication(request: DeployRequest): Promise<DeployResult> {
 		const url = '/deploy/deployApplication';
 		const result = await this.http.post(url, request);
@@ -255,6 +267,30 @@ export interface GenerateObjectResult {
 	object: any;
 }
 
+export interface GetTableListRequest {
+	applicationUri: string;
+}
+
+export interface GenerateCrudRequest {
+	applicationUri: string;
+	tableNames: string[];
+	options: GenerateCrudOptions;
+}
+
+export interface GenerateCrudResult {
+	object: any;
+	crudQuery: string[];
+	inputBindings: InputBinding[];
+	outputBindings: OutputBinding[];
+	tables: Table[];
+	serviceName: string;
+}
+
+export interface GenerateCrudOptions {
+	whereClause: WhereClauseType;
+	fieldNameConvention: NameConvention;
+}
+
 export enum NameConvention {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	NONE = 'NONE',
@@ -262,6 +298,12 @@ export enum NameConvention {
 	CAMEL = 'CAMEL'
 }
 
+export enum WhereClauseType {
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	keys = 'keys',
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	all = 'all'
+}
 
 export interface DeployRequest {
 	deployType: string;
