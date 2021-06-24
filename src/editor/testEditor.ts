@@ -1,16 +1,20 @@
 import * as vscode from 'vscode';
 import * as util from '../core/util';
+import * as model from '../core/model';
 import {
     BuilderService, 
     TestServiceRequest, TestServiceResult
 } from '../core/builderService';
+import { ServiceReader } from '../core/serviceReader';
 
 export class TestEditor {
+    private serviceReader: ServiceReader;
     private builderService: BuilderService; 
     private outputChannel;
 
     constructor(context: vscode.ExtensionContext, buildService: BuilderService) {
         this.builderService = buildService;
+        this.serviceReader = new ServiceReader();
         this.outputChannel = vscode.window.createOutputChannel('Service Builder Test');
 		vscode.commands.registerCommand('servicebuilderEditor.runTest', (resource) => this.runTest(resource.path));
     }
@@ -27,12 +31,10 @@ export class TestEditor {
             await editor.document.save();
 
 			// prepare request
-            const resource = util.fromTest(path);
             const test: Test = await util.readJsonFile(vscode.Uri.parse(path));
 			const request: TestServiceRequest = {
-				applicationUri: `${resource.workspace}/${resource.application}`,
-                moduleName: resource.module,
-                serviceName: resource.service,
+                applicationUri: util.applicationUriForTest(path),
+                serviceSpec: await this.serviceReader.getService(this.serviceUri(path)),
                 input: test.input,
                 operation: test.operation,
                 withCommit: true
@@ -50,6 +52,16 @@ export class TestEditor {
 			vscode.window.showErrorMessage(error.message);
 		}
     }
+
+    /**
+     * 
+     * @param testPath 
+     */
+    serviceUri(testPath: string): vscode.Uri {
+        const servicePath = testPath.substr(0, testPath.indexOf('/tests'));
+        return vscode.Uri.file(servicePath);
+    }
+
 }
 
 export interface Test {

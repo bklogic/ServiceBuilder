@@ -1,5 +1,6 @@
 
 import {HttpService} from './httpService';
+import * as model from './model';
 
 export class BuilderService {
 	private http: HttpService;
@@ -98,21 +99,21 @@ export class BuilderService {
 		return result;
 	}
 
-	async deployApplication(request: DeployRequest): Promise<DeployResult> {
+	async deployApplication(application: model.ApplicationAggregate): Promise<DeployResult> {
 		const url = '/deploy/deployApplication';
-		const result = await this.http.post(url, request);
+		const result = await this.http.post(url, application);
 		return result;
 	}
 
-	async deployModule(request: DeployRequest): Promise<DeployResult> {
+	async deployModule(module: model.ModuleAggregate): Promise<DeployResult> {
 		const url = '/deploy/deployModule';
-		const result = await this.http.post(url, request);
+		const result = await this.http.post(url, module);
 		return result;
 	}
 
-	async deployService(request: DeployRequest): Promise<DeployResult> {
+	async deployService(service: model.ServiceSpec): Promise<DeployResult> {
 		const url = '/deploy/deployService';
-		const result = await this.http.post(url, request);
+		const result = await this.http.post(url, service);
 		return result;
 	}
 
@@ -148,8 +149,7 @@ export interface DataSourceConfig {
 
 export interface TestServiceRequest {
 	applicationUri: string;
-	moduleName: string;
-	serviceName: string;
+	serviceSpec: model.ServiceSpec;
 	input: any;
 	operation: string;
 	withCommit: boolean;

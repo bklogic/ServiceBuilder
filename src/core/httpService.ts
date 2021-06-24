@@ -6,6 +6,7 @@ export class HttpService {
     constructor(baseURL?: string, timeout?: number) {
         this.config = {
             baseURL: (baseURL) ? baseURL : 'http://localhost:8080/',
+            // baseURL: (baseURL) ? baseURL : 'http://builder2.dev:8080/',
             timeout: (timeout) ? timeout : 5000,
             headers: {
                 // eslint-disable-next-line @typescript-eslint/naming-convention

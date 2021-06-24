@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as util from '../core/util';
+import * as model from '../core/model';
 import {ApplicationDataProvider} from './applicationDataProvider';
 import {ApplicationService, Entry, EntryType} from "./applicationService";
 import {
@@ -22,17 +23,21 @@ import {
 	Table,
 	WhereClauseType
 } from '../core/builderService';
+import { ServiceReader } from '../core/serviceReader';
+import { ModuleAggregate } from '../core/model';
 
 export class ApplicationExplorer {
 
 	private dataProvider: ApplicationDataProvider;
 	private treeView: vscode.TreeView<Entry>;
 	private appService: ApplicationService;
+	private serviceReader: ServiceReader;
 	private builderService: BuilderService;
 	private doubleClick = new util.DoubleClick();
 
 	constructor(context: vscode.ExtensionContext, builderService: BuilderService) {
 		this.appService = new ApplicationService();
+		this.serviceReader = new ServiceReader();
 		this.builderService = builderService;
 		this.dataProvider = new ApplicationDataProvider(this.appService);
 		this.treeView = vscode.window.createTreeView('servicebuilderExplorer', { treeDataProvider: this.dataProvider, showCollapseAll: true });
@@ -140,19 +145,43 @@ export class ApplicationExplorer {
 
 	async deployApplication(app: Entry): Promise<void> {
 		try {
-			// prepare request
-			const request: DeployRequest = {
-				deployType: 'deploy',
-				applicationUri: util.applicationUriForApplication(app.uri.path)
-			} as DeployRequest;
+			// read application
+			const application = await this.getApplication(app);
 			// call service
-			await this.builderService.deployApplication(request);
+			await this.builderService.deployApplication(application);
 			// inform user
 			vscode.window.showInformationMessage('application is deployed.');
 		} catch (error) {
 			console.error('Error in deploying application', error);
 			vscode.window.showErrorMessage(error.message);
 		}
+	}
+
+	async getApplication(app: Entry): Promise<model.ApplicationAggregate> {
+		// application
+		const application: model.ApplicationAggregate = {
+			application: await this.serviceReader.getApplication(app.uri),
+			modules: []
+		};
+		// src
+		let children: Entry[] = await this.appService.getChildren(app);
+		let src: Entry = this.appService.defaultEntry('src', vscode.FileType.Directory, app);
+		for (let child of children) {
+			if (child.name === 'src') {
+				src = child;
+			}
+		}
+		// modules
+		children = await this.appService.getChildren(src);
+		const promises: Promise<model.ModuleAggregate>[] = [];
+		for (let child of children) {
+			if (child.type === EntryType.Module) {
+				promises.push(this.getModule(child));
+			}
+		}
+		application.modules = await Promise.all(promises);
+		// return
+		return application;
 	}
 
 	async createModule(app: Entry, modName: string): Promise<void> {
@@ -179,14 +208,11 @@ export class ApplicationExplorer {
 
 	async deployModule(mod: Entry): Promise<void> {
 		try {
-			// prepare request
-			const request: DeployRequest = {
-				deployType: 'deploy',
-				applicationUri: util.applicationUriForModule(mod.uri.path),
-				moduleName: mod.name
-			} as DeployRequest;
-			// call service
-			await this.builderService.deployModule(request);
+			const module = await this.getModule(mod);
+
+			// call deploy service
+			await this.builderService.deployModule(module);
+
 			// inform user
 			vscode.window.showInformationMessage('module is deployed.');
 		} catch (error) {
@@ -195,6 +221,24 @@ export class ApplicationExplorer {
 		}
 	}
 
+	async getModule(mod: Entry): Promise<model.ModuleAggregate> {
+			// module
+			const module: model.ModuleAggregate = {
+				module: await this.serviceReader.getModule(mod.uri),
+				services: []
+			};
+			// services
+			const children: Entry[] = await this.appService.getChildren(mod);
+			const promises: Promise<model.ServiceSpec>[] = [];
+			for (let child of children) {
+				if ([EntryType.QueryService, EntryType.SqlService, EntryType.CrudService].includes(child.type)) {
+					promises.push(this.serviceReader.getService(child.uri));
+				}
+			}
+			module.services = await Promise.all(promises);
+			// return
+			return module;
+	}
 
 	async createService(mod: Entry, name: string, type: string): Promise<void> {
 		try {
@@ -216,16 +260,10 @@ export class ApplicationExplorer {
 
 	async deployService(service: Entry): Promise<void> {
 		try {
-			// prepare request
-			const resource: util.Resource = util.fromService(service.uri.path);
-			const request: DeployRequest = {
-				deployType: 'deploy',
-				applicationUri: `${resource.workspace}/${resource.application}`,
-				moduleName: resource.module,
-				serviceName: resource.service
-			} as DeployRequest;
+			// get service
+			const serviceSpec = await this.serviceReader.getService(service.uri);
 			// call service
-			await this.builderService.deployService(request);
+			await this.builderService.deployService(serviceSpec);
 			// inform user
 			vscode.window.showInformationMessage('service is deployed.');
 		} catch (error) {

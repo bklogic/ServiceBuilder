@@ -17,6 +17,18 @@ export function applicationUriForService(servicePath: string) {
     return applicationUri(fromService(servicePath));
 }
 
+export function applicationUriForTest(testPath: string) {
+    return applicationUri(fromTest(testPath));
+}
+
+export function moduleUriForModule(modulePath: string) {
+    return serviceUri(fromModule(modulePath));
+}
+
+export function serviceUriForService(servicePath: string) {
+    return serviceUri(fromService(servicePath));
+}
+
 /*
 * Note: data source path format: ~/workspace/application/src/datasource.json
 */

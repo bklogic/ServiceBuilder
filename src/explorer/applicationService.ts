@@ -511,6 +511,7 @@ export class ApplicationService {
 		});	
 	}
 
+
 	defaultEntry(name: string, fileType: vscode.FileType, parent: Entry): Entry {
 		return { 
 			uri: vscode.Uri.joinPath(parent.uri, name), 
@@ -630,18 +631,3 @@ export enum EntryType {
 	Other = 'other'
 }
 
-// export enum ServiceType {
-// 	Query = 'query', 
-// 	Sql = 'sql', 
-// 	Crud = 'crud'
-// }
-
-// export enum ComponentType {
-// 	Input = 'input', 
-// 	Output = 'output', 
-// 	Object = 'object', 
-// 	InputBindings = 'inputbindings', 
-// 	OutputBindings = 'outputbindings', 
-// 	Query = 'query', 
-// 	Sqls = 'sqls'
-// }
