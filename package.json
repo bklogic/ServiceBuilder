@@ -25,6 +25,14 @@
 				"title": "Open File"
 			},
 			{
+				"command": "servicebuilderExplorer.connect",
+				"title": "Connect to Backlogic Workspace",
+				"icon": {
+					"light": "resources/light/plug.svg",
+					"dark": "resources/dark/plug.svg"
+				}
+			},
+			{
 				"command": "servicebuilderExplorer.refresh",
 				"title": "Refresh Explorer",
 				"icon": {
@@ -236,14 +244,19 @@
 		"menus": {
 			"view/title": [
 				{
-					"command": "servicebuilderExplorer.refresh",
+					"command": "servicebuilderExplorer.connect",
 					"when": "view == servicebuilderExplorer",
-					"group": "navigation"
+					"group": "navigation@1"
 				},
 				{
 					"command": "servicebuilderExplorer.createApplication",
 					"when": "view == servicebuilderExplorer",
-					"group": "navigation"
+					"group": "navigation@2"
+				},
+				{
+					"command": "servicebuilderExplorer.refresh",
+					"when": "view == servicebuilderExplorer",
+					"group": "navigation@3"
 				}
 			],
 			"view/item/context": [

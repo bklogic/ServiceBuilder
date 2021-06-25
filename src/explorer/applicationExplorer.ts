@@ -10,7 +10,6 @@ import {
 	BindQueryResult,
 	BindSqlsRequest,
     BuilderService,
-	DeployRequest,
 	GenerateCrudOptions,
 	GenerateCrudRequest,
 	GenerateCrudResult,
@@ -24,10 +23,9 @@ import {
 	WhereClauseType
 } from '../core/builderService';
 import { ServiceReader } from '../core/serviceReader';
-import { ModuleAggregate } from '../core/model';
 
 export class ApplicationExplorer {
-
+	private context: vscode.ExtensionContext;
 	private dataProvider: ApplicationDataProvider;
 	private treeView: vscode.TreeView<Entry>;
 	private appService: ApplicationService;
@@ -36,6 +34,7 @@ export class ApplicationExplorer {
 	private doubleClick = new util.DoubleClick();
 
 	constructor(context: vscode.ExtensionContext, builderService: BuilderService) {
+		this.context = context;
 		this.appService = new ApplicationService();
 		this.serviceReader = new ServiceReader();
 		this.builderService = builderService;
@@ -43,6 +42,7 @@ export class ApplicationExplorer {
 		this.treeView = vscode.window.createTreeView('servicebuilderExplorer', { treeDataProvider: this.dataProvider, showCollapseAll: true });
 		context.subscriptions.push(this.treeView);
 		vscode.commands.registerCommand('servicebuilderExplorer.openResource', (resource) => this.openResource(resource));
+		vscode.commands.registerCommand('servicebuilderExplorer.connect', () => this.connect());
 		vscode.commands.registerCommand('servicebuilderExplorer.refresh', () => this.refresh());
 		vscode.commands.registerCommand('servicebuilderExplorer.rename', (resource) => this.onRename(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.delete', (resource) => this.delete(resource));
@@ -79,6 +79,25 @@ export class ApplicationExplorer {
 
 	refresh(): void {
 		this.dataProvider.refresh();
+	}
+
+	connect(): void {
+		vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "Workspace URL", prompt: "from Service Console"})
+			.then( url => {
+				if (url) {
+					vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "Access Token", prompt: "from Service Console"}).then( (token) => {
+						if (token) {
+							this.context.secrets.store('servicebuilder.url', url);
+							this.context.secrets.store('servicebuilder.token', token);
+							vscode.window.showInformationMessage("token saved.");
+						} else {
+							vscode.window.showErrorMessage("no token entered.");
+						}
+					});
+				} else {
+					vscode.window.showErrorMessage("no url entered.");
+				}
+			});		
 	}
 
 	onCreateApplication(): void {

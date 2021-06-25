@@ -1,12 +1,13 @@
 
+import * as vscode from 'vscode';
 import {HttpService} from './httpService';
 import * as model from './model';
 
 export class BuilderService {
 	private http: HttpService;
 
-	constructor() {
-		this.http = new HttpService();
+	constructor(context: vscode.ExtensionContext) {
+		this.http = new HttpService(context);
 	}
 
 	/**

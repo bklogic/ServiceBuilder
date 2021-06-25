@@ -9,7 +9,7 @@ import { TestEditor } from './editor/testEditor';
 // this method is called when your extension is activated
 export function activate(context: vscode.ExtensionContext) {
 	// construct builder service
-	const builderService = new BuilderService();
+	const builderService = new BuilderService(context);
 
 	// register viewVersion command
 	let disposable = vscode.commands.registerCommand('servicebuilder.versions', () => {
