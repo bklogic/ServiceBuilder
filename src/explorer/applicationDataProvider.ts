@@ -59,6 +59,20 @@ export class ApplicationDataProvider implements TreeDataProvider<Entry> {
 				};
 				treeItem.tooltip = 'crud service';
 				break;			
+			case EntryType.Read:
+				treeItem.iconPath = {
+					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'book.svg'), 
+					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'book.svg')
+				};
+				treeItem.tooltip = 'crud read';
+				break;
+			case EntryType.Write:
+				treeItem.iconPath = {
+					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'edit.svg'), 
+					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'edit.svg')
+				};
+				treeItem.tooltip = 'crud write';
+				break;
 			case EntryType.Tests:
 				treeItem.iconPath = {
 					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'beaker.svg'), 
