@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { TreeDataProvider } from "vscode";
-import {ApplicationService, Entry, EntryType} from "./applicationService";
+import {ApplicationService} from "./applicationService";
+import {Entry, EntryType} from './applicationModel';
 
 
 export class ApplicationDataProvider implements TreeDataProvider<Entry> {

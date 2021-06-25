@@ -2,7 +2,8 @@ import * as vscode from 'vscode';
 import * as util from '../core/util';
 import * as model from '../core/model';
 import {ApplicationDataProvider} from './applicationDataProvider';
-import {ApplicationService, Entry, EntryType} from "./applicationService";
+import {ApplicationService} from "./applicationService";
+import {Entry, EntryType} from './applicationModel';
 import {
 	BindCrudQueryRequest,
 	BindCrudTableRequest,
@@ -392,7 +393,7 @@ export class ApplicationExplorer {
 	async genQueryInputOutput(service: Entry) {
 		try {
 			// prepare request
-			const query = await this.appService.readSqlFile(vscode.Uri.joinPath(service.uri, 'query.sql'));
+			const query = await util.readSqlFile(vscode.Uri.joinPath(service.uri, 'query.sql'));
 			const request: GenerateInputOutputRequest = {
 				applicationUri: util.applicationUriForService(service.uri.path),
 				queryString: query,
@@ -404,8 +405,8 @@ export class ApplicationExplorer {
 			// process result
 			const inputUri = vscode.Uri.joinPath(service.uri, 'input.json');
 			const outputUri = vscode.Uri.joinPath(service.uri, 'output.json');
-			await this.appService.writeJsonFile(inputUri, result.input);
-			await this.appService.writeJsonFile(outputUri, result.output);
+			await util.writeJsonFile(inputUri, result.input);
+			await util.writeJsonFile(outputUri, result.output);
 			vscode.window.showTextDocument(inputUri, {preview: false});
 			vscode.window.showTextDocument(outputUri, {preview: false});
 			// inform user
@@ -420,9 +421,9 @@ export class ApplicationExplorer {
 		try {
 			// prepare request
 			const [input, output, query] = await Promise.all([
-				this.appService.readJsonFile(vscode.Uri.joinPath(service.uri, 'input.json')),
-				this.appService.readJsonFile(vscode.Uri.joinPath(service.uri, 'output.json')),
-				this.appService.readSqlFile(vscode.Uri.joinPath(service.uri, 'query.sql'))
+				util.readJsonFile(vscode.Uri.joinPath(service.uri, 'input.json')),
+				util.readJsonFile(vscode.Uri.joinPath(service.uri, 'output.json')),
+				util.readSqlFile(vscode.Uri.joinPath(service.uri, 'query.sql'))
 			]);
 			const request: BindQueryRequest = {
 				applicationUri: util.applicationUriForService(service.uri.path),
@@ -433,8 +434,8 @@ export class ApplicationExplorer {
 			// process result
 			const inputBidningsUri = vscode.Uri.joinPath(service.uri, 'input-bindings.json');
 			const outputBidningsUri = vscode.Uri.joinPath(service.uri, 'output-bindings.json');
-			await this.appService.writeJsonFile(inputBidningsUri, result.inputBindings);
-			await this.appService.writeJsonFile(outputBidningsUri, result.outputBindings);
+			await util.writeJsonFile(inputBidningsUri, result.inputBindings);
+			await util.writeJsonFile(outputBidningsUri, result.outputBindings);
 			vscode.window.showTextDocument(inputBidningsUri, {preview: false});
 			vscode.window.showTextDocument(outputBidningsUri, {preview: false});
 			// inform user
@@ -449,8 +450,8 @@ export class ApplicationExplorer {
 		try {
 			// prepare request
 			const [query, sqls] = await Promise.all([
-				this.appService.readSqlFile(vscode.Uri.joinPath(service.uri, 'query.sql')),
-				this.appService.readSqlFile(vscode.Uri.joinPath(service.uri, 'sqls.sql'))
+				util.readSqlFile(vscode.Uri.joinPath(service.uri, 'query.sql')),
+				util.readSqlFile(vscode.Uri.joinPath(service.uri, 'sqls.sql'))
 			]);
 			const request: GenerateInputOutputRequest = {
 				applicationUri: util.applicationUriForService(service.uri.path),
@@ -463,8 +464,8 @@ export class ApplicationExplorer {
 			// process result
 			const inputUri = vscode.Uri.joinPath(service.uri, 'input.json');
 			const outputUri = vscode.Uri.joinPath(service.uri, 'output.json');
-			await this.appService.writeJsonFile(inputUri, result.input);
-			await this.appService.writeJsonFile(outputUri, result.output);
+			await util.writeJsonFile(inputUri, result.input);
+			await util.writeJsonFile(outputUri, result.output);
 			vscode.window.showTextDocument(inputUri, {preview: false});
 			vscode.window.showTextDocument(outputUri, {preview: false});
 			// inform user
@@ -479,10 +480,10 @@ export class ApplicationExplorer {
 		try {
 			// prepare request
 			const [input, output, sqls, query] = await Promise.all([
-				this.appService.readJsonFile(vscode.Uri.joinPath(service.uri, 'input.json')),
-				this.appService.readJsonFile(vscode.Uri.joinPath(service.uri, 'output.json')),
-				this.appService.readSqlFile(vscode.Uri.joinPath(service.uri, 'sqls.sql')),
-				this.appService.readSqlFile(vscode.Uri.joinPath(service.uri, 'query.sql'))
+				util.readJsonFile(vscode.Uri.joinPath(service.uri, 'input.json')),
+				util.readJsonFile(vscode.Uri.joinPath(service.uri, 'output.json')),
+				util.readSqlFile(vscode.Uri.joinPath(service.uri, 'sqls.sql')),
+				util.readSqlFile(vscode.Uri.joinPath(service.uri, 'query.sql'))
 			]);
 			const request: BindSqlsRequest = {
 				applicationUri: util.applicationUriForService(service.uri.path),
@@ -493,8 +494,8 @@ export class ApplicationExplorer {
 			// process result
 			const inputBidningsUri = vscode.Uri.joinPath(service.uri, 'input-bindings.json');
 			const outputBidningsUri = vscode.Uri.joinPath(service.uri, 'output-bindings.json');
-			await this.appService.writeJsonFile(inputBidningsUri, result.inputBindings);
-			await this.appService.writeJsonFile(outputBidningsUri, result.outputBindings);
+			await util.writeJsonFile(inputBidningsUri, result.inputBindings);
+			await util.writeJsonFile(outputBidningsUri, result.outputBindings);
 			vscode.window.showTextDocument(inputBidningsUri, {preview: false});
 			vscode.window.showTextDocument(outputBidningsUri, {preview: false});
 			// inform user
@@ -508,7 +509,7 @@ export class ApplicationExplorer {
 	async genCrudObject(service: Entry): Promise<void> {
 		try {
 			// prepare request
-			const query = await this.appService.readSqlFile(vscode.Uri.joinPath(service.uri, 'read', 'query.sql'));
+			const query = await util.readSqlFile(vscode.Uri.joinPath(service.uri, 'read', 'query.sql'));
 			const request: GenerateObjectRequest = {
 				applicationUri: util.applicationUriForService(service.uri.path),
 				queryString: query,
@@ -518,7 +519,7 @@ export class ApplicationExplorer {
 			const result: GenerateObjectResult = await this.builderService.genCrudObject(request);
 			// process result
 			const objectUri = vscode.Uri.joinPath(service.uri, 'object.json');
-			await this.appService.writeJsonFile(objectUri, result.object);
+			await util.writeJsonFile(objectUri, result.object);
 			vscode.window.showTextDocument(objectUri, {preview: false});
 			// inform user
 			vscode.window.showInformationMessage('object is generated');
@@ -532,8 +533,8 @@ export class ApplicationExplorer {
 		try {
 			// prepare request
 			const [object, query] = await Promise.all([
-				this.appService.readJsonFile(vscode.Uri.joinPath(service.uri, 'object.json')),
-				this.appService.readSqlFile(vscode.Uri.joinPath(service.uri, 'read', 'query.sql'))
+				util.readJsonFile(vscode.Uri.joinPath(service.uri, 'object.json')),
+				util.readSqlFile(vscode.Uri.joinPath(service.uri, 'read', 'query.sql'))
 			]);
 			const request: BindCrudQueryRequest = {
 				applicationUri: util.applicationUriForService(service.uri.path),
@@ -544,8 +545,8 @@ export class ApplicationExplorer {
 			// process result
 			const inputBidningsUri = vscode.Uri.joinPath(service.uri, 'read', 'input-bindings.json');
 			const outputBidningsUri = vscode.Uri.joinPath(service.uri, 'read', 'output-bindings.json');
-			await this.appService.writeJsonFile(inputBidningsUri, result.inputBindings);
-			await this.appService.writeJsonFile(outputBidningsUri, result.outputBindings);
+			await util.writeJsonFile(inputBidningsUri, result.inputBindings);
+			await util.writeJsonFile(outputBidningsUri, result.outputBindings);
 			vscode.window.showTextDocument(inputBidningsUri, {preview: false});
 			vscode.window.showTextDocument(outputBidningsUri, {preview: false});
 			// inform user
@@ -560,8 +561,8 @@ export class ApplicationExplorer {
 		try {
 			// prepare request
 			const [query, outputBindings] = await Promise.all([
-				this.appService.readSqlFile(vscode.Uri.joinPath(service.uri, 'read', 'query.sql')),
-				this.appService.readJsonFile(vscode.Uri.joinPath(service.uri, 'read', 'output-bindings.json'))
+				util.readSqlFile(vscode.Uri.joinPath(service.uri, 'read', 'query.sql')),
+				util.readJsonFile(vscode.Uri.joinPath(service.uri, 'read', 'output-bindings.json'))
 			]);
 			const request: BindCrudTableRequest = {
 				applicationUri: util.applicationUriForService(service.uri.path),
@@ -582,10 +583,10 @@ export class ApplicationExplorer {
 				});
 				// columns
 				let columnFileName = `${table.table}.columns.json`;
-				await this.appService.writeJsonFile(vscode.Uri.joinPath(service.uri, 'write', columnFileName), table.columns);
+				await util.writeJsonFile(vscode.Uri.joinPath(service.uri, 'write', columnFileName), table.columns);
 			}
 			const tablesUri = vscode.Uri.joinPath(service.uri, 'write', 'tables.json');
-			await this.appService.writeJsonFile(tablesUri, tableContent);
+			await util.writeJsonFile(tablesUri, tableContent);
 			vscode.window.showTextDocument(tablesUri, {preview: false});
 			this.revealTables(service);
 			// inform user
@@ -680,10 +681,10 @@ export class ApplicationExplorer {
 			});
 			// columns
 			let columnFileName = `${table.table}.columns.json`;
-			await this.appService.writeJsonFile(vscode.Uri.joinPath(serviceUri, 'write', columnFileName), table.columns);
+			await util.writeJsonFile(vscode.Uri.joinPath(serviceUri, 'write', columnFileName), table.columns);
 		}
 		const tablesUri = vscode.Uri.joinPath(serviceUri, 'write', 'tables.json');
-		await this.appService.writeJsonFile(tablesUri, tableContent);
+		await util.writeJsonFile(tablesUri, tableContent);
     }
 
 }

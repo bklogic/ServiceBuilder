@@ -1,5 +1,6 @@
 import { TextDecoder } from 'util';
 import * as vscode from 'vscode';
+import * as fs from 'fs';
 
 export function applicationUriForDataSource(dataSourcePath: string) {
     return applicationUri(fromDataSource(dataSourcePath));
@@ -144,6 +145,26 @@ export async function writeSqlFile(uri: vscode.Uri, lines: string[]): Promise<vo
     await vscode.workspace.fs.writeFile(uri, Buffer.from(text, 'utf8'));
 }
 
+export async function fileExists(uri: vscode.Uri): Promise<boolean> {
+    try {
+        const stat = await vscode.workspace.fs.stat(uri);
+        return (stat) ? true : false;
+    } catch {
+        return false;
+    }
+}
+
+export async function isApplication(uri: vscode.Uri): Promise<boolean> {
+    return fileExists(vscode.Uri.joinPath(uri, 'src', 'application.json'));
+}
+
+export async function isModule(uri: vscode.Uri): Promise<boolean> {
+    return fileExists(vscode.Uri.joinPath(uri, 'module.json'));
+}
+
+export async function isService(uri: vscode.Uri): Promise<boolean> {
+    return fileExists(vscode.Uri.joinPath(uri, 'service.json'));
+}
 
 /**
  * Misc 

@@ -3,7 +3,9 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as util from '../core/util';
 import * as cs from './contentService';
+import {Entry, EntryType} from './applicationModel';
 import {GitExtension} from './git.d';
+
 
 export class ApplicationService {
 
@@ -206,7 +208,7 @@ export class ApplicationService {
 		const inputUri = vscode.Uri.joinPath(service.uri, inputFileName);
 
 		// input and test file
-		const input = await this.readJsonFile(inputUri);
+		const input = await util.readJsonFile(inputUri);
 		const content =cs.testFile(input, service.serviceType);
 		await vscode.workspace.fs.writeFile(newFileUri, content);
 
@@ -290,11 +292,27 @@ export class ApplicationService {
 	}
 
 	async getChildrenForWorkspaceFolder(entry: Entry): Promise<Entry[]> {
-		const children = await vscode.workspace.fs.readDirectory(entry.uri);
-		return children.map(([name, fileType]) => {
-			let child: Entry = this.defaultEntry(name, fileType, entry);
+		const files = await vscode.workspace.fs.readDirectory(entry.uri);
+		let children: ValidFile[] = await Promise.all(
+			files.map( async ([name, fileType]) => { 
+				switch (fileType) {
+					case vscode.FileType.File:
+						return {name, fileType, valid: name === 'Welcome.md'};
+					case vscode.FileType.Directory:
+						const isApplication = await util.isApplication(vscode.Uri.joinPath(entry.uri, name));
+						return {name, fileType, valid: isApplication};
+					default:
+						return {name, fileType, valid: false};
+				}
+			})	
+		);
+		children = children.filter(  (file) => { 
+			return file.valid;
+		});	
+		return children.map((file) => {
+			let child: Entry = this.defaultEntry(file.name, file.fileType, entry);
 			child.parent = null;  // workfolder is not true node
-			if (fileType === vscode.FileType.Directory) {
+			if (file.fileType === vscode.FileType.Directory) {
 				child.type = EntryType.Application;
 			} 
 			return child;
@@ -531,28 +549,6 @@ export class ApplicationService {
 		return service.type;
 	}
 
-	async readJsonFile(uri: vscode.Uri): Promise<any> {
-		const uint8Array = await vscode.workspace.fs.readFile(uri);
-		if (uint8Array.length === 0) {
-			return {};
-		}
-		const data = JSON.parse(new TextDecoder().decode(uint8Array));
-		return data;
-	}
-
-	async readSqlFile(uri: vscode.Uri): Promise<string[]> {
-		const doc = await vscode.workspace.openTextDocument(uri);
-		const lines : string[] = [];
-		for (let i = 0; i < doc.lineCount; i++) {
-			lines.push(doc.lineAt(i).text);
-		}
-		return lines;
-	}
-
-	async writeJsonFile(uri: vscode.Uri, content: any): Promise<void> {
-		await vscode.workspace.fs.writeFile(uri, util.toUint8Array(content));
-	}
-
 	entryType(serviceType?: string): EntryType {
 		switch(serviceType) {
 			case 'query':
@@ -583,51 +579,11 @@ export class ApplicationService {
 		const newFileName = `test${(lastFileNo+1).toString().padStart(2, '0')}.json`;
 		return Promise.resolve(newFileName);
 	}
+
 }
 
-export interface Entry {
-	uri: vscode.Uri;
-	type: EntryType;
-	serviceType: string | null;
-	componentType: string | null;
+interface ValidFile {
 	name: string;
-	fileType: vscode.FileType;
-	parent: Entry | null;
-	seqNo: number;
+	fileType: vscode.FileType,
+	valid: boolean
 }
-
-export enum EntryType {
-	// eslint-disable-next-line @typescript-eslint/naming-convention
-	Workfolder = 'workfolder',
-	// eslint-disable-next-line @typescript-eslint/naming-convention
-	Application = 'application', 
-	// eslint-disable-next-line @typescript-eslint/naming-convention
-	ApplicationSrc = 'applicationsrc', 
-	// eslint-disable-next-line @typescript-eslint/naming-convention
-	ApplicationFile = 'applicationfile', 
-	// eslint-disable-next-line @typescript-eslint/naming-convention
-	Module = 'module', 
-	// eslint-disable-next-line @typescript-eslint/naming-convention
-	ModuleFile = 'modulefile', 
-	// eslint-disable-next-line @typescript-eslint/naming-convention
-	QueryService = 'queryservice', 
-	// eslint-disable-next-line @typescript-eslint/naming-convention
-	SqlService = 'sqlservice', 
-	// eslint-disable-next-line @typescript-eslint/naming-convention
-	CrudService = 'crudservice', 
-	// eslint-disable-next-line @typescript-eslint/naming-convention
-	ServiceFile = 'servicefile', 
-	// eslint-disable-next-line @typescript-eslint/naming-convention
-	Tests = 'tests',
-	// eslint-disable-next-line @typescript-eslint/naming-convention
-	TestFile = 'testfile',
-	// eslint-disable-next-line @typescript-eslint/naming-convention
-	Read = 'read',
-	// eslint-disable-next-line @typescript-eslint/naming-convention
-	Write = 'write',
-	// eslint-disable-next-line @typescript-eslint/naming-convention
-	Component = 'component',
-	// eslint-disable-next-line @typescript-eslint/naming-convention
-	Other = 'other'
-}
-
