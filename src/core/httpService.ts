@@ -38,7 +38,7 @@ export class HttpService {
             const response = await axios.get(url, config);
             return response.data;
         } catch (error) {
-            console.error('http get error', error, error.response.data.message);
+            console.error('http get error: ', error.response.data.message, '\n',  'url: ', config.baseURL + url, '\n', error);
             error.message = error.message + ' | ' + error.response.data.message;
             throw error;
         }    
@@ -50,8 +50,11 @@ export class HttpService {
             const response = await axios.post(url, data, config);
             return response.data;
           } catch (error) {
-            console.error('http post error', error, error.response.data.message);
-            error.message = error.message + ' | ' + error.response.data.message;
+            console.error('http post error: ', error.message || error.response.data.message, '\n',  'url: ', config.baseURL + url);
+            console.error('Data: ');
+            console.info(data);
+            console.error(error);
+            error.message = error.message + ' | ' + error.message || error.response.data.message;
             throw error;
           }    
     }

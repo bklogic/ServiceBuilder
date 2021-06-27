@@ -28,7 +28,7 @@ export class ServiceReader {
 
         // return service 
         const service = {
-            uri: util.serviceUriForService(serviceUri.path),
+            uri: await util.serviceUriForService(serviceUri.path),
             serviceType: serviceType,
             dbType: await this.getDbType(serviceUri),
             spec: spec
@@ -111,7 +111,7 @@ export class ServiceReader {
         // read module file
         const module: model.Module = await util.readJsonFile(vscode.Uri.joinPath(modUri, 'module.json'));
         // get module uri
-        module.uri = util.moduleUriForModule(modUri.path);
+        module.uri = await util.moduleUriForModule(modUri.path);
         return module;
     }
 
@@ -119,7 +119,7 @@ export class ServiceReader {
         // read application file
         const application: model.Application = await util.readJsonFile(vscode.Uri.joinPath(appUri, 'src', 'application.json'));
         // get application uri
-        application.uri = util.applicationUriForApplication(appUri.path);
+        application.uri = await util.applicationUriForApplication(appUri.path);
         return application;
     }
 

@@ -88,9 +88,18 @@ export class ApplicationExplorer {
 				if (url) {
 					vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "Access Token", prompt: "from Service Console"}).then( (token) => {
 						if (token) {
+							//validate url
+							if (!url.match(/^.+\.builder\..+$/)) {
+								vscode.window.showErrorMessage("invalid connection URL.");	
+								return;							
+							}
+							// save connection
+							// const workspace = url.substr(url.indexOf(':/'), url.indexOf('.builder.'));
+							const workspace = url.substr(url.indexOf('://')+3, url.indexOf('.builder.')-url.indexOf('://')-3);
 							this.context.secrets.store('servicebuilder.url', url);
 							this.context.secrets.store('servicebuilder.token', token);
-							vscode.window.showInformationMessage("token saved.");
+							this.context.secrets.store('servicebuilder.workspace', workspace);
+							vscode.window.showInformationMessage("connection saved.");
 						} else {
 							vscode.window.showErrorMessage("no token entered.");
 						}
@@ -353,7 +362,7 @@ export class ApplicationExplorer {
 
 	async onGenerateCrud(module: Entry) {
 		// get table list
-		const applicationUri = util.applicationUriForModule(module.uri.path);
+		const applicationUri = await util.applicationUriForModule(module.uri.path);
 		const request: GetTableListRequest = {
 			applicationUri
 		};
@@ -395,7 +404,7 @@ export class ApplicationExplorer {
 			// prepare request
 			const query = await util.readSqlFile(vscode.Uri.joinPath(service.uri, 'query.sql'));
 			const request: GenerateInputOutputRequest = {
-				applicationUri: util.applicationUriForService(service.uri.path),
+				applicationUri: await util.applicationUriForService(service.uri.path),
 				queryString: query,
 				sqlsString:[],
 				nameConvention: NameConvention.CAMEL
@@ -426,7 +435,7 @@ export class ApplicationExplorer {
 				util.readSqlFile(vscode.Uri.joinPath(service.uri, 'query.sql'))
 			]);
 			const request: BindQueryRequest = {
-				applicationUri: util.applicationUriForService(service.uri.path),
+				applicationUri: await util.applicationUriForService(service.uri.path),
 				input, output, queryString: query
 			};
 			// call service
@@ -439,9 +448,9 @@ export class ApplicationExplorer {
 			vscode.window.showTextDocument(inputBidningsUri, {preview: false});
 			vscode.window.showTextDocument(outputBidningsUri, {preview: false});
 			// inform user
-			vscode.window.showInformationMessage('input and output are generated');
+			vscode.window.showInformationMessage('input and output bindings are generated');
 		} catch (error) {
-			console.error('Error in generating sql input and output', error);
+			console.error('Error in generating query input and output bindings', error);
 			vscode.window.showErrorMessage(error.message);
 		}
 	}
@@ -454,7 +463,7 @@ export class ApplicationExplorer {
 				util.readSqlFile(vscode.Uri.joinPath(service.uri, 'sqls.sql'))
 			]);
 			const request: GenerateInputOutputRequest = {
-				applicationUri: util.applicationUriForService(service.uri.path),
+				applicationUri: await util.applicationUriForService(service.uri.path),
 				queryString: query,
 				sqlsString: sqls,
 				nameConvention: NameConvention.CAMEL
@@ -469,9 +478,9 @@ export class ApplicationExplorer {
 			vscode.window.showTextDocument(inputUri, {preview: false});
 			vscode.window.showTextDocument(outputUri, {preview: false});
 			// inform user
-			vscode.window.showInformationMessage('input and output bindings are generated');
+			vscode.window.showInformationMessage('input and output are generated');
 		} catch (error) {
-			console.error('Error in generating query input and output bindings', error);
+			console.error('Error in generating sql input and output', error);
 			vscode.window.showErrorMessage(error.message);
 		}
 	}
@@ -486,7 +495,7 @@ export class ApplicationExplorer {
 				util.readSqlFile(vscode.Uri.joinPath(service.uri, 'query.sql'))
 			]);
 			const request: BindSqlsRequest = {
-				applicationUri: util.applicationUriForService(service.uri.path),
+				applicationUri: await util.applicationUriForService(service.uri.path),
 				input, output, sqlsString: sqls, queryString: query
 			};
 			// call service
@@ -511,7 +520,7 @@ export class ApplicationExplorer {
 			// prepare request
 			const query = await util.readSqlFile(vscode.Uri.joinPath(service.uri, 'read', 'query.sql'));
 			const request: GenerateObjectRequest = {
-				applicationUri: util.applicationUriForService(service.uri.path),
+				applicationUri: await util.applicationUriForService(service.uri.path),
 				queryString: query,
 				nameConvention: NameConvention.CAMEL
 			} ;
@@ -537,7 +546,7 @@ export class ApplicationExplorer {
 				util.readSqlFile(vscode.Uri.joinPath(service.uri, 'read', 'query.sql'))
 			]);
 			const request: BindCrudQueryRequest = {
-				applicationUri: util.applicationUriForService(service.uri.path),
+				applicationUri: await util.applicationUriForService(service.uri.path),
 				object, queryString: query
 			};
 			// call service
@@ -565,7 +574,7 @@ export class ApplicationExplorer {
 				util.readJsonFile(vscode.Uri.joinPath(service.uri, 'read', 'output-bindings.json'))
 			]);
 			const request: BindCrudTableRequest = {
-				applicationUri: util.applicationUriForService(service.uri.path),
+				applicationUri: await util.applicationUriForService(service.uri.path),
 				outputBindings, crudQueryString: query
 			};
 			// call service
@@ -657,7 +666,7 @@ export class ApplicationExplorer {
         // output bindings
         await util.writeJsonFile(vscode.Uri.joinPath(mod.uri, crud.serviceName, 'read', 'output-bindings.json'), crud.outputBindings);
         // table
-		this.createTables(vscode.Uri.joinPath(mod.uri, crud.serviceName), crud.tables);
+		await this.createTables(vscode.Uri.joinPath(mod.uri, crud.serviceName), crud.tables);
 		// reveal table
 		const service = {
 			uri: vscode.Uri.joinPath(mod.uri, crud.serviceName),
@@ -665,7 +674,7 @@ export class ApplicationExplorer {
 			fileType: vscode.FileType.Directory,
 			parent: mod
 		} as Entry;
-		this.revealTables(service);
+		this.treeView.reveal(service, {expand: 3, select: true});
     }
     
     async createTables(serviceUri: vscode.Uri, tables: Table[]): Promise<void> {

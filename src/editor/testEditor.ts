@@ -33,7 +33,7 @@ export class TestEditor {
 			// prepare request
             const test: Test = await util.readJsonFile(vscode.Uri.parse(path));
 			const request: TestServiceRequest = {
-                applicationUri: util.applicationUriForTest(path),
+                applicationUri: await util.applicationUriForTest(path),
                 serviceSpec: await this.serviceReader.getService(this.serviceUri(path)),
                 input: test.input,
                 operation: test.operation,

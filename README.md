@@ -33,3 +33,14 @@ Fixed issue #.
 ### 1.1.0
 
 Added features X, Y, and Z.
+
+## Publishing Extension
+
+### Instruction  
+
+https://code.visualstudio.com/api/working-with-extensions/publishing-extension
+
+### Commands  
+
+vsce package  
+vsce publish  

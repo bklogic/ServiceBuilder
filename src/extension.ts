@@ -1,6 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import * as util from './core/util';
 import { BuilderService } from './core/builderService';
 import { ApplicationExplorer } from './explorer/applicationExplorer';
 import { DataSourceEditor } from './editor/dataSourceEditor';
@@ -8,6 +9,9 @@ import { TestEditor } from './editor/testEditor';
 
 // this method is called when your extension is activated
 export function activate(context: vscode.ExtensionContext) {
+	// initiate util
+	util.createGetWorkspaceUtil(context);
+
 	// construct builder service
 	const builderService = new BuilderService(context);
 

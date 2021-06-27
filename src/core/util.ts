@@ -1,6 +1,17 @@
 import { TextDecoder } from 'util';
 import * as vscode from 'vscode';
-import * as fs from 'fs';
+
+let getWorkspace: () => Promise<string>;
+
+export function createGetWorkspaceUtil(context: vscode.ExtensionContext): void {
+    getWorkspace = async () => { 
+        const workspace = await context.secrets.get('servicebuilder.workspace'); 
+        if (!workspace) {
+            throw Error('No workspace connection configured.');
+        }
+        return workspace;
+    };
+}
 
 export function applicationUriForDataSource(dataSourcePath: string) {
     return applicationUri(fromDataSource(dataSourcePath));
@@ -95,16 +106,24 @@ export function fromTest(path: string): Resource {
     } as Resource;
 }
 
-export function applicationUri(resource: Resource) {
-    return `${resource.workspace}/${resource.application}`;
+
+/**
+ * Functions below produce URIs for builder and devtime.
+ * Builder workspace is different from local workfolder.
+ */
+export async function applicationUri(resource: Resource) {
+    const builderWorkspace = await getWorkspace();
+    return `${builderWorkspace}/${resource.application}`;
 }
 
-export function moduleUri(resource: Resource) {
-    return `${resource.workspace}/${resource.application}/${resource.module}`;
+export async function moduleUri(resource: Resource) {
+    const builderWorkspace = await getWorkspace();
+    return `${builderWorkspace}/${resource.application}/${resource.module}`;
 }
 
-export function serviceUri(resource: Resource) {
-    return `${resource.workspace}/${resource.application}/${resource.module}/${resource.service}`;
+export async function serviceUri(resource: Resource) {
+    const builderWorkspace = await getWorkspace();
+    return `${builderWorkspace}/${resource.application}/${resource.module}/${resource.service}`;
 }
 
 export interface Resource {
