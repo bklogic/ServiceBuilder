@@ -4,6 +4,7 @@
 	"description": "service builder",
 	"version": "1.0.0",
 	"publisher": "backlogic",
+	"repository": "https://gitlab.com/backlogic/ui/service-builder-vscode.git",
 	"engines": {
 		"vscode": "^1.51.1"
 	},
