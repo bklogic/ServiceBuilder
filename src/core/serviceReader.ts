@@ -54,7 +54,7 @@ export class ServiceReader {
         [service.input, service.output, service.sqls, service.query, service.inputBindings, service.outputBindings] = await Promise.all([
             util.readJsonFile(vscode.Uri.joinPath(serviceUri, 'input.json')),
             util.readJsonFile(vscode.Uri.joinPath(serviceUri, 'output.json')),
-            util.readSqlFile(vscode.Uri.joinPath(serviceUri, 'query.sql')),
+            util.readSqlFile(vscode.Uri.joinPath(serviceUri, 'sqls.sql')),
             util.readSqlFile(vscode.Uri.joinPath(serviceUri, 'query.sql')),
             util.readJsonFile(vscode.Uri.joinPath(serviceUri, 'input-bindings.json')),
             util.readJsonFile(vscode.Uri.joinPath(serviceUri, 'output-bindings.json'))

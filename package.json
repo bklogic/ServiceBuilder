@@ -41,6 +41,14 @@
 				}
 			},
 			{
+				"command": "servicebuilderExplorer.openTutorial",
+				"title": "Tutorial"
+			},
+			{
+				"command": "servicebuilderExplorer.openWelcome",
+				"title": "Welcome"
+			},
+			{
 				"command": "servicebuilderExplorer.createApplication",
 				"title": "New Application",
 				"icon": {
@@ -244,19 +252,29 @@
 		"menus": {
 			"view/title": [
 				{
+					"command": "servicebuilderExplorer.openWelcome",
+					"when": "view == servicebuilderExplorer",
+					"group": "help@1"
+				},
+				{
+					"command": "servicebuilderExplorer.openTutorial",
+					"when": "view == servicebuilderExplorer",
+					"group": "help@2"
+				},
+				{
 					"command": "servicebuilderExplorer.connect",
 					"when": "view == servicebuilderExplorer",
-					"group": "navigation@1"
+					"group": "navigation@3"
 				},
 				{
 					"command": "servicebuilderExplorer.createApplication",
 					"when": "view == servicebuilderExplorer",
-					"group": "navigation@2"
+					"group": "navigation@5"
 				},
 				{
 					"command": "servicebuilderExplorer.refresh",
 					"when": "view == servicebuilderExplorer",
-					"group": "navigation@3"
+					"group": "navigation@7"
 				}
 			],
 			"view/item/context": [

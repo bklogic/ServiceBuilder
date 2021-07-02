@@ -32,8 +32,8 @@ export function activate(context: vscode.ExtensionContext) {
 	new DataSourceEditor(context, builderService);
 	new TestEditor(context, builderService);
 
-	// complete
-	console.log('service builder is now active!');
+	// open welcome
+	vscode.commands.executeCommand("servicebuilderExplorer.openWelcome");	
 }
 
 // this method is called when your extension is deactivated
