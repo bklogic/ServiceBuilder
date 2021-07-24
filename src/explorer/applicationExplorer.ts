@@ -45,6 +45,7 @@ export class ApplicationExplorer {
 		context.subscriptions.push(this.treeView);
 		vscode.commands.registerCommand('servicebuilderExplorer.openResource', (resource) => this.openResource(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.connect', () => this.connect());
+		vscode.commands.registerCommand('servicebuilderExplorer.workspace', () => this.workspace());
 		vscode.commands.registerCommand('servicebuilderExplorer.openWelcome', () => this.openWelcome());
 		vscode.commands.registerCommand('servicebuilderExplorer.openTutorial', () => this.openTutorial());
 		vscode.commands.registerCommand('servicebuilderExplorer.refresh', () => this.refresh());
@@ -111,6 +112,25 @@ export class ApplicationExplorer {
 					vscode.window.showErrorMessage("no url entered.");
 				}
 			});		
+	}
+
+	async workspace(): Promise<void> {
+		// get workspace
+		const workspace = {
+			name: await this.context.secrets.get("servicebuilder.workspace"),
+			url: await this.context.secrets.get("servicebuilder.url"),
+			token: (await this.context.secrets.get("servicebuilder.token")) ? true : false,
+			versions: {},
+			connection: "ok"
+		};
+		// get builder versions
+		try {
+			workspace.versions = await this.builderService.getBuilderVersions();
+		} catch(error) {
+			workspace.connection = error.message;
+		}
+		// show
+		vscode.window.showInformationMessage(JSON.stringify(workspace, null, 3));
 	}
 
 	openWelcome(): void {

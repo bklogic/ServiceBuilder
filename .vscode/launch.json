@@ -15,7 +15,12 @@
 			"outFiles": [
 				"${workspaceFolder}/out/**/*.js"
 			],
-			"preLaunchTask": "${defaultBuildTask}"
+			"preLaunchTask": "${defaultBuildTask}",
+			"env": {
+				"WORKSPACE": "GOLD",
+				"BUILDERURL": "https://builder.vscode.dev.backlogic.net",
+				"BUILDERTOKEN": "ABCDEFG132334"
+			},		
 		},
 		{
 			"name": "Extension Tests",

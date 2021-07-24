@@ -9,6 +9,22 @@ import { TestEditor } from './editor/testEditor';
 
 // this method is called when your extension is activated
 export function activate(context: vscode.ExtensionContext) {
+	// check env
+	const ws = process.env.WORKSPACE; 
+	const url = process.env.BUILDERURL;
+	const token = process.env.BUILDERTOKEN;
+	if (ws) {
+		console.log("preset workspace: " + ws);
+		context.secrets.store('servicebuilder.workspace', ws);
+	}
+	if (url) {
+		console.log("preset builder: " + url);
+		context.secrets.store('servicebuilder.url', url);
+	}
+	if (token) {
+		context.secrets.store('servicebuilder.token', token);
+	}
+
 	// initiate util
 	util.createGetWorkspaceUtil(context);
 
