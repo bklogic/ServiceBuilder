@@ -17,9 +17,10 @@
 			],
 			"preLaunchTask": "${defaultBuildTask}",
 			"env": {
-				"WORKSPACE": "GOLD",
-				"BUILDERURL": "https://builder.vscode.dev.backlogic.net",
-				"BUILDERTOKEN": "ABCDEFG132334"
+				"WORKSPACE": "gold",
+				"BUILDERURL": "https://gold.builder.vscode.dev.backlogic.net",
+				"BUILDERTOKEN": "ABCDEFG132334",
+				"IGNORE_SSL": "true"
 			},		
 		},
 		{

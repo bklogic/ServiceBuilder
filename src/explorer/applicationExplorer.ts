@@ -22,7 +22,8 @@ import {
 	GetTableListRequest,
 	NameConvention,
 	Table,
-	WhereClauseType
+	WhereClauseType,
+	Versions
 } from '../core/builderService';
 import { ServiceReader } from '../core/serviceReader';
 
@@ -90,20 +91,19 @@ export class ApplicationExplorer {
 		vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "Workspace URL", prompt: "from Service Console"})
 			.then( url => {
 				if (url) {
-					vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "Access Token", prompt: "from Service Console"}).then( (token) => {
+					vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "Access Token", prompt: "from Service Console"}).then( async (token) => {
 						if (token) {
 							//validate url
 							if (!url.match(/^.+\.builder\..+$/)) {
-								vscode.window.showErrorMessage("invalid connection URL.");	
+								vscode.window.showErrorMessage("invalid connection URL: " + url);	
 								return;							
 							}
 							// save connection
-							// const workspace = url.substr(url.indexOf(':/'), url.indexOf('.builder.'));
 							const workspace = url.substr(url.indexOf('://')+3, url.indexOf('.builder.')-url.indexOf('://')-3);
-							this.context.secrets.store('servicebuilder.url', url);
-							this.context.secrets.store('servicebuilder.token', token);
-							this.context.secrets.store('servicebuilder.workspace', workspace);
-							vscode.window.showInformationMessage("connection saved.");
+							await this.context.secrets.store('servicebuilder.url', url);
+							await this.context.secrets.store('servicebuilder.token', token);
+							await this.context.secrets.store('servicebuilder.workspace', workspace);
+							this.workspace();
 						} else {
 							vscode.window.showErrorMessage("no token entered.");
 						}
@@ -119,18 +119,36 @@ export class ApplicationExplorer {
 		const workspace = {
 			name: await this.context.secrets.get("servicebuilder.workspace"),
 			url: await this.context.secrets.get("servicebuilder.url"),
-			token: (await this.context.secrets.get("servicebuilder.token")) ? true : false,
-			versions: {},
-			connection: "ok"
+			token: await this.context.secrets.get("servicebuilder.token"),
+			versions: {} as Versions
 		};
 		// get builder versions
 		try {
+			// test connection
 			workspace.versions = await this.builderService.getBuilderVersions();
+			// show
+			vscode.window.showInformationMessage(
+			   `Workspace Connection Is Good. \n
+				Name: ${workspace.name} \n
+				Url: ${workspace.url} \n
+				Versions: 
+					specification:  ${workspace.versions.specification}
+					engine:  ${workspace.versions.engine}
+					builder:  ${workspace.versions.builder}`,
+				{ modal: true },
+				"OK"
+			);
 		} catch(error) {
-			workspace.connection = error.message;
+			vscode.window.showErrorMessage(
+				`Workspace Connection Not Working. Please check connection parameters.\n
+				 Name: ${workspace.name} \n
+				 Url: ${workspace.url} \n
+				 Token: ${workspace.token} \n
+				 Message: ${error.message}`,
+				{ modal: true },
+				"OK"
+			);
 		}
-		// show
-		vscode.window.showInformationMessage(JSON.stringify(workspace, null, 3));
 	}
 
 	openWelcome(): void {

@@ -1,13 +1,19 @@
 import * as vscode from 'vscode';
+import * as https from 'https';
 
 const axios = require('axios');
 
 export class HttpService {
 
     private context: vscode.ExtensionContext;
+    private rejectUnauthorized = true;
 
     constructor(context: vscode.ExtensionContext) {
         this.context = context;
+        if (process.env.IGNORE_SSL) {
+            this.rejectUnauthorized = false;
+            process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+        }
     }
 
     async httpConfig(timeout?: number): Promise<HttpConfig> {
@@ -27,7 +33,8 @@ export class HttpService {
                 'Content-Type': 'application/json',
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 'Authorization': 'Bearer ' + token
-            }              
+            },
+            httpsAgent: new https.Agent({ keepAlive: true, rejectUnauthorized: this.rejectUnauthorized })
         };  
         return config; 
     }
@@ -38,8 +45,8 @@ export class HttpService {
             const response = await axios.get(url, config);
             return response.data;
         } catch (error) {
-            console.error('http get error: ', error.response.data.message, '\n',  'url: ', config.baseURL + url, '\n', error);
-            error.message = error.message + ' | ' + error.response.data.message;
+            console.error('http get error: ', error.response?.data?.message, '\n',  'url: ', config.baseURL + url, '\n', error);
+            error.message = error.message + ' | ' + error.response?.data?.message;
             throw error;
         }    
     }
@@ -64,5 +71,6 @@ export class HttpService {
 export interface HttpConfig {
     baseURL: string,
     timeout: number,
-    headers: { [key: string]: string }      
+    headers: { [key: string]: string }, 
+    httpsAgent: https.Agent  
 }
