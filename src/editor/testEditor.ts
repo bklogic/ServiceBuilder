@@ -47,6 +47,12 @@ export class TestEditor {
             this.outputChannel.appendLine( (result.succeed) ? 'TEST OUTPUT: ' : 'TEST EXCEPTION: ');
             this.outputChannel.append(JSON.stringify(output, null, 4));
             this.outputChannel.show(false);
+
+            // deploy service if test successful
+            if (result.succeed) {
+                // call service
+                await this.builderService.deployService(request.serviceSpec);
+            }
 		} catch (error) {
 			console.error('Error in testing service', error);
 			vscode.window.showErrorMessage(error.message);
