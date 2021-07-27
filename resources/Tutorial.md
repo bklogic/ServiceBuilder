@@ -61,7 +61,7 @@
 
     ```json
     {
-        "state": "xyz"
+        "state": "CA"
     }
     ```
 
@@ -70,33 +70,35 @@
 
     ```json
     [{
-        "customernumber": 123,
-        "customername": "abc",
-        "phone": "abc",
+        "customernumber": 124,
+        "customername": "Mini Gifts Distributors Ltd.",
+        "phone": "4155551450",
         "address": {
-            "address": "abc",
-            "city": "abc",
-            "state": "abc",
-            "country": "abc"    
+            "address": "5677 Strong St.",
+            "city": "San Rafael",
+            "state": "CA",
+            "country": "USA"
         },
         "salesRep": {
-            "employeenumber": 123,
-            "lastname": "abc",
-            "firstname": "abc",
-            "office": "abc"    
+            "employeenumber": 1165,
+            "lastname": "Jennings",
+            "firstname": "Leslie",
+            "office": "San Francisco-USA"
         },
         "orders": [{
-            "ordernumber": 123,
-            "orderdate": "2021-01-01T00:00:00.000Z",
-            "status": "abc",
-            "comments": "abc",
-            "orderLines": [{
-                "orderlinenumber": 123,       
-                "productcode": "abc",
-                "productname": "abc",
-                "quantityordered": 123,
-                "priceeach": 123
-            }]
+            "ordernumber": 10113,
+            "orderdate": "2003-03-26T00:00:00.000Z",
+            "status": "Shipped",
+            "comments": "shipped on time",
+            "orderLines": [
+                {
+                    "orderlinenumber": 1,
+                    "productcode": "S32_3522",
+                    "productname": "1996 Peterbilt 379 Stake Bed with Outrigger",
+                    "quantityordered": 23,
+                    "priceeach": 58.82
+                }
+            ]
         }]
     }]
     ```
@@ -113,11 +115,11 @@
            od.orderLineNumber, p.productCode, p.productName, 
            od.quantityOrdered, od.priceEach
     from classicmodels.customers c, 
-        classicmodels.employees e, 
-        classicmodels.offices o, 
-        classicmodels.orders ord,
-        classicmodels.orderdetails od, 
-        classicmodels.products p
+         classicmodels.employees e, 
+         classicmodels.offices o, 
+         classicmodels.orders ord,
+         classicmodels.orderdetails od, 
+         classicmodels.products p
     where e.employeeNumber = c.salesRepEmployeeNumber
     and o.officeCode = e.officeCode
     and ord.customerNumber = c.customerNumber
@@ -161,8 +163,8 @@
 
     ```json
     {
-        "scourceProductLine": "xyz",
-        "newProductLine": "xyz"
+        "scourceProductLine": "Classic Cars",
+        "newProductLine": "Electric Cars"
     }
     ```
 
@@ -171,16 +173,16 @@
 
     ```json
     {
-        "productline": "abc",
-        "description": "abc",
+        "productline": "Classic Cars",
+        "description": "Make your wildest car ownership dreams come true.",
         "products": [{
-            "productcode": "abc",
-            "productname": "abc",
-            "productvendor": "abc",
-            "buyprice": 123,
-            "msrp": 123    
+            "productcode": "S10_1949",
+            "productname": "1952 Alpine Renault 1300",
+            "productvendor": "Classic Metal Creations",
+            "buyprice": 98.58,
+            "msrp": 214.3
         }]
-    }
+    }    
     ```
 
 4. Compose SQLs
@@ -196,9 +198,9 @@
     ;
 
     insert into classicmodels.products (
-    productCode, productName, productLine, productScale, productVendor, productDescription, buyPrice, MSRP
+    productCode, productName, productLine, productScale, productVendor, productDescription, quantityinStock, buyPrice, MSRP
     )
-    select concat('N_', productName) as productName, :newProductLine, productScale, productVendor, productDescription, buyPrice, MSRP
+    select concat('N_', productCode) as productCode, productName, :newProductLine, productScale, productVendor, productDescription, 0, buyPrice, MSRP
     from classicmodels.products
     where productLine = :scourceProductLine
     ;
@@ -210,7 +212,7 @@
     ```sql
     select pl.productLine, pl.textDescription as description,
         p.productCode, p.productName, productVendor,
-        p.productDescription as description, buyPrice, MSRP
+        p.productDescription, buyPrice, MSRP
     from classicmodels.products p, classicmodels.productlines pl
     where p.productLine = pl.productLine
         and p.productLine = :newProductLine

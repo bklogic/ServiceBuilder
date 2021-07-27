@@ -26,6 +26,7 @@ import {
 	Versions
 } from '../core/builderService';
 import { ServiceReader } from '../core/serviceReader';
+import * as URL from 'url';
 
 export class ApplicationExplorer {
 	private context: vscode.ExtensionContext;
@@ -93,13 +94,11 @@ export class ApplicationExplorer {
 				if (url) {
 					vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "Access Token", prompt: "from Service Console"}).then( async (token) => {
 						if (token) {
-							//validate url
-							if (!url.match(/^.+\.builder\..+$/)) {
-								vscode.window.showErrorMessage("invalid connection URL: " + url);	
-								return;							
-							}
+							// parse url for workspace
+							const host = new URL.URL(url).host;
+							const workspace = host.substr(0, host.indexOf("."));
+
 							// save connection
-							const workspace = url.substr(url.indexOf('://')+3, url.indexOf('.builder.')-url.indexOf('://')-3);
 							await this.context.secrets.store('servicebuilder.url', url);
 							await this.context.secrets.store('servicebuilder.token', token);
 							await this.context.secrets.store('servicebuilder.workspace', workspace);

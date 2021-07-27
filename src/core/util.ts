@@ -34,7 +34,7 @@ export function applicationUriForTest(testPath: string) {
 }
 
 export function moduleUriForModule(modulePath: string) {
-    return serviceUri(fromModule(modulePath));
+    return moduleUri(fromModule(modulePath));
 }
 
 export function serviceUriForService(servicePath: string) {
