@@ -166,7 +166,7 @@ export class ApplicationExplorer {
 				if (name) {
 					vscode.window.showQuickPick(['mysql'], {ignoreFocusOut: true, placeHolder: "database type", canPickMany: false}).then( (dbType) => {
 						if (dbType) {
-							this.createApplication(name, dbType);
+							this.createApplication(name, dbType);							
 						} else {
 							vscode.window.showErrorMessage("no database type selected.");
 						}
@@ -201,15 +201,29 @@ export class ApplicationExplorer {
 
 	async createApplication(appName: string, dbType: string): Promise<void> {
 		try {
-			// create application
-			const versions = await this.builderService.getBuilderVersions();
-			const app = await this.appService.createApplication(this.dataProvider.workfolder, appName, dbType, versions);
-			// reveal
-			this.refresh();
-			this.treeView.reveal(app, {expand: 2, focus: true, select: true});
-			// deploy application
-			this.deployApplication(app);
-		} catch (error) {
+			vscode.window.withProgress({
+				location: vscode.ProgressLocation.Window,
+				cancellable: false,
+				title: 'Creating application'
+			}, async (progress) => {
+				// clear status message
+				vscode.window.setStatusBarMessage('');
+
+				// create application
+				const versions = await this.builderService.getBuilderVersions();
+				const app = await this.appService.createApplication(this.dataProvider.workfolder, appName, dbType, versions);
+
+				// reveal
+				this.refresh();
+				this.treeView.reveal(app, {expand: 2, focus: true, select: true});
+
+				// deploy application
+				this.deployApplication(app); 
+
+				// inform user
+				vscode.window.setStatusBarMessage('application is created.');
+			});		
+	} catch (error) {
 			let message: string;
 			switch (error.code) {
 				case 'FileExists':
@@ -224,12 +238,20 @@ export class ApplicationExplorer {
 
 	async deployApplication(app: Entry): Promise<void> {
 		try {
-			// read application
-			const application = await this.getApplication(app);
-			// call service
-			await this.builderService.deployApplication(application);
-			// inform user
-			vscode.window.showInformationMessage('application is deployed.');
+			vscode.window.withProgress({
+				location: vscode.ProgressLocation.Window,
+				cancellable: false,
+				title: 'deploying application'
+			}, async (progress) => {
+				// clear status message
+				vscode.window.setStatusBarMessage('');
+				// read application
+				const application = await this.getApplication(app);
+				// call service
+				await this.builderService.deployApplication(application);
+				// inform user
+				vscode.window.setStatusBarMessage('application is deployed.');
+			});		
 		} catch (error) {
 			console.error('Error in deploying application', error);
 			vscode.window.showErrorMessage(error.message);
@@ -320,21 +342,32 @@ export class ApplicationExplorer {
 	}
 
 	async createService(mod: Entry, name: string, type: string): Promise<void> {
-		try {
-			const service = await this.appService.createService(mod, name, type);
-			this.dataProvider.fire(mod);
-			this.treeView.reveal(service, {expand: 2, focus: true, select: true});	
-		} catch (error) {
-			let message: string;
-			switch (error.code) {
-				case 'FileExists':
-					message = 'Service name exists.';
-					break;
-				default:
-					message = error.message;
-			}
-			vscode.window.showErrorMessage(message);
-		}
+			vscode.window.withProgress({
+				location: vscode.ProgressLocation.Window,
+				cancellable: false,
+				title: 'creating service'
+			}, async (progress) => {
+				try {
+					// clear status message
+					vscode.window.setStatusBarMessage('');
+					// create service
+					const service = await this.appService.createService(mod, name, type);
+					this.dataProvider.fire(mod);
+					this.treeView.reveal(service, {expand: 2, focus: true, select: true});	
+					// inform user
+					vscode.window.setStatusBarMessage('service is created.');
+				} catch (error) {
+					let message: string;
+					switch (error.code) {
+						case 'FileExists':
+							message = 'Service name exists.';
+							break;
+						default:
+							message = error.message;
+					}
+					vscode.window.showErrorMessage(message);
+				}
+			});		
 	}
 
 	async deployService(service: Entry): Promise<void> {
@@ -432,21 +465,27 @@ export class ApplicationExplorer {
 	}
 
 	async generateCrud(module: Entry, applicationUri: string, tableNames: string[], options: GenerateCrudOptions) {
-		try {
-			// prepare request
-			const request: GenerateCrudRequest = {
-				applicationUri, tableNames, options
-			} ;
-			// call service
-			const results: GenerateCrudResult[] = await this.builderService.genCruds(request);
-			// process result
-			this.createCruds(module, results);
-			// inform user
-			vscode.window.showInformationMessage('CRUD services are generated');
-		} catch (error) {
-			console.error('Error in generating crud services', error);
-			vscode.window.showErrorMessage(error.message);
-		}
+		vscode.window.withProgress({
+			location: vscode.ProgressLocation.Window,
+			cancellable: false,
+			title: 'generating crud services'
+		}, async (progress) => {
+			try {
+				// prepare request
+				const request: GenerateCrudRequest = {
+					applicationUri, tableNames, options
+				} ;
+				// call service
+				const results: GenerateCrudResult[] = await this.builderService.genCruds(request);
+				// process result
+				this.createCruds(module, results);
+				// inform user
+				vscode.window.setStatusBarMessage('CRUD services are generated');
+			} catch (error) {
+				console.error('Error in generating crud services', error);
+				vscode.window.showErrorMessage(error.message);
+			}
+		});
 	}
 
 	async genQueryInputOutput(service: Entry) {
@@ -477,32 +516,38 @@ export class ApplicationExplorer {
 	}
 
 	async genQueryInputOutputBindings(service: Entry) {
-		try {
-			// prepare request
-			const [input, output, query] = await Promise.all([
-				util.readJsonFile(vscode.Uri.joinPath(service.uri, 'input.json')),
-				util.readJsonFile(vscode.Uri.joinPath(service.uri, 'output.json')),
-				util.readSqlFile(vscode.Uri.joinPath(service.uri, 'query.sql'))
-			]);
-			const request: BindQueryRequest = {
-				applicationUri: await util.applicationUriForService(service.uri.path),
-				input, output, queryString: query
-			};
-			// call service
-			const result: BindQueryResult = await this.builderService.bindQuery(request);
-			// process result
-			const inputBidningsUri = vscode.Uri.joinPath(service.uri, 'input-bindings.json');
-			const outputBidningsUri = vscode.Uri.joinPath(service.uri, 'output-bindings.json');
-			await util.writeJsonFile(inputBidningsUri, result.inputBindings);
-			await util.writeJsonFile(outputBidningsUri, result.outputBindings);
-			vscode.window.showTextDocument(inputBidningsUri, {preview: false});
-			vscode.window.showTextDocument(outputBidningsUri, {preview: false});
-			// inform user
-			vscode.window.showInformationMessage('input and output bindings are generated');
-		} catch (error) {
-			console.error('Error in generating query input and output bindings', error);
-			vscode.window.showErrorMessage(error.message);
-		}
+		vscode.window.withProgress({
+			location: vscode.ProgressLocation.Window,
+			cancellable: false,
+			title: 'generating crud services'
+		}, async (progress) => {
+			try {
+				// prepare request
+				const [input, output, query] = await Promise.all([
+					util.readJsonFile(vscode.Uri.joinPath(service.uri, 'input.json')),
+					util.readJsonFile(vscode.Uri.joinPath(service.uri, 'output.json')),
+					util.readSqlFile(vscode.Uri.joinPath(service.uri, 'query.sql'))
+				]);
+				const request: BindQueryRequest = {
+					applicationUri: await util.applicationUriForService(service.uri.path),
+					input, output, queryString: query
+				};
+				// call service
+				const result: BindQueryResult = await this.builderService.bindQuery(request);
+				// process result
+				const inputBidningsUri = vscode.Uri.joinPath(service.uri, 'input-bindings.json');
+				const outputBidningsUri = vscode.Uri.joinPath(service.uri, 'output-bindings.json');
+				await util.writeJsonFile(inputBidningsUri, result.inputBindings);
+				await util.writeJsonFile(outputBidningsUri, result.outputBindings);
+				vscode.window.showTextDocument(inputBidningsUri, {preview: false});
+				vscode.window.showTextDocument(outputBidningsUri, {preview: false});
+				// inform user
+				vscode.window.showInformationMessage('input and output bindings are generated');
+			} catch (error) {
+				console.error('Error in generating query input and output bindings', error);
+				vscode.window.showErrorMessage(error.message);
+			}
+		});
 	}
 
 	async genSqlInputOutput(service: Entry): Promise<void> {
