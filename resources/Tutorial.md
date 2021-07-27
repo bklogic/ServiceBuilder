@@ -19,9 +19,9 @@
 1. Get your workspace URL and access token from Service Console
 
 2. Connect to your workspace
-    - Move mouse over `Service Builder` in EXPLORER and click `Connect To BackLogic Workspace` ![Alt](./dark/plug.svg "New Application")
-    - Paste your workspace URL in the input box open, and hit Enter
-    - Paste you access code in the next input box open, and hit Enter
+    - Move mouse over `Service Builder` in EXPLORER and click `More Actions` icon and select `Connect`.
+    - Paste your workspace URL in the input box opened, and hit Enter
+    - Paste you access code in the next input box opened, and hit Enter
 
 ## How to Create Application
 

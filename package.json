@@ -23,7 +23,7 @@
 			},
 			{
 				"command": "servicebuilderExplorer.connect",
-				"title": "Connect to Backlogic Workspace",
+				"title": "Connect",
 				"icon": {
 					"light": "resources/light/plug.svg",
 					"dark": "resources/dark/plug.svg"
@@ -255,22 +255,22 @@
 				{
 					"command": "servicebuilderExplorer.openWelcome",
 					"when": "view == servicebuilderExplorer",
-					"group": "help@1"
+					"group": "more@1"
 				},
 				{
 					"command": "servicebuilderExplorer.openTutorial",
 					"when": "view == servicebuilderExplorer",
-					"group": "help@2"
-				},
-				{
-					"command": "servicebuilderExplorer.workspace",
-					"when": "view == servicebuilderExplorer",
-					"group": "help@3"
+					"group": "more@2"
 				},
 				{
 					"command": "servicebuilderExplorer.connect",
 					"when": "view == servicebuilderExplorer",
-					"group": "navigation@3"
+					"group": "more@3"
+				},
+				{
+					"command": "servicebuilderExplorer.workspace",
+					"when": "view == servicebuilderExplorer",
+					"group": "more@4"
 				},
 				{
 					"command": "servicebuilderExplorer.createApplication",
