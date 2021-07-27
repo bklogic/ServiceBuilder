@@ -20,43 +20,49 @@ export class TestEditor {
     }
 
     async runTest(path: string) {
-		try {
-            // save test
-            const editor = vscode.window.activeTextEditor;
-            if (!editor) {
-                console.log('No active test editor');
-                vscode.window.showErrorMessage('No active editor. Please click the test editor and try again');
-                return;
-            }
-            await editor.document.save();
+        vscode.window.withProgress({
+            location: vscode.ProgressLocation.Window,
+            cancellable: false,
+            title: 'testing service'
+        }, async (progress) => {
+            try {
+                // save test
+                const editor = vscode.window.activeTextEditor;
+                if (!editor) {
+                    console.log('No active test editor');
+                    vscode.window.showErrorMessage('No active editor. Please click the test editor and try again');
+                    return;
+                }
+                await editor.document.save();
 
-			// prepare request
-            const test: Test = await util.readJsonFile(vscode.Uri.parse(path));
-			const request: TestServiceRequest = {
-                applicationUri: await util.applicationUriForTest(path),
-                serviceSpec: await this.serviceReader.getService(this.serviceUri(path)),
-                input: test.input,
-                operation: test.operation,
-                withCommit: true
-            };
-			// call service
-			const result: TestServiceResult = await this.builderService.testService(request);
-			// process result
-            this.outputChannel.clear();
-            let output = (result.succeed) ? result.output : result.exception;
-            this.outputChannel.appendLine( (result.succeed) ? 'TEST OUTPUT: ' : 'TEST EXCEPTION: ');
-            this.outputChannel.append(JSON.stringify(output, null, 4));
-            this.outputChannel.show(false);
-
-            // deploy service if test successful
-            if (result.succeed) {
+                // prepare request
+                const test: Test = await util.readJsonFile(vscode.Uri.parse(path));
+                const request: TestServiceRequest = {
+                    applicationUri: await util.applicationUriForTest(path),
+                    serviceSpec: await this.serviceReader.getService(this.serviceUri(path)),
+                    input: test.input,
+                    operation: test.operation,
+                    withCommit: true
+                };
                 // call service
-                await this.builderService.deployService(request.serviceSpec);
+                const result: TestServiceResult = await this.builderService.testService(request);
+                // process result
+                this.outputChannel.clear();
+                let output = (result.succeed) ? result.output : result.exception;
+                this.outputChannel.appendLine( (result.succeed) ? 'TEST OUTPUT: ' : 'TEST EXCEPTION: ');
+                this.outputChannel.append(JSON.stringify(output, null, 4));
+                this.outputChannel.show(true);
+
+                // deploy service if test successful
+                if (result.succeed) {
+                    // call service
+                    await this.builderService.deployService(request.serviceSpec);
+                }
+            } catch (error) {
+                console.error('Error in testing service', error);
+                vscode.window.showErrorMessage(error.message);
             }
-		} catch (error) {
-			console.error('Error in testing service', error);
-			vscode.window.showErrorMessage(error.message);
-		}
+        });
     }
 
     /**
