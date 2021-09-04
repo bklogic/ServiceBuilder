@@ -1,6 +1,8 @@
 import { TextDecoder } from 'util';
 import * as vscode from 'vscode';
 
+var ZIP = require("adm-zip");
+
 let getWorkspace: () => Promise<string>;
 
 export function createGetWorkspaceUtil(context: vscode.ExtensionContext): void {
@@ -39,6 +41,14 @@ export function moduleUriForModule(modulePath: string) {
 
 export function serviceUriForService(servicePath: string) {
     return serviceUri(fromService(servicePath));
+}
+
+export function servicePathForTest(testPath: string) {
+    const splits = testPath.split('/');
+    const l = splits.length;
+    splits.pop();
+    splits.pop();
+    return splits.join('/');
 }
 
 /*
@@ -219,5 +229,13 @@ export class DoubleClick {
 		return result;
 	}
 
+}
+
+
+export function getArchive(fsPath: string): Buffer {
+    const archive = new ZIP();
+    archive.addLocalFolder(fsPath);
+    const buffer = archive.toBuffer();
+    return buffer;	
 }
 

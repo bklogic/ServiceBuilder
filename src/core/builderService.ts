@@ -37,9 +37,9 @@ export class BuilderService {
 	/**
 	 * Test
 	 */
-	async testService(request: TestServiceRequest): Promise<TestServiceResult> {
+	async testService(request: TestServiceRequest, archive: Buffer): Promise<TestServiceResult> {
 		const url = '/test/testService';
-		const result = await this.http.post(url, request);
+		const result = await this.http.postArchive(url, request, archive);
 		return result;
 	}
 		
@@ -100,21 +100,21 @@ export class BuilderService {
 		return result;
 	}
 
-	async deployApplication(application: model.ApplicationAggregate): Promise<DeployResult> {
+	async deployApplication(appUri: string, archive: Buffer): Promise<DeployResult> {
 		const url = '/deploy/deployApplication';
-		const result = await this.http.post(url, application);
+		const result = await this.http.postArchive(url, {appUri}, archive, 60000);
 		return result;
 	}
 
-	async deployModule(module: model.ModuleAggregate): Promise<DeployResult> {
+	async deployModule(appUri: string, modName: string, archive: Buffer): Promise<DeployResult> {
 		const url = '/deploy/deployModule';
-		const result = await this.http.post(url, module);
+		const result = await this.http.postArchive(url, {appUri, modName}, archive, 30000);
 		return result;
 	}
 
-	async deployService(service: model.ServiceSpec): Promise<DeployResult> {
+	async deployService(appUri: string, modName: string, serviceName: string, archive: Buffer): Promise<DeployResult> {
 		const url = '/deploy/deployService';
-		const result = await this.http.post(url, service);
+		const result = await this.http.postArchive(url, {appUri, modName, serviceName}, archive, 10000);
 		return result;
 	}
 
@@ -150,10 +150,11 @@ export interface DataSourceConfig {
 
 export interface TestServiceRequest {
 	applicationUri: string;
-	serviceSpec: model.ServiceSpec;
-	input: any;
-	operation: string;
-	withCommit: boolean;
+	moduleName: string;
+	serviceName: string;
+	input: string;  // json string
+	operation: string | null;   
+	withCommit: string | null;  // boolean string
 }
 
 export interface TestServiceResult {

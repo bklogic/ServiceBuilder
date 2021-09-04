@@ -5,16 +5,13 @@ import {
     BuilderService, 
     TestServiceRequest, TestServiceResult
 } from '../core/builderService';
-import { ServiceReader } from '../core/serviceReader';
 
 export class TestEditor {
-    private serviceReader: ServiceReader;
     private builderService: BuilderService; 
     private outputChannel;
 
     constructor(context: vscode.ExtensionContext, buildService: BuilderService) {
         this.builderService = buildService;
-        this.serviceReader = new ServiceReader();
         this.outputChannel = vscode.window.createOutputChannel('Service Builder Test');
 		vscode.commands.registerCommand('servicebuilderEditor.runTest', (resource) => this.runTest(resource.path));
     }
@@ -35,17 +32,28 @@ export class TestEditor {
                 }
                 await editor.document.save();
 
-                // prepare request
+                // read and validate test
                 const test: Test = await util.readJsonFile(vscode.Uri.parse(path));
+                
+                // prepare request
+                const resource = await util.fromTest(path);
                 const request: TestServiceRequest = {
                     applicationUri: await util.applicationUriForTest(path),
-                    serviceSpec: await this.serviceReader.getService(this.serviceUri(path)),
-                    input: test.input,
-                    operation: test.operation,
-                    withCommit: true
+                    moduleName: resource.module,
+                    serviceName: resource.service,
+                    input: JSON.stringify(test.input),
+                    operation: test.operation || '',
+                    withCommit: 'true'
                 };
-                // call service
-                const result: TestServiceResult = await this.builderService.testService(request);
+
+				// zip 
+                const servicePath = await util.servicePathForTest(path);
+                const fsPath = vscode.Uri.file(servicePath).fsPath;
+				const archive = await util.getArchive(fsPath);
+
+				// call service
+                const result: TestServiceResult = await this.builderService.testService(request, archive);
+
                 // process result
                 this.outputChannel.clear();
                 let output = (result.succeed) ? result.output : result.exception;
@@ -53,11 +61,6 @@ export class TestEditor {
                 this.outputChannel.append(JSON.stringify(output, null, 4));
                 this.outputChannel.show(true);
 
-                // deploy service if test successful
-                if (result.succeed) {
-                    // call service
-                    await this.builderService.deployService(request.serviceSpec);
-                }
             } catch (error) {
                 console.error('Error in testing service', error);
                 vscode.window.showErrorMessage(error.message);

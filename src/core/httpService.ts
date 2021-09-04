@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as https from 'https';
 
 const axios = require('axios');
+const formData = require('form-data');
 
 export class HttpService {
 
@@ -58,7 +59,30 @@ export class HttpService {
             return response.data;
           } catch (error) {
             console.error('http post error: ', error.message || error.response.data.message, '\n',  'url: ', config.baseURL + url);
-            console.error('Data: ');
+            console.info('Data: ');
+            console.info(data);
+            console.error(error);
+            error.message = error.message + ' | ' + error.message || error.response.data.message;
+            throw error;
+          }    
+    }
+
+    async postArchive(url: string, data: any, archive: Buffer, timeout?: number): Promise<any> {
+        const config = await this.httpConfig(timeout);
+        try {
+            // construct form
+            const form = new formData();
+            for (const key in data) {
+                form.append(key, data[key]);
+            }
+            form.append('archive', archive, 'archive.zip');
+            config.headers = form.getHeaders();
+            // post form
+            const response = await axios.post(config.baseURL + url, form, {"headers": config.headers} );
+            return response.data;
+          } catch (error) {
+            console.error('http post archive error: ', error.message || error.response.data.message, '\n',  'url: ', config.baseURL + url);
+            console.info('Data: ');
             console.info(data);
             console.error(error);
             error.message = error.message + ' | ' + error.message || error.response.data.message;

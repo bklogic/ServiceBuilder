@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as util from '../core/util';
-import * as model from '../core/model';
 import {ApplicationDataProvider} from './applicationDataProvider';
 import {ApplicationService} from "./applicationService";
 import {Entry, EntryType} from './applicationModel';
@@ -25,22 +24,20 @@ import {
 	WhereClauseType,
 	Versions
 } from '../core/builderService';
-import { ServiceReader } from '../core/serviceReader';
 import * as URL from 'url';
+
 
 export class ApplicationExplorer {
 	private context: vscode.ExtensionContext;
 	private dataProvider: ApplicationDataProvider;
 	private treeView: vscode.TreeView<Entry>;
 	private appService: ApplicationService;
-	private serviceReader: ServiceReader;
 	private builderService: BuilderService;
 	private doubleClick = new util.DoubleClick();
 
 	constructor(context: vscode.ExtensionContext, builderService: BuilderService) {
 		this.context = context;
 		this.appService = new ApplicationService();
-		this.serviceReader = new ServiceReader();
 		this.builderService = builderService;
 		this.dataProvider = new ApplicationDataProvider(this.appService);
 		this.treeView = vscode.window.createTreeView('servicebuilderExplorer', { treeDataProvider: this.dataProvider, showCollapseAll: true });
@@ -245,10 +242,11 @@ export class ApplicationExplorer {
 			}, async (progress) => {
 				// clear status message
 				vscode.window.setStatusBarMessage('');
-				// read application
-				const application = await this.getApplication(app);
+				// zip application
+				const appUri = await util.applicationUriForApplication(app.uri.path);
+				const archive = await util.getArchive(app.uri.fsPath);
 				// call service
-				await this.builderService.deployApplication(application);
+				await this.builderService.deployApplication(appUri, archive);
 				// inform user
 				vscode.window.setStatusBarMessage('application is deployed.');
 			});		
@@ -256,33 +254,6 @@ export class ApplicationExplorer {
 			console.error('Error in deploying application', error);
 			vscode.window.showErrorMessage(error.message);
 		}
-	}
-
-	async getApplication(app: Entry): Promise<model.ApplicationAggregate> {
-		// application
-		const application: model.ApplicationAggregate = {
-			application: await this.serviceReader.getApplication(app.uri),
-			modules: []
-		};
-		// src
-		let children: Entry[] = await this.appService.getChildren(app);
-		let src: Entry = this.appService.defaultEntry('src', vscode.FileType.Directory, app);
-		for (let child of children) {
-			if (child.name === 'src') {
-				src = child;
-			}
-		}
-		// modules
-		children = await this.appService.getChildren(src);
-		const promises: Promise<model.ModuleAggregate>[] = [];
-		for (let child of children) {
-			if (child.type === EntryType.Module) {
-				promises.push(this.getModule(child));
-			}
-		}
-		application.modules = await Promise.all(promises);
-		// return
-		return application;
 	}
 
 	async createModule(app: Entry, modName: string): Promise<void> {
@@ -309,36 +280,25 @@ export class ApplicationExplorer {
 
 	async deployModule(mod: Entry): Promise<void> {
 		try {
-			const module = await this.getModule(mod);
-
-			// call deploy service
-			await this.builderService.deployModule(module);
-
-			// inform user
-			vscode.window.showInformationMessage('module is deployed.');
+			vscode.window.withProgress({
+				location: vscode.ProgressLocation.Window,
+				cancellable: false,
+				title: 'deploying module'
+			}, async (progress) => {
+				// clear status message
+				vscode.window.setStatusBarMessage('');
+				// zip module
+				const appUri = await util.applicationUriForModule(mod.uri.path);
+				const archive = await util.getArchive(mod.uri.fsPath);
+				// call service
+				await this.builderService.deployModule(appUri, mod.name, archive);
+				// inform user
+				vscode.window.setStatusBarMessage('module is deployed.');
+			});		
 		} catch (error) {
 			console.error('Error in deploying module', error);
 			vscode.window.showErrorMessage(error.message);
 		}
-	}
-
-	async getModule(mod: Entry): Promise<model.ModuleAggregate> {
-			// module
-			const module: model.ModuleAggregate = {
-				module: await this.serviceReader.getModule(mod.uri),
-				services: []
-			};
-			// services
-			const children: Entry[] = await this.appService.getChildren(mod);
-			const promises: Promise<model.ServiceSpec>[] = [];
-			for (let child of children) {
-				if ([EntryType.QueryService, EntryType.SqlService, EntryType.CrudService].includes(child.type)) {
-					promises.push(this.serviceReader.getService(child.uri));
-				}
-			}
-			module.services = await Promise.all(promises);
-			// return
-			return module;
 	}
 
 	async createService(mod: Entry, name: string, type: string): Promise<void> {
@@ -372,16 +332,27 @@ export class ApplicationExplorer {
 
 	async deployService(service: Entry): Promise<void> {
 		try {
-			// get service
-			const serviceSpec = await this.serviceReader.getService(service.uri);
-			// call service
-			await this.builderService.deployService(serviceSpec);
-			// inform user
-			vscode.window.showInformationMessage('service is deployed.');
+			vscode.window.withProgress({
+				location: vscode.ProgressLocation.Window,
+				cancellable: false,
+				title: 'deploying service'
+			}, async (progress) => {
+				// clear status message
+				vscode.window.setStatusBarMessage('');
+				// zip 
+				const appUri = await util.applicationUriForService(service.uri.path);
+				const modName = service.parent?.name || 'modName';  // service.parent never be null
+				const archive = await util.getArchive(service.uri.fsPath);
+				// call service
+				await this.builderService.deployService(appUri, modName, service.name, archive);
+				// inform user
+				vscode.window.setStatusBarMessage('service is deployed.');
+			});		
 		} catch (error) {
 			console.error('Error in deploying service', error);
 			vscode.window.showErrorMessage(error.message);
 		}
+
 	}
 
 	async delete(entry: Entry): Promise<void> {
