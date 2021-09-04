@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import * as util from '../core/util';
-import * as model from '../core/model';
 import {
     BuilderService, 
     TestServiceRequest, TestServiceResult

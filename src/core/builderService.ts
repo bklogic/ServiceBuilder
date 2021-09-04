@@ -1,7 +1,6 @@
 
 import * as vscode from 'vscode';
 import {HttpService} from './httpService';
-import * as model from './model';
 
 export class BuilderService {
 	private http: HttpService;
