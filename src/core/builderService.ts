@@ -206,7 +206,8 @@ export interface BindSqlsResult {
 export interface BindCrudQueryRequest {
 	applicationUri: string;
 	queryString: string [];
-	object: any
+	object: any,
+	input: any
 }
 
 export interface BindCrudQueryResult {
@@ -266,6 +267,7 @@ export interface GenerateObjectRequest {
 
 export interface GenerateObjectResult {
 	object: any;
+	input: any;
 }
 
 export interface GetTableListRequest {
@@ -280,6 +282,7 @@ export interface GenerateCrudRequest {
 
 export interface GenerateCrudResult {
 	object: any;
+	input: any;
 	crudQuery: string[];
 	inputBindings: InputBinding[];
 	outputBindings: OutputBinding[];

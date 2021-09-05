@@ -12,10 +12,11 @@ export class TestEditor {
     constructor(context: vscode.ExtensionContext, buildService: BuilderService) {
         this.builderService = buildService;
         this.outputChannel = vscode.window.createOutputChannel('Service Builder Test');
-		vscode.commands.registerCommand('servicebuilderEditor.runTest', (resource) => this.runTest(resource.path));
+		vscode.commands.registerCommand('servicebuilderEditor.runTest', (resource) => this.runTest(resource.path, 'true'));
+		vscode.commands.registerCommand('servicebuilderEditor.runTestWithoutCommit', (resource) => this.runTest(resource.path, 'false'));
     }
 
-    async runTest(path: string) {
+    async runTest(path: string, withCommit: string) {
         vscode.window.withProgress({
             location: vscode.ProgressLocation.Window,
             cancellable: false,
@@ -42,7 +43,7 @@ export class TestEditor {
                     serviceName: resource.service,
                     input: JSON.stringify(test.input),
                     operation: test.operation || '',
-                    withCommit: 'true'
+                    withCommit: withCommit
                 };
 
 				// zip 

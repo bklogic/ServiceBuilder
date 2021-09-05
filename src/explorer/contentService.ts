@@ -65,6 +65,7 @@ export function crudServiceFile(serviceName: string): Uint8Array {
 		"description": "crud service. Don't modify this file!",
 		"object": "./object.json",  
 		"read": {
+			"input": "./read/input.json",
 			"query": "./read/query.sql",
 			"inputBinding": "./read/input-binding.json",  
 			"outputBinding": "./read/output-binding.json"
@@ -82,19 +83,31 @@ export function tablesFile(): Uint8Array {
 	return toUint8Array(content);
 }
 
-export function testFile(input: any, serviceType: string): Uint8Array {
+export function testFile(input: any, serviceType: string, testType: string | undefined): Uint8Array {
 	let content;
-	if (serviceType === 'crud') {
-		content = {
-			name: 'enter a name for the test',
-			input: input,
-			operation: 'enter a crud operation for the test: read, create, update or delete'
-		};	
-	} else {
-		content = {
-			name: 'enter a name for the test',
-			input: input
-		};	
+	switch (testType) {
+		case 'read':
+			content = {
+				name: 'ReadCustomerById',
+				input: input,
+				operation: 'read',
+				comments: 'Modify the example test name and input'
+			};	
+			break;
+		case 'write':
+			content = {
+				name: 'CreateCustomer',
+				input: input,
+				operation: 'create',
+				comments: 'Modify the example test name, input and operation. Valid operations: create, delete, update, merge, save.'
+			};	
+			break;
+		default:
+			content = {
+				name: 'QueryCustomerById',
+				input: input,
+				comments: 'Modify the example test name and input'
+			};		
 	}
 	return toUint8Array(content);
 }

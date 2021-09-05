@@ -219,10 +219,26 @@
 			},
 			{
 				"command": "servicebuilderExplorer.addTest",
-				"title": "Add Test",
+				"title": "Add test",
 				"icon": {
 					"light": "resources/light/add.svg",
 					"dark": "resources/dark/add.svg"
+				}
+			},
+			{
+				"command": "servicebuilderExplorer.addReadTest",
+				"title": "Add Read Test",
+				"icon": {
+					"light": "resources/light/book.svg",
+					"dark": "resources/dark/book.svg"
+				}
+			},
+			{
+				"command": "servicebuilderExplorer.addWriteTest",
+				"title": "Add Write Test",
+				"icon": {
+					"light": "resources/light/edit.svg",
+					"dark": "resources/dark/edit.svg"
 				}
 			},
 			{
@@ -239,6 +255,14 @@
 				"icon": {
 					"light": "resources/light/play.svg",
 					"dark": "resources/dark/play.svg"
+				}
+			},
+			{
+				"command": "servicebuilderEditor.runTestWithoutCommit",
+				"title": "Run Test without Commit",
+				"icon": {
+					"light": "resources/light/debug-rerun.svg",
+					"dark": "resources/dark/debug-rerun.svg"
 				}
 			}
 		],
@@ -565,6 +589,16 @@
 					"group": "inline"
 				},
 				{
+					"command": "servicebuilderExplorer.addReadTest",
+					"when": "view == servicebuilderExplorer && viewItem == crudtests",
+					"group": "inline@1"
+				},
+				{
+					"command": "servicebuilderExplorer.addWriteTest",
+					"when": "view == servicebuilderExplorer && viewItem == crudtests",
+					"group": "inline@2"
+				},
+				{
 					"command": "servicebuilderExplorer.duplicateTest",
 					"when": "view == servicebuilderExplorer && viewItem == testfile",
 					"group": "inline@1"
@@ -590,6 +624,11 @@
 					"command": "servicebuilderEditor.runTest",
 					"when": "resourceFilename =~ /^test\\d{2}.json$/",
 					"group": "navigation@1"
+				},
+				{
+					"command": "servicebuilderEditor.runTestWithoutCommit",
+					"when": "resourceFilename =~ /^test\\d{2}.json$/",
+					"group": "navigation@2"
 				}
 			],
 			"editor/context": [
@@ -606,7 +645,12 @@
 				{
 					"command": "servicebuilderEditor.runTest",
 					"when": "resourceFilename =~ /^test\\d{2}.json$/",
-					"group": "a_test"
+					"group": "a_test@1"
+				},
+				{
+					"command": "servicebuilderEditor.runTestWithoutCommit",
+					"when": "resourceFilename =~ /^test\\d{2}.json$/",
+					"group": "a_test@2"
 				}
 			]
 		}

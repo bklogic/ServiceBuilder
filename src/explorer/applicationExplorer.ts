@@ -70,6 +70,8 @@ export class ApplicationExplorer {
 		vscode.commands.registerCommand('servicebuilderExplorer.genCrudTableBindings', (resource) => this.genCrudTableBindings(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.deployService', (resource) => this.deployService(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.addTest', (resource) => this.addTest(resource));
+		vscode.commands.registerCommand('servicebuilderExplorer.addReadTest', (resource) => this.addTest(resource, 'read'));
+		vscode.commands.registerCommand('servicebuilderExplorer.addWriteTest', (resource) => this.addTest(resource, 'write'));
 		vscode.commands.registerCommand('servicebuilderExplorer.duplicateTest', (resource) => this.duplicateTest(resource));
 	}
 
@@ -594,8 +596,11 @@ export class ApplicationExplorer {
 			const result: GenerateObjectResult = await this.builderService.genCrudObject(request);
 			// process result
 			const objectUri = vscode.Uri.joinPath(service.uri, 'object.json');
+			const inputUri = vscode.Uri.joinPath(service.uri, 'read', 'input.json');
 			await util.writeJsonFile(objectUri, result.object);
+			await util.writeJsonFile(inputUri, result.input);
 			vscode.window.showTextDocument(objectUri, {preview: false});
+			vscode.window.showTextDocument(inputUri, {preview: false});
 			// inform user
 			vscode.window.showInformationMessage('object is generated');
 		} catch (error) {
@@ -607,13 +612,14 @@ export class ApplicationExplorer {
 	async genCrudInputOutputBindings(service: Entry): Promise<void> {
 		try {
 			// prepare request
-			const [object, query] = await Promise.all([
+			const [object, query, input] = await Promise.all([
 				util.readJsonFile(vscode.Uri.joinPath(service.uri, 'object.json')),
-				util.readSqlFile(vscode.Uri.joinPath(service.uri, 'read', 'query.sql'))
+				util.readSqlFile(vscode.Uri.joinPath(service.uri, 'read', 'query.sql')),
+				util.readJsonFile(vscode.Uri.joinPath(service.uri, 'read', 'input.json')),
 			]);
 			const request: BindCrudQueryRequest = {
 				applicationUri: await util.applicationUriForService(service.uri.path),
-				object, queryString: query
+				object, queryString: query, input
 			};
 			// call service
 			const result = await this.builderService.bindCrudQuery(request);
@@ -689,9 +695,9 @@ export class ApplicationExplorer {
 		this.treeView.reveal(tables, {expand: true, select: true});
 	}
 
-	async addTest(testFolder: Entry): Promise<void> {
+	async addTest(testFolder: Entry, testType?: string): Promise<void> {
 		try {
-			const testFile = await this.appService.addTest(testFolder);
+			const testFile = await this.appService.addTest(testFolder, testType);
 			this.dataProvider.fire(testFolder);
 			this.treeView.reveal(testFile, {focus: true, select: false});
 			vscode.window.showTextDocument(testFile.uri, {preview: false});
@@ -725,6 +731,8 @@ export class ApplicationExplorer {
 		await this.createService(mod, crud.serviceName, 'crud');
         // object
         await util.writeJsonFile(vscode.Uri.joinPath(mod.uri, crud.serviceName, 'object.json'), crud.object);
+        // input
+        await util.writeJsonFile(vscode.Uri.joinPath(mod.uri, crud.serviceName, 'read', 'input.json'), crud.input);
         // query
         await util.writeSqlFile(vscode.Uri.joinPath(mod.uri, crud.serviceName, 'read', 'query.sql'), crud.crudQuery);
         // input bindings

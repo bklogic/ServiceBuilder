@@ -27,3 +27,30 @@ Misc:
     ✔ add OUTPUT/EXCEPTION to test output @done(21-06-07 13:17)
     ✔ refresh write after table binding @done(21-06-07 12:42)
     
+09/2021:
+    ☐ CRUD
+        ✔ create @done(21-09-04 15:55)
+        ✔ generate query binding @done(21-09-04 16:19)
+        ✔ generate object @done(21-09-04 16:10)
+        ✔ generate CRUD @done(21-09-04 16:04)
+        ✔ test: read/write @done(21-09-05 09:28)
+        ✔ test: with/without commit @done(21-09-05 09:29)
+        ☐ generate CRUD, name convention
+    ☐ Data Source
+        ☐ remove apply button, do apply on successful test
+    ☐ Service Builder explorer
+        ☐ remove /src folder (?)
+        ☐ replace context menu with more... menu (?) 
+        ☐ move deploy button to more... menu
+        ☐ README file location
+
+Backlog:
+    Features:
+        ☐ Service Deployment Explorer - view application and service deployed on DevTime
+        ☐ default README.md
+    Bugs:
+        ☐ BUG: with generate table binding, column binding files not displayed in explorer
+        ☐ BUG: with generate CRUD for film table, net.backlogic.persistence.servicebuilder.util.StringMatcher.minDistanceMatch line 70 throws java.util.NoSuchElementException
+    Tests:
+        ☐ TEST: test Run Test with/without commit after engine review
+

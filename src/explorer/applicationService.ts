@@ -6,7 +6,6 @@ import * as cs from './contentService';
 import {Entry, EntryType} from './applicationModel';
 import {GitExtension} from './git.d';
 
-
 export class ApplicationService {
 
 	construct() {}
@@ -49,7 +48,7 @@ export class ApplicationService {
 		// README file
 		const templatePath = path.join(__filename, '..', '..', '..', 'resources', 'README.md');
 		const templateUri = vscode.Uri.parse('file:' + templatePath, true);
-		const readmeUri = vscode.Uri.joinPath(app.uri, 'src', 'README.md');
+		const readmeUri = vscode.Uri.joinPath(app.uri, 'README.md');
 		await vscode.workspace.fs.copy(templateUri, readmeUri);
 
 		// return 
@@ -178,6 +177,8 @@ export class ApplicationService {
 		// read folder
 		const readUri = vscode.Uri.joinPath(uri, 'read');
 		await vscode.workspace.fs.createDirectory(readUri);
+		// input file
+		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(readUri, 'input.json'), new Uint8Array());
 		// query file
 		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(readUri, 'query.sql'), new Uint8Array());
 		// input binding file
@@ -195,7 +196,7 @@ export class ApplicationService {
 		await vscode.workspace.fs.createDirectory(vscode.Uri.joinPath(uri, 'tests'));
 	}
 
-	async addTest(testFolder: Entry): Promise<Entry> {
+	async addTest(testFolder: Entry, testType: string | undefined): Promise<Entry> {
 		const newFileName = await this.newTestFileName(testFolder);
 		const newFileUri = vscode.Uri.joinPath(testFolder.uri, newFileName);
 
@@ -204,12 +205,21 @@ export class ApplicationService {
 		if (!service?.serviceType) { // never happen unless bug
 			return {} as Entry;
 		}
-		const inputFileName = (service.serviceType === 'crud') ? 'object.json' : 'input.json';
-		const inputUri = vscode.Uri.joinPath(service.uri, inputFileName);
+		let inputUri;
+		switch (testType) {
+			case 'read': 
+				inputUri = vscode.Uri.joinPath(service.uri, 'read', 'input.json');
+				break;
+			case 'write':
+				inputUri = vscode.Uri.joinPath(service.uri, 'object.json');
+				break;
+			default:
+				inputUri = vscode.Uri.joinPath(service.uri, 'input.json');
+		}
 
 		// input and test file
 		const input = await util.readJsonFile(inputUri);
-		const content =cs.testFile(input, service.serviceType);
+		const content =cs.testFile(input, service.serviceType, testType);
 		await vscode.workspace.fs.writeFile(newFileUri, content);
 
 		//return
@@ -437,7 +447,7 @@ export class ApplicationService {
 					child.seqNo = 0;
 					break;
 				case 'tests':
-					child.type = EntryType.Tests;
+					child.type = EntryType.CrudTests;
 					child.seqNo = 1000;
 					break;
 				case 'object.json':
@@ -468,14 +478,17 @@ export class ApplicationService {
 				child.type = EntryType.Component;
 				child.componentType = componentName;
 				switch (componentName) {
-					case 'query':
+					case 'input':
 						child.seqNo = 1;
 						break;
+					case 'query':
+						child.seqNo = 2;
+						break;
 					case 'input-bindings':
-						child.seqNo = 2	;
+						child.seqNo = 3	;
 						break;
 					case 'output-bindings':
-						child.seqNo = 3;
+						child.seqNo = 4;
 						break;
 				}
 			} 
