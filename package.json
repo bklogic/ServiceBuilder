@@ -167,7 +167,7 @@
 			},
 			{
 				"command": "servicebuilderExplorer.genCrudObject",
-				"title": "Generate Object",
+				"title": "Generate Object and Read Input",
 				"icon": {
 					"light": "resources/light/note.svg",
 					"dark": "resources/dark/note.svg"
@@ -297,12 +297,7 @@
 					"when": "view == servicebuilderExplorer && viewItem == application",
 					"group": "inline@2"
 				},
-				{
-					"command": "servicebuilderExplorer.deployApplication",
-					"when": "view == servicebuilderExplorer && viewItem == application",
-					"group": "inline@3"
-				},
-				{
+				{	
 					"command": "servicebuilderExplorer.createModule",
 					"when": "view == servicebuilderExplorer && viewItem == application",
 					"group": "1-new"
@@ -346,11 +341,6 @@
 					"command": "servicebuilderExplorer.createCrudService",
 					"when": "view == servicebuilderExplorer && viewItem == module",
 					"group": "inline@3"
-				},
-				{
-					"command": "servicebuilderExplorer.deployModule",
-					"when": "view == servicebuilderExplorer && viewItem == module",
-					"group": "inline@4"
 				},
 				{
 					"command": "servicebuilderExplorer.createQueryService",
@@ -398,19 +388,9 @@
 					"group": "8-generate"
 				},
 				{
-					"command": "servicebuilderExplorer.genQueryInputOutput",
-					"when": "view == servicebuilderExplorer && viewItem == queryservice",
-					"group": "inline@1"
-				},
-				{
 					"command": "servicebuilderExplorer.genQueryInputOutputBindings",
 					"when": "view == servicebuilderExplorer && viewItem == queryservice",
 					"group": "inline@2"
-				},
-				{
-					"command": "servicebuilderExplorer.deployService",
-					"when": "view == servicebuilderExplorer && viewItem == queryservice",
-					"group": "inline@3"
 				},
 				{
 					"command": "servicebuilderExplorer.genQueryInputOutput",
@@ -448,19 +428,9 @@
 					"group": "6-modification@2"
 				},
 				{
-					"command": "servicebuilderExplorer.genSqlInputOutput",
-					"when": "view == servicebuilderExplorer && viewItem == sqlservice",
-					"group": "inline@1"
-				},
-				{
 					"command": "servicebuilderExplorer.genSqlInputOutputBindings",
 					"when": "view == servicebuilderExplorer && viewItem == sqlservice",
 					"group": "inline@2"
-				},
-				{
-					"command": "servicebuilderExplorer.deployService",
-					"when": "view == servicebuilderExplorer && viewItem == sqlservice",
-					"group": "inline@3"
 				},
 				{
 					"command": "servicebuilderExplorer.genSqlInputOutput",
@@ -496,11 +466,6 @@
 					"command": "servicebuilderExplorer.delete",
 					"when": "view == servicebuilderExplorer && viewItem == sqlservice",
 					"group": "6-modification@2"
-				},
-				{
-					"command": "servicebuilderExplorer.genCrudObject",
-					"when": "view == servicebuilderExplorer && viewItem == crudservice",
-					"group": "inline@1"
 				},
 				{
 					"command": "servicebuilderExplorer.genCrudInputOutputBindings",
@@ -511,11 +476,6 @@
 					"command": "servicebuilderExplorer.genCrudTableBindings",
 					"when": "view == servicebuilderExplorer && viewItem == crudservice",
 					"group": "inline@3"
-				},
-				{
-					"command": "servicebuilderExplorer.deployService",
-					"when": "view == servicebuilderExplorer && viewItem == crudservice",
-					"group": "inline@4"
 				},
 				{
 					"command": "servicebuilderExplorer.genCrudObject",
