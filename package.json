@@ -58,14 +58,6 @@
 				}
 			},
 			{
-				"command": "servicebuilderExplorer.configDataSource",
-				"title": "Configure Data Source",
-				"icon": {
-					"light": "resources/light/database.svg",
-					"dark": "resources/dark/database.svg"
-				}
-			},
-			{
 				"command": "servicebuilderExplorer.deployApplication",
 				"title": "Deploy Application",
 				"icon": {
@@ -203,18 +195,10 @@
 			},
 			{
 				"command": "servicebuilderEditor.testDataSource",
-				"title": "Test Data Source Configuration",
+				"title": "Test and Deploy Data Source Configuration",
 				"icon": {
 					"light": "resources/light/play.svg",
 					"dark": "resources/dark/play.svg"
-				}
-			},
-			{
-				"command": "servicebuilderEditor.applyDataSource",
-				"title": "Save and Apply Data Source Configuration",
-				"icon": {
-					"light": "resources/light/save-all.svg",
-					"dark": "resources/dark/save-all.svg"
 				}
 			},
 			{
@@ -309,11 +293,6 @@
 			],
 			"view/item/context": [
 				{
-					"command": "servicebuilderExplorer.configDataSource",
-					"when": "view == servicebuilderExplorer && viewItem == application",
-					"group": "inline@1"
-				},
-				{
 					"command": "servicebuilderExplorer.createModule",
 					"when": "view == servicebuilderExplorer && viewItem == application",
 					"group": "inline@2"
@@ -352,11 +331,6 @@
 					"command": "servicebuilderExplorer.delete",
 					"when": "view == servicebuilderExplorer && viewItem == application",
 					"group": "6-modification@2"
-				},
-				{
-					"command": "servicebuilderExplorer.configDataSource",
-					"when": "view == servicebuilderExplorer && viewItem == application",
-					"group": "9-operation@1"
 				},
 				{
 					"command": "servicebuilderExplorer.createQueryService",
@@ -616,11 +590,6 @@
 					"group": "navigation@1"
 				},
 				{
-					"command": "servicebuilderEditor.applyDataSource",
-					"when": "resourceFilename == datasource.json",
-					"group": "navigation@2"
-				},
-				{
 					"command": "servicebuilderEditor.runTest",
 					"when": "resourceFilename =~ /^test\\d{2}.json$/",
 					"group": "navigation@1"
@@ -636,11 +605,6 @@
 					"command": "servicebuilderEditor.testDataSource",
 					"when": "resourceFilename == datasource.json",
 					"group": "a_datasource@1"
-				},
-				{
-					"command": "servicebuilderEditor.applyDataSource",
-					"when": "resourceFilename == datasource.json",
-					"group": "a_datasource@2"
 				},
 				{
 					"command": "servicebuilderEditor.runTest",

@@ -348,14 +348,16 @@ export class ApplicationService {
 		let i = 1;
 		const children = await vscode.workspace.fs.readDirectory(entry.uri);		
 		return children.filter(([name, fileType]) => {
-			return !(
-				name === 'datasource.json'
-			);
+			return true;
 		}).map(([name, fileType]) => {
 			let child: Entry = this.defaultEntry(name, fileType, entry);
 			if ( name === 'application.json') {
 				child.type = EntryType.ApplicationFile;
 				child.seqNo = 0;
+			}
+			if ( name === 'datasource.json') {
+				child.type = EntryType.ApplicationFile;
+				child.seqNo = 1;
 			}
 			else if (fileType === vscode.FileType.Directory) {
 				child.type = EntryType.Module;

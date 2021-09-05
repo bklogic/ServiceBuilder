@@ -37,7 +37,8 @@ Misc:
         ✔ test: with/without commit @done(21-09-05 09:29)
         ☐ generate CRUD, name convention
     ☐ Data Source
-        ☐ remove apply button, do apply on successful test
+        ✔ remove apply button, do apply on successful test @done(21-09-05 14:30)
+        ☐ remove data source button, show data source file in explorer
     ☐ Service Builder explorer
         ☐ remove /src folder (?)
         ☐ replace context menu with more... menu (?) 
@@ -46,8 +47,9 @@ Misc:
 
 Backlog:
     Features:
-        ☐ Service Deployment Explorer - view application and service deployed on DevTime
         ☐ default README.md
+        ☐ grid view for input, output and table bindings
+        ☐ Service Deployment Explorer - view application and service deployed on DevTime
     Bugs:
         ☐ BUG: with generate table binding, column binding files not displayed in explorer
         ☐ BUG: with generate CRUD for film table, net.backlogic.persistence.servicebuilder.util.StringMatcher.minDistanceMatch line 70 throws java.util.NoSuchElementException

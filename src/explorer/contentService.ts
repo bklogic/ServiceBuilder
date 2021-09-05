@@ -10,12 +10,20 @@ export function applicationFile(applicationName: string, dbType: string, version
 }
 
 export function dataSourceFile(dbType: string): Uint8Array {		
+	let url;
+	switch(dbType) {
+		case 'mysql':
+			url = "mysql://{host}:{port}/{database}";
+			break;
+		default:
+			url = "jdbcUrl for " + dbType + " database";
+	}
 	const content = {
 		"dbType": dbType,
-		"url": "mysql://{host}:{port}/{database}",
+		"url": url,
 		"username": "",
 		"password": "",
-		"comments": "Complete url, username and password. Use editor buttons to test and save data source configuration. Password will be encrypted on the server."
+		"comments": "Complete url, username and password. Test data source using the TEST editor button."
 	};
 	return toUint8Array(content);
 }
