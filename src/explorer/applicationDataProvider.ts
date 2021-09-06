@@ -27,15 +27,15 @@ export class ApplicationDataProvider implements TreeDataProvider<Entry> {
 		switch (element.type) {
 			case EntryType.Application:
 				treeItem.iconPath = {
-					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'folder.svg'), 
-					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'folder.svg')
+					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'app-folder.svg'), 
+					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'app-folder.svg')
 				};
 				treeItem.tooltip = 'application';
 				break;
 			case EntryType.Module:
 				treeItem.iconPath = {
-					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'folder.svg'), 
-					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'folder.svg')
+					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'mod-folder.svg'), 
+					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'mod-folder.svg')
 				};
 				treeItem.tooltip = 'module';
 				break;

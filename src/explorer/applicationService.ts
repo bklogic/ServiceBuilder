@@ -330,27 +330,35 @@ export class ApplicationService {
 	}
 
 	async getChildrenForApplication(entry: Entry): Promise<Entry[]> {
+		// modules in src folder
+		const srcChildren = await this.getChildrenForApplicationSrc(entry); 
+		// files in app folder
+		const dirChildren = await this.getChildrenForApplicationDir(entry);
+		// return
+		return srcChildren.concat(dirChildren);
+	}
+
+	async getChildrenForApplicationDir(entry: Entry): Promise<Entry[]> {
 		const children = await vscode.workspace.fs.readDirectory(entry.uri);
 		return children.filter(([name, fileType]) => {
-			return !(
-				name === '.git'
+			return (
+				name === 'README.md'
 			);
 		}).map(([name, fileType]) => {
 			let child: Entry = this.defaultEntry(name, fileType, entry);
-			if (fileType === vscode.FileType.Directory && name === 'src') {
-				child.type = EntryType.ApplicationSrc;
-			} 
-			return child;;
+			return child;
 		});	
 	}
 
 	async getChildrenForApplicationSrc(entry: Entry): Promise<Entry[]> {
 		let i = 1;
-		const children = await vscode.workspace.fs.readDirectory(entry.uri);		
+		const srcUri = vscode.Uri.joinPath(entry.uri, 'src');
+		const src = this.defaultEntry('src', vscode.FileType.Directory, entry);
+		const children = await vscode.workspace.fs.readDirectory(src.uri);		
 		return children.filter(([name, fileType]) => {
 			return true;
 		}).map(([name, fileType]) => {
-			let child: Entry = this.defaultEntry(name, fileType, entry);
+			let child: Entry = this.defaultEntry(name, fileType, src);
 			if ( name === 'application.json') {
 				child.type = EntryType.ApplicationFile;
 				child.seqNo = 0;
