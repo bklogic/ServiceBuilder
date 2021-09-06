@@ -427,11 +427,28 @@ export class ApplicationExplorer {
 
 		// displace table pick
 		vscode.window.showQuickPick(tables, {ignoreFocusOut: true, placeHolder: "tables", canPickMany: true}).then( (tbls) => {
-			const options: GenerateCrudOptions = {
-				whereClause: WhereClauseType.keys, fieldNameConvention: NameConvention.CAMEL
-			};
+			const conventions = ['Camel', 'None'];
 			if (tbls) {
-				this.generateCrud(module, applicationUri, tbls, options);
+				// display name convention
+				vscode.window.showQuickPick(conventions, {ignoreFocusOut: true, placeHolder: "name conventions", canPickMany: false}).then( (convn) => {
+					if (convn) {
+						let cvn: NameConvention;
+						switch (convn) {
+							case 'Camel':
+								cvn = NameConvention.CAMEL;
+								break;
+							case 'None':
+								cvn = NameConvention.NONE;
+								break;
+							default:
+								cvn = NameConvention.CAMEL;
+						}
+						const options: GenerateCrudOptions = { whereClause: WhereClauseType.keys, fieldNameConvention: cvn };
+						this.generateCrud(module, applicationUri, tbls, options);
+					} else {
+						vscode.window.showInformationMessage('no name convention selected');
+					}
+				});
 			} else {
 				vscode.window.showInformationMessage('no table selected');
 			}
@@ -670,6 +687,7 @@ export class ApplicationExplorer {
 			const tablesUri = vscode.Uri.joinPath(service.uri, 'write', 'tables.json');
 			await util.writeJsonFile(tablesUri, tableContent);
 			vscode.window.showTextDocument(tablesUri, {preview: false});
+			this.dataProvider.fire(service);
 			this.revealTables(service);
 			// inform user
 			vscode.window.showInformationMessage('table bindings are generated');
@@ -729,7 +747,10 @@ export class ApplicationExplorer {
 
     async createCrud(mod: Entry, crud: GenerateCrudResult): Promise<void> {
 		// create service
-		await this.createService(mod, crud.serviceName, 'crud');
+		await this.appService.createService(mod, crud.serviceName, 'crud');
+
+		// add contents
+
         // object
         await util.writeJsonFile(vscode.Uri.joinPath(mod.uri, crud.serviceName, 'object.json'), crud.object);
         // input
@@ -742,13 +763,15 @@ export class ApplicationExplorer {
         await util.writeJsonFile(vscode.Uri.joinPath(mod.uri, crud.serviceName, 'read', 'output-bindings.json'), crud.outputBindings);
         // table
 		await this.createTables(vscode.Uri.joinPath(mod.uri, crud.serviceName), crud.tables);
-		// reveal table
+
+		// reveal service
 		const service = {
 			uri: vscode.Uri.joinPath(mod.uri, crud.serviceName),
 			type: EntryType.CrudService,
 			fileType: vscode.FileType.Directory,
 			parent: mod
 		} as Entry;
+		this.dataProvider.fire(mod);
 		this.treeView.reveal(service, {expand: 3, select: true});
     }
     

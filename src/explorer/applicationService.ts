@@ -280,8 +280,6 @@ export class ApplicationService {
 				return this.getChildrenForWorkspaceFolder(entry);
 			case EntryType.Application:
 				return this.getChildrenForApplication(entry);
-			// case EntryType.ApplicationSrc:
-			// 	return this.getChildrenForApplicationSrc(entry);
 			case EntryType.Module:
 				return this.getChildrenForModule(entry);
 			case EntryType.QueryService:

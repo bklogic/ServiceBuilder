@@ -81,6 +81,13 @@ export class ApplicationDataProvider implements TreeDataProvider<Entry> {
 				};
 				treeItem.tooltip = 'tests';
 				break;
+			case EntryType.CrudTests:
+				treeItem.iconPath = {
+					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'beaker.svg'), 
+					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'beaker.svg')
+				};
+				treeItem.tooltip = 'tests';
+				break;
 			default:
 				treeItem.tooltip = element.name.replace('.sql', '').replace('.json', '');
 				if (['application', 'module', 'service'].includes(treeItem.tooltip)) {

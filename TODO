@@ -28,18 +28,20 @@ Misc:
     ✔ refresh write after table binding @done(21-06-07 12:42)
     
 09/2021:
-    ☐ CRUD
+    ✔ CRUD @done(21-09-06 01:07)
         ✔ create @done(21-09-04 15:55)
         ✔ generate query binding @done(21-09-04 16:19)
         ✔ generate object @done(21-09-04 16:10)
         ✔ generate CRUD @done(21-09-04 16:04)
         ✔ test: read/write @done(21-09-05 09:28)
         ✔ test: with/without commit @done(21-09-05 09:29)
-        ☐ generate CRUD, name convention
-    ☐ Data Source
+        ✔ generate CRUD, name convention @done(21-09-06 01:07)
+        ✔ BUG: with generate table binding, column binding files not displayed in explorer @done(21-09-06 01:01)
+        ✔ BUG: with generate CRUD for actor table, files are empty @done(21-09-06 01:01)
+    ✔ Data Source @done(21-09-05 20:55)
         ✔ remove apply button, do apply on successful test @done(21-09-05 14:30)
         ✔ remove data source button, show data source file in explorer @done(21-09-05 16:55)
-    ☐ Service Builder explorer
+    ✔ Service Builder explorer @done(21-09-05 20:55)
         ✔ remove /src folder (?) @done(21-09-05 19:57)
         ✔ remove deploy button from toolbar @done(21-09-05 16:56)
         ✔ README file location @done(21-09-05 19:57)
@@ -52,8 +54,7 @@ Backlog:
         ☐ application versions
         ☐ implement copy and paste
     Bugs:
-        ☐ BUG: with generate table binding, column binding files not displayed in explorer
-        ☐ BUG: with generate CRUD for actor table, files are empty
+
     Tests:
         ☐ TEST: test Run Test with/without commit after engine review
 

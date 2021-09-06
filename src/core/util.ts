@@ -169,7 +169,6 @@ export async function readSqlFile(uri: vscode.Uri): Promise<string[]> {
 }
 
 export async function writeSqlFile(uri: vscode.Uri, lines: string[]): Promise<void> {
-    const doc = await vscode.workspace.openTextDocument(uri);
     const text = lines.join('\n');
     await vscode.workspace.fs.writeFile(uri, Buffer.from(text, 'utf8'));
 }
