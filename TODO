@@ -46,14 +46,25 @@ Misc:
         ✔ remove deploy button from toolbar @done(21-09-05 16:56)
         ✔ README file location @done(21-09-05 19:57)
     ✔ default README.md @done(21-09-05 19:58)
+    ☐ Service Deployment Explorer - view application and service deployed on DevTime
+        ☐ explorer specification
+            ☐ view
+            ☐ button
+        ☐ coding
+    ☐ application versions
+        ☐ what versions to include?  specifcation, etc
+        ☐ how to implement it?
+    ✔ implement copy and paste @done(21-09-06 11:52)
+    ✔ git init, init but no commit @done(21-09-06 08:56)
 
 Backlog:
     Features:
         ☐ grid view for input, output and table bindings
-        ☐ Service Deployment Explorer - view application and service deployed on DevTime
-        ☐ application versions
-        ☐ implement copy and paste
+        ☐ ? auto deployment, upon successful copy of application/module/service
+        
     Bugs:
+        ☐ BUG, with create module, module folder does not expand
+        ☐ DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
 
     Tests:
         ☐ TEST: test Run Test with/without commit after engine review

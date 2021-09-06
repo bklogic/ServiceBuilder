@@ -378,43 +378,108 @@ export class ApplicationExplorer {
 	}
 
 	async rename(entry: Entry, name: string): Promise<void> {
-		try {
-			let newEntry: Entry;
-			if (entry.parent) { 
-				await this.appService.rename(entry.uri, vscode.Uri.joinPath(entry.parent.uri, name));
-				const parent = (entry.parent.name === 'src') ? entry.parent.parent : entry.parent;
-				if (parent === null) { 
-					vscode.window.showErrorMessage("Parent is null. Should never happen.");
-					return;
-				}; 
-				this.dataProvider.fire(parent);
-				newEntry = this.appService.defaultEntry(name, entry.fileType, entry.parent);
-			} else {
-				await this.appService.rename(entry.uri, vscode.Uri.joinPath(this.dataProvider.workfolder.uri, name));
-				this.refresh();
-				newEntry = this.appService.defaultEntry(name, entry.fileType, this.dataProvider.workfolder);
-				newEntry.parent = null;
-			}
-			this.treeView.reveal(newEntry, {focus: true});	
-		} catch (error) {
-			let message: string;
-			switch (error.code) {
-				case 'FileExists':
-					message = 'Name exists.';
-					break;
-				default:
-					message = error.message;
-			}
-			vscode.window.showErrorMessage(message);
+		// get target uri
+		let targetUri: vscode.Uri;
+		if (entry.parent) {
+			targetUri = vscode.Uri.joinPath(entry.parent.uri, name);
+		} else { // application
+			targetUri = vscode.Uri.joinPath(this.dataProvider.workfolder.uri, name);
 		}
+
+		// check target exists
+		if (await this.appService.fileExists(targetUri)) {
+			vscode.window.setStatusBarMessage('target name exists');
+			return;
+		}
+
+		// rename
+		try {
+			await this.appService.rename(entry.uri, targetUri);
+		} catch (error) {
+			vscode.window.showErrorMessage(error.message);
+		}
+
+		// show
+		if (!entry.parent) {
+			this.dataProvider.refresh();
+		}
+		else if (entry.parent.name === 'src') {
+			this.dataProvider.fire(entry.parent.parent || entry.parent);
+		} else {
+			this.dataProvider.fire(entry.parent);
+		}
+
+		// try {
+		// 	let newEntry: Entry;
+		// 	if (entry.parent) { 
+		// 		await this.appService.rename(entry.uri, vscode.Uri.joinPath(entry.parent.uri, name));
+		// 		const parent = (entry.parent.name === 'src') ? entry.parent.parent : entry.parent;
+		// 		if (parent === null) { 
+		// 			vscode.window.showErrorMessage("Parent is null. Should never happen.");
+		// 			return;
+		// 		}; 
+		// 		this.dataProvider.fire(parent);
+		// 		newEntry = this.appService.defaultEntry(name, entry.fileType, entry.parent);
+		// 	} else {
+		// 		await this.appService.rename(entry.uri, vscode.Uri.joinPath(this.dataProvider.workfolder.uri, name));
+		// 		this.refresh();
+		// 		newEntry = this.appService.defaultEntry(name, entry.fileType, this.dataProvider.workfolder);
+		// 		newEntry.parent = null;
+		// 	}
+		// 	this.treeView.reveal(newEntry, {focus: true});	
+		// } catch (error) {
+		// 	let message: string;
+		// 	switch (error.code) {
+		// 		case 'FileExists':
+		// 			message = 'Name exists.';
+		// 			break;
+		// 		default:
+		// 			message = error.message;
+		// 	}
+		// 	vscode.window.showErrorMessage(message);
+		// }
 	}
 
 	private copy(entry: Entry) {
-		console.log('copy ' + entry.type);
+		vscode.env.clipboard.writeText(JSON.stringify(entry));
 	}
 
-	private paste(entry: Entry) {
-		console.log('paste ' + entry.type);
+	private async paste(target: Entry) {
+		// retrieve source
+		const text = await vscode.env.clipboard.readText();
+		if (!text) {
+			vscode.window.setStatusBarMessage('Nothing to paste.');
+			return;
+		}
+		let source: Entry;
+		try {
+			source = JSON.parse(text) as Entry;
+		} catch (error) {
+			vscode.window.setStatusBarMessage('No entry to paste');
+			return;
+		}
+		// copy target
+		let targetUri: vscode.Uri;
+		if (source.type === EntryType.Application && target.type === EntryType.Application) {
+			targetUri = await this.appService.getCopyTarget(source.name, this.dataProvider.workfolder.uri);
+			await this.appService.copy(source.uri, targetUri);
+			this.dataProvider.refresh();
+		} 
+		else if (source.type === EntryType.Module && target.type === EntryType.Application) {
+			targetUri = await this.appService.getCopyTarget(source.name, vscode.Uri.joinPath(target.uri, 'src'));
+			await this.appService.copy(source.uri, targetUri);
+			this.dataProvider.fire(target);
+		} 
+		else if (( source.type === EntryType.QueryService 
+					|| source.type === EntryType.SqlService 
+					|| source.type === EntryType.CrudService 
+				) && target.type === EntryType.Module ) {
+			targetUri = await this.appService.getCopyTarget(source.name, target.uri);
+			await this.appService.copy(source.uri, targetUri);
+			this.dataProvider.fire(target);
+		} else {
+			vscode.window.setStatusBarMessage('Not right target to paste');
+		}
 	}
 
 	async onGenerateCrud(module: Entry) {

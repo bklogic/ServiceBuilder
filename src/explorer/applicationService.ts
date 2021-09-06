@@ -38,10 +38,7 @@ export class ApplicationService {
 		await vscode.workspace.fs.createDirectory(vscode.Uri.joinPath(app.uri, 'src'));
 		// application file
 		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(app.uri, 'src', 'application.json'), cs.applicationFile(name, dbType, versions));
-			// .then( () => {
-			// 	// init git repository
-			// 	this.initGit(uri);
-			// });
+
 		// datasource file
 		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(app.uri, 'src', 'datasource.json'), cs.dataSourceFile(dbType));
 
@@ -51,15 +48,17 @@ export class ApplicationService {
 		const readmeUri = vscode.Uri.joinPath(app.uri, 'README.md');
 		await vscode.workspace.fs.copy(templateUri, readmeUri);
 
+		// init git repository
+		await this.initGit(app.uri);
+
 		// return 
 		return app;
 	}
 
-	private initGit(appUri: vscode.Uri): void {
+	private initGit(appUri: vscode.Uri): Promise<void> {
 		const extension = vscode.extensions.getExtension<GitExtension>('vscode.git') as vscode.Extension<GitExtension>;
 		if (!extension) {
-			const msg = 'vscode git extension not found.';
-			console.error(msg);
+			console.error('vscode git extension is missing.');
 		}
 		const gitExtension = extension.exports;
 		const git = gitExtension.getAPI(1);
@@ -68,8 +67,10 @@ export class ApplicationService {
 			   console.log(repository);
 		   })
 		   .catch ( error => {
+			   console.error('git init error:');
 			   console.error(error);
 		   });
+		return Promise.resolve();
 	}
 
 	/**
@@ -254,11 +255,20 @@ export class ApplicationService {
 		await vscode.workspace.fs.rename(uri, newUri, {overwrite: false});
 	}
 
-	public copy(source: vscode.Uri, target: vscode.Uri) {
-		vscode.workspace.fs.copy(source, target, {overwrite: false});
+	async getCopyTarget(name: string, target: vscode.Uri): Promise<vscode.Uri> {
+		const uri = vscode.Uri.joinPath(target, name);
+		if (await util.fileExists(uri)) {
+			return this.getCopyTarget(name + '_copy', target);
+		} else {
+			return uri;
+		}
 	}
 
-	public move(source: vscode.Uri, target: vscode.Uri) {
+	async copy(source: vscode.Uri, target: vscode.Uri): Promise<void> {
+		await vscode.workspace.fs.copy(source, target, {overwrite: false});
+	}
+
+	async move(source: vscode.Uri, target: vscode.Uri): Promise<void> {
 		vscode.workspace.fs.rename(source, target, {overwrite: false});
 	}
 
