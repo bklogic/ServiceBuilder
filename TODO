@@ -40,16 +40,17 @@ Misc:
         ✔ remove apply button, do apply on successful test @done(21-09-05 14:30)
         ✔ remove data source button, show data source file in explorer @done(21-09-05 16:55)
     ☐ Service Builder explorer
-        ☐ remove /src folder (?)
+        ✔ remove /src folder (?) @done(21-09-05 19:57)
         ✔ remove deploy button from toolbar @done(21-09-05 16:56)
-        ☐ README file location
+        ✔ README file location @done(21-09-05 19:57)
+    ✔ default README.md @done(21-09-05 19:58)
 
 Backlog:
     Features:
-        ☐ default README.md
         ☐ grid view for input, output and table bindings
         ☐ Service Deployment Explorer - view application and service deployed on DevTime
         ☐ application versions
+        ☐ implement copy and paste
     Bugs:
         ☐ BUG: with generate table binding, column binding files not displayed in explorer
         ☐ BUG: with generate CRUD for actor table, files are empty

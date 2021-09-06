@@ -8,21 +8,26 @@ Now that you have created the application, you want further to
 
 - configure the data source for the application
 - create data access module(s)
-- create and test data access service
+- create and test data access service(s), and
 - push the application into a GIT repository for runtime deployment
+
+You may find how to do the first three steps in the Tutorial. For the last step, we assume that you are familiar with the process to init a local GIT repository within the application folder and to push the application into your remote GIT repository.
 
 ## DEV Deployment
 
-- The application is automatically deployed to your workspace as the application and modules are created and the services are test succeessful. However, you can always sync your workspace with your Service Builder using the application sync button.
+The application is automatically deployed to your workspace as the application and modules are created and the services are tested succeessful. However, you can always deploy an application, module or service manually to the workspace using the context menu, as needed.
 
 ## Runtime Deployment
 
-- Instrauction is here.
+You will need
 
-No dependency
+- Register your AWS account as a runtime enviroment
+- Create a runtime instance in your VPC, and then
+- Deploy your application to the runtime instance from your GIT repository
+
+all from the Service Console.
 
 ## Help
 
 - for questions on how to specify data access services, you may post them to stackoverflow
 - for bugs, features or requests, you may post them to our GITHUB repository.
-

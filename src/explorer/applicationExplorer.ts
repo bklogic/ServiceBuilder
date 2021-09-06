@@ -352,8 +352,13 @@ export class ApplicationExplorer {
 		try {
 			await this.appService.delete(entry.uri);
 			if (entry.parent) {
-				this.dataProvider.fire(entry.parent);
-				this.treeView.reveal(entry.parent, {focus: true, select: true});
+				const parent = (entry.parent.name === 'src') ? entry.parent.parent : entry.parent;
+				if (parent === null) { 
+					vscode.window.showErrorMessage("Parent is null. Should never happen.");
+					return;
+				}; 
+				this.dataProvider.fire(parent);
+				this.treeView.reveal(parent, {focus: true, select: true});
 			} else {
 				this.refresh();
 			}	
@@ -377,7 +382,12 @@ export class ApplicationExplorer {
 			let newEntry: Entry;
 			if (entry.parent) { 
 				await this.appService.rename(entry.uri, vscode.Uri.joinPath(entry.parent.uri, name));
-				this.dataProvider.fire(entry.parent);
+				const parent = (entry.parent.name === 'src') ? entry.parent.parent : entry.parent;
+				if (parent === null) { 
+					vscode.window.showErrorMessage("Parent is null. Should never happen.");
+					return;
+				}; 
+				this.dataProvider.fire(parent);
 				newEntry = this.appService.defaultEntry(name, entry.fileType, entry.parent);
 			} else {
 				await this.appService.rename(entry.uri, vscode.Uri.joinPath(this.dataProvider.workfolder.uri, name));
