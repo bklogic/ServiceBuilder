@@ -46,22 +46,27 @@ Misc:
         ✔ remove deploy button from toolbar @done(21-09-05 16:56)
         ✔ README file location @done(21-09-05 19:57)
     ✔ default README.md @done(21-09-05 19:58)
-    ☐ Service Deployment Explorer - view application and service deployed on DevTime
-        ☐ explorer specification
-            ☐ view
-            ☐ button
-        ☐ coding
-    ☐ application versions
-        ☐ what versions to include?  specifcation, etc
-        ☐ how to implement it?
     ✔ implement copy and paste @done(21-09-06 11:52)
     ✔ git init, init but no commit @done(21-09-06 08:56)
+    ☐ Service Deployment Explorer - view application and service deployed on DevTime @started(21-09-06 15:12)
+        ☐ explorer specification @started(21-09-06 15:15)
+            ☐ name - service deployment
+            ☐ view  - application/module/services (how to indicate state?)
+            ☐ button - application: view data source;  service: generate tests as one http file for REST Client
+        ☐ coding
+            ☐ view
+            ☐ buttons
+                ☐ view data source
+                ☐ generate tests
 
 Backlog:
     Features:
         ☐ grid view for input, output and table bindings
-        ☐ ? auto deployment, upon successful copy of application/module/service
-        
+        ☐ ? auto deployment, upon successful copying application, module, service
+        ☐ application versions
+            ☐ what versions to include?  specifcation, etc
+            ☐ how to implement it?
+
     Bugs:
         ☐ BUG, with create module, module folder does not expand
         ☐ DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.

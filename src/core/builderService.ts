@@ -3,10 +3,11 @@ import * as vscode from 'vscode';
 import {HttpService} from './httpService';
 
 export class BuilderService {
+
 	private http: HttpService;
 
-	constructor(context: vscode.ExtensionContext) {
-		this.http = new HttpService(context);
+	constructor(http: HttpService) {
+		this.http = http;
 	}
 
 	/**

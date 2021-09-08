@@ -248,6 +248,43 @@
 					"light": "resources/light/debug-rerun.svg",
 					"dark": "resources/dark/debug-rerun.svg"
 				}
+			},
+
+			{
+				"command": "servicedeploymentExplorer.openResource",
+				"title": "Open File"
+			},
+			{
+				"command": "servicedeploymentExplorer.refresh",
+				"title": "Refresh Explorer",
+				"icon": {
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
+			},
+			{
+				"command": "servicedeploymentExplorer.refreshAppList",
+				"title": "Refresh Application List",
+				"icon": {
+					"light": "resources/light/list-flat.svg",
+					"dark": "resources/dark/list-flat.svg"
+				}
+			},
+			{
+				"command": "servicedeploymentExplorer.refreshApplication",
+				"title": "Reload Application",
+				"icon": {
+					"light": "resources/light/sync.svg",
+					"dark": "resources/dark/sync.svg"
+				}
+			},
+			{
+				"command": "servicedeploymentExplorer.loadTest",
+				"title": "Generate Tests",
+				"icon": {
+					"light": "resources/light/beaker.svg",
+					"dark": "resources/dark/beaker.svg"
+				}
 			}
 		],
 		"views": {
@@ -255,6 +292,10 @@
 				{
 					"id": "servicebuilderExplorer",
 					"name": "Service Builder"
+				},
+				{
+					"id": "servicedeploymentExplorer",
+					"name": "Service Deployment"
 				}
 			]
 		},
@@ -289,6 +330,17 @@
 					"command": "servicebuilderExplorer.refresh",
 					"when": "view == servicebuilderExplorer",
 					"group": "navigation@7"
+				},
+
+				{
+					"command": "servicedeploymentExplorer.refresh",
+					"when": "view == servicedeploymentExplorer",
+					"group": "navigation@7"
+				},
+				{
+					"command": "servicedeploymentExplorer.refreshAppList",
+					"when": "view == servicedeploymentExplorer",
+					"group": "more@5"
 				}
 			],
 			"view/item/context": [
@@ -541,6 +593,26 @@
 					"command": "servicebuilderExplorer.delete",
 					"when": "view == servicebuilderExplorer && viewItem == testfile",
 					"group": "inline@2"
+				},
+				{
+					"command": "servicedeploymentExplorer.refreshApplication",
+					"when": "view == servicedeploymentExplorer && viewItem == application",
+					"group": "inline@1"
+				},
+				{
+					"command": "servicedeploymentExplorer.loadTest",
+					"when": "view == servicedeploymentExplorer && viewItem == queryservice",
+					"group": "inline@1"
+				},
+				{
+					"command": "servicedeploymentExplorer.loadTest",
+					"when": "view == servicedeploymentExplorer && viewItem == sqlservice",
+					"group": "inline@1"
+				},
+				{
+					"command": "servicedeploymentExplorer.loadTest",
+					"when": "view == servicedeploymentExplorer && viewItem == crudservice",
+					"group": "inline@1"
 				}
 			],
 			"editor/title": [

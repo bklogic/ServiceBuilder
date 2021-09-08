@@ -15,6 +15,15 @@ export function createGetWorkspaceUtil(context: vscode.ExtensionContext): void {
     };
 }
 
+export function getWorkFolder(): vscode.WorkspaceFolder | undefined {
+		// if no workspace folders
+		if (!vscode.workspace.workspaceFolders) {
+			return;
+		}
+		// otherwise, set element to workspace folder if element is passed in
+		return vscode.workspace.workspaceFolders.filter(folder => folder.uri.scheme === 'file')[0];
+}
+
 export function applicationUriForDataSource(dataSourcePath: string) {
     return applicationUri(fromDataSource(dataSourcePath));
 }
@@ -205,6 +214,13 @@ export function toUint8Array(content: any): Uint8Array {
 	return Buffer.from(JSON.stringify(content, null, 4), 'utf8');
 }
 
+export function strToBuffer(str: string): Uint8Array {
+    const buffer = new Uint8Array( new ArrayBuffer(str.length) );
+    for (let i = 0; i < str.length; i++) {
+        buffer[i] = str.charCodeAt(i);
+    }
+    return buffer;
+}
 
 export class DoubleClick {
 	clickInterval = 500;

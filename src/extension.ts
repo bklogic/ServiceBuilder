@@ -6,19 +6,22 @@ import { BuilderService } from './core/builderService';
 import { ApplicationExplorer } from './explorer/applicationExplorer';
 import { DataSourceEditor } from './editor/dataSourceEditor';
 import { TestEditor } from './editor/testEditor';
+import { DeployService } from './core/deployService';
+import { DeploymentExplorer } from './explorer/deploymentExplorer';
+import { HttpService } from './core/httpService';
 
 // this method is called when your extension is activated
 export function activate(context: vscode.ExtensionContext) {
 	// check env
-	const ws = process.env.WORKSPACE; 
-	const url = process.env.BUILDERURL;
-	const token = process.env.BUILDERTOKEN;
+	let ws = process.env.WORKSPACE; 
+	let url = process.env.BUILDERURL;
+	let token = process.env.BUILDERTOKEN;
 	if (ws) {
-		console.log("preset workspace: " + ws);
+		console.log("preset builder workspace: " + ws);
 		context.secrets.store('servicebuilder.workspace', ws);
 	}
 	if (url) {
-		console.log("preset builder: " + url);
+		console.log("preset builder url: " + url);
 		context.secrets.store('servicebuilder.url', url);
 	}
 	if (token) {
@@ -29,7 +32,9 @@ export function activate(context: vscode.ExtensionContext) {
 	util.createGetWorkspaceUtil(context);
 
 	// construct builder service
-	const builderService = new BuilderService(context);
+	const httpService = new HttpService(context);
+	const builderService = new BuilderService(httpService);
+	const deployService = new DeployService(httpService);
 
 	// register viewVersion command
 	let disposable = vscode.commands.registerCommand('servicebuilder.versions', () => {
@@ -43,6 +48,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// explorer
 	new ApplicationExplorer(context, builderService);
+	new DeploymentExplorer(context, deployService);
 
 	// editors
 	new DataSourceEditor(context, builderService);
