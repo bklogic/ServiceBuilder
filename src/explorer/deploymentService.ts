@@ -99,7 +99,7 @@ export class DeploymentService {
         const tests = await this.deployService.getTests(service.uri);
 
         // build tests contents
-        let content : string[] = [];
+        let content : string[] = ['', '## Tests to run with REST Client for Visual Studio Code', ''];
         for (let test of tests) {
             content = content.concat( this.writeTest(test, builderUrl, token, service.type));
         }
@@ -111,8 +111,6 @@ export class DeploymentService {
 
     writeTest(test: Test, builderUrl: string, token: string | undefined, serviceType: ItemType): string[] {
         const content : string[] = []; 
-        content.push('');       
-        content.push('');       
         content.push(`### ${test.testId} - ${test.name}`); 
         if (serviceType === ItemType.CrudService) {
             content.push(`POST ${builderUrl}/${test.serviceUri}/${test.operation}`);     
@@ -123,6 +121,8 @@ export class DeploymentService {
         content.push(`Authorization: Bearer ${token}`);       
         content.push('');       
         content.push( JSON.stringify(test.input, null, 4) );    
+        content.push('');       
+        content.push('');       
         return content;   
     }
 

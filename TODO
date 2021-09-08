@@ -49,15 +49,20 @@ Misc:
     ✔ implement copy and paste @done(21-09-06 11:52)
     ✔ git init, init but no commit @done(21-09-06 08:56)
     ☐ Service Deployment Explorer - view application and service deployed on DevTime @started(21-09-06 15:12)
-        ☐ explorer specification @started(21-09-06 15:15)
-            ☐ name - service deployment
-            ☐ view  - application/module/services (how to indicate state?)
-            ☐ button - application: view data source;  service: generate tests as one http file for REST Client
-        ☐ coding
-            ☐ view
-            ☐ buttons
-                ☐ view data source
-                ☐ generate tests
+        ✔ explorer specification @started(21-09-06 15:15) @done(21-09-08 10:35) @lasted(1d19h20m25s)
+            ✔ name - service deployment @done(21-09-08 10:36)
+            ✔ view  - application/module/services (how to indicate state?) @done(21-09-08 10:36)
+            ✔ button - application: view data source;  service: generate tests as one http file for REST Client @done(21-09-08 10:36)
+        ✔ coding @done(21-09-08 10:35)
+            ✔ view @done(21-09-08 10:36)
+            ✔ buttons @done(21-09-08 10:36)
+                ✔ refresh app list @done(21-09-08 10:37)
+                ✔ refresh application @done(21-09-08 10:37)
+                ✔ generate tests @done(21-09-08 10:36)
+        ☐ Features
+            ☐ view data source @started(21-09-08 10:37)
+            ☐ view service spec
+            ☐ service state: valid vs invalid
 
 Backlog:
     Features:
