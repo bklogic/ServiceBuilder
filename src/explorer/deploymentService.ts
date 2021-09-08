@@ -228,7 +228,8 @@ export class DeploymentService {
                     uri: service.uri,
                     type: this.itemType(service.serviceType),
                     name: name,
-                    fileType: vscode.FileType.Directory,
+                    state: service.state,
+                    fileType: (service.state === 'valid') ? vscode.FileType.Directory : vscode.FileType.File,
                     fileUri: vscode.Uri.joinPath(mod.fileUri, name),
                     parent: mod
                 } as Item;

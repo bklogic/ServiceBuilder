@@ -3,6 +3,7 @@ import * as path from 'path';
 import { TreeDataProvider } from "vscode";
 import {DeploymentService} from "./DeploymentService";
 import {Item, ItemType} from './deploymentModel';
+import { crudServiceFile } from './contentService';
 
 
 export class DeploymentDataProvider implements TreeDataProvider<Item> {
@@ -39,30 +40,31 @@ export class DeploymentDataProvider implements TreeDataProvider<Item> {
 				break;
 			case ItemType.QueryService:
 				treeItem.iconPath = {
-					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'window.svg'), 
-					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'window.svg')
+					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', ((element.state === 'valid') ? 'query-service.svg' : 'invalid-query.svg')), 
+					light: path.join(__filename, '..', '..', '..', 'resources', 'light', ((element.state === 'valid') ? 'query-service.svg' : 'invalid-query.svg'))
 				};
 				treeItem.tooltip = 'query service';
 				break;
 			case ItemType.SqlService:
 				treeItem.iconPath = {
-					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'server-process.svg'), 
-					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'server-process.svg')
+					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', ((element.state === 'valid') ? 'sql-service.svg' : 'invalid-sql.svg')), 
+					light: path.join(__filename, '..', '..', '..', 'resources', 'light', ((element.state === 'valid') ? 'sql-service.svg' : 'invalid-sql.svg'))
 				};
 				treeItem.tooltip = 'sql service';
 				break;			
 			case ItemType.CrudService:
 				treeItem.iconPath = {
-					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'symbol-method.svg'), 
-					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'symbol-method.svg')
+					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', ((element.state === 'valid') ? 'crud-service.svg' : 'invalid-crud.svg')), 
+					light: path.join(__filename, '..', '..', '..', 'resources', 'light', ((element.state === 'valid') ? 'crud-service.svg' : 'invalid-crud.svg'))
 				};
-				treeItem.tooltip = 'crud service';
+				treeItem.tooltip = ((element.state === 'valid') ? '' : 'invalid ') + 'crud service';
 				break;		
-        }	
+		}	
 		treeItem.id = element.uri;
 		treeItem.label = element.name;
 		treeItem.description = false;
-		treeItem.contextValue = element.type.toString();
+		treeItem.contextValue = ( element.type === ItemType.Application || element.type === ItemType.Module || element.state === 'valid') 
+				? element.type.toString() : ItemType.InvalidService;
 		return treeItem;
 	}
 

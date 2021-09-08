@@ -670,6 +670,11 @@
 					"command": "servicedeploymentExplorer.viewService",
 					"when": "view == servicedeploymentExplorer && viewItem == crudservice",
 					"group": "view@2"
+				},
+				{
+					"command": "servicedeploymentExplorer.viewService",
+					"when": "view == servicedeploymentExplorer && viewItem == invalidservice",
+					"group": "inline@2"
 				}
 			],
 			"editor/title": [

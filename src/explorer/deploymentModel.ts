@@ -4,6 +4,7 @@ export interface Item {
 	uri: string;
 	type: ItemType;
 	name: string;
+	state: string;
 	fileType: vscode.FileType;
 	fileUri: vscode.Uri;
 	parent: Item | null;
@@ -23,6 +24,8 @@ export enum ItemType {
 	CrudService = 'crudservice', 
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	Tests = 'tests', 
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	InvalidService = 'invalidservice', 
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	Other = 'other', 
 }
