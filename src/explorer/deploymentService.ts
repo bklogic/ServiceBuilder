@@ -113,9 +113,9 @@ export class DeploymentService {
         const content : string[] = []; 
         content.push(`### ${test.testId} - ${test.name}`); 
         if (serviceType === ItemType.CrudService) {
-            content.push(`POST ${builderUrl}/${test.serviceUri}/${test.operation}`);     
+            content.push(`POST ${builderUrl}/service/${test.serviceUri}/${test.operation}`);     
         } else {
-            content.push(`POST ${builderUrl}/${test.serviceUri}`);     
+            content.push(`POST ${builderUrl}/service/${test.serviceUri}`);     
         }
         content.push('Content-Type: application/json');       
         content.push(`Authorization: Bearer ${token}`);       
@@ -278,6 +278,26 @@ export class DeploymentService {
     async loadTests(service: Item): Promise<void> {
         // get tests
         const tests = await this.deployService.getTests(service.uri);
+    }
+
+    async loadDataSource(app: Item): Promise<vscode.Uri> {
+        // get data source
+        const datasource = await this.deployService.getDataSource(app.uri);
+        // write data source
+        const docUri = vscode.Uri.joinPath(app.fileUri, '.datasource');
+        await util.writeJsonFile(docUri, datasource);
+        // return
+        return docUri;
+    }
+
+    async loadService(service: Item): Promise<vscode.Uri> {
+        // get data source
+        const spec = await this.deployService.getService(service.uri);
+        // write data source
+        const docUri = vscode.Uri.joinPath(service.fileUri, '.service');
+        await util.writeJsonFile(docUri, spec);
+        // return
+        return docUri;
     }
 
 }

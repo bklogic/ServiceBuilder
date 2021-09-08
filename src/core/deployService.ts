@@ -28,9 +28,16 @@ export class DeployService {
 
 	async getDataSource(appUri: string): Promise<DataSource> {
 		const url = '/deploy/getDataSource/' + appUri;
-		const dataSource = await this.http.post(url, {});
+		const dataSource = await this.http.get(url);
 		return dataSource;
 	}
+
+	async getService(serviceUri: string): Promise<DataSource> {
+		const url = '/deploy/getService/' + serviceUri;
+		const service = await this.http.get(url);
+		return service;
+	}
+
 }
 
 export interface Application {

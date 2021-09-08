@@ -24,6 +24,8 @@ export class DeploymentExplorer {
 		vscode.commands.registerCommand('servicedeploymentExplorer.refreshAppList', () => this.refreshAppList());
 		vscode.commands.registerCommand('servicedeploymentExplorer.refreshApplication', (resource) => this.refreshApplication(resource));
 		vscode.commands.registerCommand('servicedeploymentExplorer.loadTest', (resource) => this.loadTest(resource));
+		vscode.commands.registerCommand('servicedeploymentExplorer.viewDataSource', (resource) => this.viewDataSource(resource));
+		vscode.commands.registerCommand('servicedeploymentExplorer.viewService', (resource) => this.viewService(resource));
     }
 
 	openResource(resource: Item): void {
@@ -69,4 +71,23 @@ export class DeploymentExplorer {
         }
     }
 
+    async viewDataSource(app: Item): Promise<void> {
+        try {
+            const docUri = await this.deploymentService.loadDataSource(app);
+            vscode.window.showTextDocument(docUri);
+            vscode.window.setStatusBarMessage('data source loaded.');
+        } catch (error) {
+            vscode.window.showErrorMessage(error.message);
+        }
+    }
+
+    async viewService(service: Item): Promise<void> {
+        try {
+            const docUri = await this.deploymentService.loadService(service);
+            vscode.window.showTextDocument(docUri);
+            vscode.window.setStatusBarMessage('service loaded.');
+        } catch (error) {
+            vscode.window.showErrorMessage(error.message);
+        }
+    }
 }

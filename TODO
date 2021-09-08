@@ -60,8 +60,8 @@ Misc:
                 ✔ refresh application @done(21-09-08 10:37)
                 ✔ generate tests @done(21-09-08 10:36)
         ☐ Features
-            ☐ view data source @started(21-09-08 10:37)
-            ☐ view service spec
+            ✔ view data source @started(21-09-08 10:37) @done(21-09-08 12:30) @lasted(1h53m41s)
+            ✔ view service spec @done(21-09-08 12:30)
             ☐ service state: valid vs invalid
 
 Backlog:

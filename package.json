@@ -285,6 +285,22 @@
 					"light": "resources/light/beaker.svg",
 					"dark": "resources/dark/beaker.svg"
 				}
+			},
+			{
+				"command": "servicedeploymentExplorer.viewDataSource",
+				"title": "View Data Source",
+				"icon": {
+					"light": "resources/light/database.svg",
+					"dark": "resources/dark/database.svg"
+				}
+			},
+			{
+				"command": "servicedeploymentExplorer.viewService",
+				"title": "View Service",
+				"icon": {
+					"light": "resources/light/book.svg",
+					"dark": "resources/dark/book.svg"
+				}
 			}
 		],
 		"views": {
@@ -594,10 +610,21 @@
 					"when": "view == servicebuilderExplorer && viewItem == testfile",
 					"group": "inline@2"
 				},
+
 				{
 					"command": "servicedeploymentExplorer.refreshApplication",
 					"when": "view == servicedeploymentExplorer && viewItem == application",
 					"group": "inline@1"
+				},
+				{
+					"command": "servicedeploymentExplorer.refreshApplication",
+					"when": "view == servicedeploymentExplorer && viewItem == application",
+					"group": "ctx@1"
+				},
+				{
+					"command": "servicedeploymentExplorer.viewDataSource",
+					"when": "view == servicedeploymentExplorer && viewItem == application",
+					"group": "view@2"
 				},
 				{
 					"command": "servicedeploymentExplorer.loadTest",
@@ -613,6 +640,36 @@
 					"command": "servicedeploymentExplorer.loadTest",
 					"when": "view == servicedeploymentExplorer && viewItem == crudservice",
 					"group": "inline@1"
+				},
+				{
+					"command": "servicedeploymentExplorer.loadTest",
+					"when": "view == servicedeploymentExplorer && viewItem == queryservice",
+					"group": "ctx@1"
+				},
+				{
+					"command": "servicedeploymentExplorer.loadTest",
+					"when": "view == servicedeploymentExplorer && viewItem == sqlservice",
+					"group": "ctx@1"
+				},
+				{
+					"command": "servicedeploymentExplorer.loadTest",
+					"when": "view == servicedeploymentExplorer && viewItem == crudservice",
+					"group": "ctx@1"
+				},
+				{
+					"command": "servicedeploymentExplorer.viewService",
+					"when": "view == servicedeploymentExplorer && viewItem == queryservice",
+					"group": "view@2"
+				},
+				{
+					"command": "servicedeploymentExplorer.viewService",
+					"when": "view == servicedeploymentExplorer && viewItem == sqlservice",
+					"group": "view@2"
+				},
+				{
+					"command": "servicedeploymentExplorer.viewService",
+					"when": "view == servicedeploymentExplorer && viewItem == crudservice",
+					"group": "view@2"
 				}
 			],
 			"editor/title": [
