@@ -118,8 +118,8 @@ export class BuilderService {
 
 // data model
 export interface Versions {
-	specification: string; 
 	engine: string; 
+	deployer: string; 
 	builder: string
 }
 

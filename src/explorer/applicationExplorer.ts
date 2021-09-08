@@ -125,8 +125,8 @@ export class ApplicationExplorer {
 				Name: ${workspace.name} \n
 				Url: ${workspace.url} \n
 				Versions: 
-					specification:  ${workspace.versions.specification}
 					engine:  ${workspace.versions.engine}
+					deployer:  ${workspace.versions.deployer}
 					builder:  ${workspace.versions.builder}`,
 				{ modal: true },
 				"OK"

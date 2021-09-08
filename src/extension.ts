@@ -40,7 +40,7 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerCommand('servicebuilder.versions', () => {
 		const versions = builderService.getBuilderVersions()
 			.then( versions => {
-				const msg = `Specification: ${versions.specification} | Engine: ${versions.engine} | Builder: ${versions.builder}.`;
+				const msg = `Engine: ${versions.engine} | Deployer: ${versions.deployer} | Builder: ${versions.builder}.`;
 				vscode.window.showInformationMessage(msg);
 			});
 	});	
