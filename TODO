@@ -48,7 +48,7 @@ Misc:
     ✔ default README.md @done(21-09-05 19:58)
     ✔ implement copy and paste @done(21-09-06 11:52)
     ✔ git init, init but no commit @done(21-09-06 08:56)
-    ✔ Service Deployment Explorer - view application and service deployed on DevTime @started(21-09-06 15:12) @done(21-09-08 17:15) @lasted(2d2h3m45s)
+    ☐ Service Deployment Explorer - view application and service deployed on DevTime @started(21-09-06 15:12)
         ✔ explorer specification @started(21-09-06 15:15) @done(21-09-08 10:35) @lasted(1d19h20m25s)
             ✔ name - service deployment @done(21-09-08 10:36)
             ✔ view  - application/module/services (how to indicate state?) @done(21-09-08 10:36)
@@ -63,9 +63,12 @@ Misc:
             ✔ view data source @started(21-09-08 10:37) @done(21-09-08 12:30) @lasted(1h53m41s)
             ✔ view service spec @done(21-09-08 12:30)
             ✔ service state: valid vs invalid @done(21-09-08 14:14)
+            ☐ clean application
     ✔ application versions @done(21-09-08 16:25)
         ✔ what versions to include?  specification, etc @done(21-09-08 16:25)
         ✔ how to implement it? @done(21-09-08 16:25)
+    ✔ TEST: test Run Test with/without commit after engine review @done(21-09-08 21:46)
+    ✔ TEST: CRUD specification and delete operation @done(21-09-08 21:46)
 
 Backlog:
     Features:
@@ -81,10 +84,10 @@ Backlog:
         ☐ DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
         ☐ message saying no application is available when data source is not configured.
             net.backlogic.persistence.engine.EngineException: Unavailable application: gold/myApp10
+        ☐ Exception in thread "File Watcher" java.lang.NullPointerException: Cannot invoke method invalidate() on null object
+        at net.backlogic.persistence.servicerepository.file.FileServiceRepository.postDataSourceChange(FileServiceRepository.java:513)
 
     Tests:
-        ☐ TEST: test Run Test with/without commit after engine review
-        ☐ TEST: CRUD specification and delete operation
 
     Engine Bugs:
         ☐ groovy.sql.Sql : Nothing has been added to batch. This might cause the JDBC driver to throw an exception.

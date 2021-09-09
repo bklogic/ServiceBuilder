@@ -68,10 +68,6 @@ export class DeploymentDataProvider implements TreeDataProvider<Item> {
 		return treeItem;
 	}
 
-	isInvalidService (type: ItemType, state: string): boolean {
-		return ([ItemType.QueryService, ItemType.SqlService, ItemType.CrudService].indexOf(type) > -1) && (state === 'valid');
-	}
-
 	getChildren(element?: Item): Promise<Item[]> {
 		return this.deploymentService.getChildren(element);
 	}

@@ -295,6 +295,14 @@
 				}
 			},
 			{
+				"command": "servicedeploymentExplorer.cleanApplication",
+				"title": "Clean Application",
+				"icon": {
+					"light": "resources/light/trash.svg",
+					"dark": "resources/dark/trash.svg"
+				}
+			},
+			{
 				"command": "servicedeploymentExplorer.viewService",
 				"title": "View Service",
 				"icon": {
@@ -619,12 +627,17 @@
 				{
 					"command": "servicedeploymentExplorer.refreshApplication",
 					"when": "view == servicedeploymentExplorer && viewItem == application",
-					"group": "ctx@1"
+					"group": "1_ctx@1"
 				},
 				{
 					"command": "servicedeploymentExplorer.viewDataSource",
 					"when": "view == servicedeploymentExplorer && viewItem == application",
-					"group": "view@2"
+					"group": "2_view@2"
+				},
+				{
+					"command": "servicedeploymentExplorer.cleanApplication",
+					"when": "view == servicedeploymentExplorer && viewItem == application",
+					"group": "3_clean@2"
 				},
 				{
 					"command": "servicedeploymentExplorer.loadTest",

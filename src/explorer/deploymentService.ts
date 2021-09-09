@@ -291,6 +291,11 @@ export class DeploymentService {
         return docUri;
     }
 
+    async cleanApplication(app: Item): Promise<void> {
+        this.deployService.cleanApplication(app.uri);
+        vscode.workspace.fs.delete(app.fileUri, {recursive: true});
+    }
+
     async loadService(service: Item): Promise<vscode.Uri> {
         // get data source
         const spec = await this.deployService.getService(service.uri);
