@@ -250,25 +250,35 @@ export class ApplicationExplorer {
 	}
 
 	async createModule(app: Entry, modName: string): Promise<void> {
-		try {
-			// create module
-			const mod = await this.appService.createModule(app, modName);
-			// reveal module
-			this.dataProvider.fire(app);
-			this.treeView.reveal(mod, {expand: 2, focus: true, select: true});	
-			// deploy module
-			this.deployModule(mod);
-		} catch (error) {
-			let message: string;
-			switch (error.code) {
-				case 'FileExists':
-					message = 'Module name exists.';
-					break;
-				default:
-					message = error.message;
+		vscode.window.withProgress({
+			location: vscode.ProgressLocation.Window,
+			cancellable: false,
+			title: 'Creating module'
+		}, async (progress) => {
+			try {
+				// clear status message
+				vscode.window.setStatusBarMessage('');
+				// create module
+				const mod = await this.appService.createModule(app, modName);
+				// reveal
+				this.dataProvider.fire(app);
+				this.treeView.reveal(mod, {expand: 2, focus: true, select: true});	
+				// deploy module
+				this.deployModule(mod);
+				// inform user
+				vscode.window.setStatusBarMessage('Module is created.');
+			} catch (error) {
+				let message: string;
+				switch (error.code) {
+					case 'FileExists':
+						message = 'Module name exists.';
+						break;
+					default:
+						message = error.message;
+				}
+				vscode.window.showErrorMessage(message);
 			}
-			vscode.window.showErrorMessage(message);
-		}
+		});		
 	}
 
 	async deployModule(mod: Entry): Promise<void> {
