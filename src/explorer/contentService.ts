@@ -1,4 +1,6 @@
 
+import * as util from '../core/util';
+
 export function applicationFile(applicationName: string, dbType: string, versions: any): Uint8Array {		
 	const content = {
 		"name": applicationName,
@@ -6,7 +8,7 @@ export function applicationFile(applicationName: string, dbType: string, version
 		"dbType": dbType,
 		"versions": versions
 	};
-	return toUint8Array(content);
+	return util.toUint8Array(content);
 }
 
 export function dataSourceFile(dbType: string): Uint8Array {		
@@ -25,7 +27,7 @@ export function dataSourceFile(dbType: string): Uint8Array {
 		"password": "",
 		"comments": "Complete url, username and password. Test data source using the TEST editor button."
 	};
-	return toUint8Array(content);
+	return util.toUint8Array(content);
 }
 
 export function moduleFile(moduleName: string): Uint8Array {		
@@ -33,7 +35,7 @@ export function moduleFile(moduleName: string): Uint8Array {
 		"name": moduleName,
 		"description": "module. Don't modify this file!"
 	};
-	return toUint8Array(content);
+	return util.toUint8Array(content);
 }
 
 export function queryServiceFile(serviceName: string): Uint8Array {		
@@ -48,7 +50,7 @@ export function queryServiceFile(serviceName: string): Uint8Array {
 		"inputBindings": "./input-bindings.json",
 		"outputBindings": "./output-bindings.json"
 	};
-	return toUint8Array(content);
+	return util.toUint8Array(content);
 }
 
 export function sqlServiceFile(serviceName: string): Uint8Array {		
@@ -63,7 +65,7 @@ export function sqlServiceFile(serviceName: string): Uint8Array {
 		"inputBindings": "./input-bindings.json",
 		"outputBindings": "./output-bindings.json"
 	};
-	return toUint8Array(content);
+	return util.toUint8Array(content);
 }
 
 export function crudServiceFile(serviceName: string): Uint8Array {		
@@ -82,13 +84,13 @@ export function crudServiceFile(serviceName: string): Uint8Array {
 			"tables": "./write/tables.json"
 		}
 	} ;
-	return toUint8Array(content);
+	return util.toUint8Array(content);
 }
 
 export function tablesFile(): Uint8Array {		
 	const content = {
 	};
-	return toUint8Array(content);
+	return util.toUint8Array(content);
 }
 
 export function testFile(input: any, serviceType: string, testType: string | undefined): Uint8Array {
@@ -117,11 +119,7 @@ export function testFile(input: any, serviceType: string, testType: string | und
 				comments: 'Modify the example test name and input'
 			};		
 	}
-	return toUint8Array(content);
-}
-
-function toUint8Array(content: any): Uint8Array {
-	return Buffer.from(JSON.stringify(content, null, 4), 'utf8');
+	return util.toUint8Array(content);
 }
 
 export interface ServiceDefintion {

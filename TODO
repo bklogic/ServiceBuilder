@@ -48,7 +48,7 @@ Misc:
     ✔ default README.md @done(21-09-05 19:58)
     ✔ implement copy and paste @done(21-09-06 11:52)
     ✔ git init, init but no commit @done(21-09-06 08:56)
-    ☐ Service Deployment Explorer - view application and service deployed on DevTime @started(21-09-06 15:12)
+    ✔ Service Deployment Explorer - view application and service deployed on DevTime @started(21-09-06 15:12) @done(21-09-08 17:15) @lasted(2d2h3m45s)
         ✔ explorer specification @started(21-09-06 15:15) @done(21-09-08 10:35) @lasted(1d19h20m25s)
             ✔ name - service deployment @done(21-09-08 10:36)
             ✔ view  - application/module/services (how to indicate state?) @done(21-09-08 10:36)
@@ -71,11 +71,23 @@ Backlog:
     Features:
         ☐ grid view for input, output and table bindings
         ☐ ? auto deployment, upon successful copying application, module, service
+        ☐ service builder status code 400 and handling
+        ☐ ? service response: output vs exception
+        ☐ ? return of crud delete
+        ☐ ? return of sql coomand without query
 
     Bugs:
         ☐ BUG, with create module, module folder does not expand
         ☐ DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+        ☐ message saying no application is available when data source is not configured.
+            net.backlogic.persistence.engine.EngineException: Unavailable application: gold/myApp10
 
     Tests:
         ☐ TEST: test Run Test with/without commit after engine review
+        ☐ TEST: CRUD specification and delete operation
 
+    Engine Bugs:
+        ☐ groovy.sql.Sql : Nothing has been added to batch. This might cause the JDBC driver to throw an exception.
+
+
+         

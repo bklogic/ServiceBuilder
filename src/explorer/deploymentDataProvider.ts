@@ -63,9 +63,13 @@ export class DeploymentDataProvider implements TreeDataProvider<Item> {
 		treeItem.id = element.uri;
 		treeItem.label = element.name;
 		treeItem.description = false;
-		treeItem.contextValue = ( element.type === ItemType.Application || element.type === ItemType.Module || element.state === 'valid') 
-				? element.type.toString() : ItemType.InvalidService;
+		const invalidService = ([ItemType.QueryService, ItemType.SqlService, ItemType.CrudService].indexOf(element.type) > -1) && (element.state !== 'valid');
+		treeItem.contextValue = (invalidService) ? ItemType.InvalidService.toString() : element.type.toString();
 		return treeItem;
+	}
+
+	isInvalidService (type: ItemType, state: string): boolean {
+		return ([ItemType.QueryService, ItemType.SqlService, ItemType.CrudService].indexOf(type) > -1) && (state === 'valid');
 	}
 
 	getChildren(element?: Item): Promise<Item[]> {

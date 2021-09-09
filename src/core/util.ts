@@ -179,7 +179,7 @@ export async function readSqlFile(uri: vscode.Uri): Promise<string[]> {
 
 export async function writeSqlFile(uri: vscode.Uri, lines: string[]): Promise<void> {
     const text = lines.join('\n');
-    await vscode.workspace.fs.writeFile(uri, Buffer.from(text, 'utf8'));
+    await vscode.workspace.fs.writeFile(uri, strToBuffer(text));
 }
 
 export async function fileExists(uri: vscode.Uri): Promise<boolean> {
@@ -211,7 +211,8 @@ export function sleep(ms: number) {
 }
 
 export function toUint8Array(content: any): Uint8Array {
-	return Buffer.from(JSON.stringify(content, null, 4), 'utf8');
+	// return Buffer.from(JSON.stringify(content, null, 4), 'utf8');
+	return strToBuffer(JSON.stringify(content, null, 4));
 }
 
 export function strToBuffer(str: string): Uint8Array {
