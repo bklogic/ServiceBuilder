@@ -1,5 +1,4 @@
 
-import * as vscode from 'vscode';
 import {HttpService} from './httpService';
 
 export class BuilderService {
@@ -214,9 +213,9 @@ export interface Table {
 	table: string;
 	alias: string;
 	object: string;
-	operationIndicator: string;
 	columns: Column[];
 	rootTable: boolean;
+	mainTable: boolean;
 }
 
 export interface Column {

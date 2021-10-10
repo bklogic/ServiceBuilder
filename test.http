@@ -1,0 +1,47 @@
+###
+GET http://localhost:8080/hello
+
+###
+GET http://localhost:8080/test/3
+
+###
+POST http://localhost:8080/service/gold/SampleApplication/Query/getStores
+Content-Type: application/json
+
+{}
+
+{"storeId": null}
+
+###
+POST http://localhost:8080/service/gold/SampleApplication/SQL/removeFilm
+Content-Type: application/json
+
+   {
+        "filmId": 8,
+        "catName": "Action"
+    }
+
+
+
+### batch query
+POST http://localhost:8080/service/gold/SampleApplication/batch/query
+Content-Type: application/json
+Authorization: Bearer ABCDEFG132334
+
+[
+    {
+        "name": "productLines",
+        "service": "Query/getProductLine",
+        "input": {
+            "productLine": "Classic Cars"
+        }
+    },
+    {
+        "name": "stores",
+        "service": "Query/getStores",
+        "input": {
+            "storeId": 1
+        }
+    }
+]
+

@@ -304,7 +304,9 @@ export class ApplicationService {
 				return this.getChildrenForWrite(entry);
 			case EntryType.Tests:
 				return this.getChildrenForTests(entry);
-			default:
+			case EntryType.CrudTests:
+				return this.getChildrenForTests(entry);
+				default:
 				return this.getChildrenForOther(entry);
 		}
 	}

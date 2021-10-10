@@ -41,22 +41,22 @@ export class ApplicationDataProvider implements TreeDataProvider<Entry> {
 				break;
 			case EntryType.QueryService:
 				treeItem.iconPath = {
-					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'window.svg'), 
-					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'window.svg')
+					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'query-service.svg'), 
+					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'query-service.svg')
 				};
 				treeItem.tooltip = 'query service';
 				break;
 			case EntryType.SqlService:
 				treeItem.iconPath = {
-					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'server-process.svg'), 
-					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'server-process.svg')
+					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'sql-service.svg'), 
+					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'sql-service.svg')
 				};
 				treeItem.tooltip = 'sql service';
 				break;			
 			case EntryType.CrudService:
 				treeItem.iconPath = {
-					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'symbol-method.svg'), 
-					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'symbol-method.svg')
+					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'crud-service.svg'), 
+					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'crud-service.svg')
 				};
 				treeItem.tooltip = 'crud service';
 				break;			

@@ -85,24 +85,24 @@
 				"command": "servicebuilderExplorer.createCrudService",
 				"title": "New CRUD Service",
 				"icon": {
-					"light": "resources/light/symbol-method.svg",
-					"dark": "resources/dark/symbol-method.svg"
+					"light": "resources/light/crud-service.svg",
+					"dark": "resources/dark/crud-service.svg"
 				}
 			},
 			{
 				"command": "servicebuilderExplorer.createSqlService",
 				"title": "New SQL Service",
 				"icon": {
-					"light": "resources/light/server-process.svg",
-					"dark": "resources/dark/server-process.svg"
+					"light": "resources/light/sql-service.svg",
+					"dark": "resources/dark/sql-service.svg"
 				}
 			},
 			{
 				"command": "servicebuilderExplorer.createQueryService",
 				"title": "New Query Service",
 				"icon": {
-					"light": "resources/light/window.svg",
-					"dark": "resources/dark/window.svg"
+					"light": "resources/light/query-service.svg",
+					"dark": "resources/dark/query-service.svg"
 				}
 			},
 			{

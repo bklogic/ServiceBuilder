@@ -753,6 +753,7 @@ export class ApplicationExplorer {
 					"alias": table.alias,
 					"object": table.object,
 					"rootTable": table.rootTable,
+					"mainTable": table.mainTable,
 					"columns": `./${table.table}.columns.json`
 				});
 				// columns
@@ -859,6 +860,7 @@ export class ApplicationExplorer {
 				"alias": table.alias,
 				"object": table.object,
 				"rootTable": table.rootTable,
+				"mainTable": table.mainTable,
 				"columns": `./${table.table}.columns.json`
 			});
 			// columns
