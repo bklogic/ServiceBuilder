@@ -361,19 +361,20 @@ export class ApplicationService {
 	}
 
 	async getChildrenForApplicationSrc(entry: Entry): Promise<Entry[]> {
-		let i = 1;
+		let i = 2;
 		const srcUri = vscode.Uri.joinPath(entry.uri, 'src');
 		const src = this.defaultEntry('src', vscode.FileType.Directory, entry);
 		const children = await vscode.workspace.fs.readDirectory(src.uri);		
 		return children.filter(([name, fileType]) => {
 			return true;
 		}).map(([name, fileType]) => {
+			i++;
 			let child: Entry = this.defaultEntry(name, fileType, src);
 			if ( name === 'application.json') {
 				child.type = EntryType.ApplicationFile;
 				child.seqNo = 0;
 			}
-			if ( name === 'datasource.json') {
+			else if ( name === 'datasource.json') {
 				child.type = EntryType.ApplicationFile;
 				child.seqNo = 1;
 			}
