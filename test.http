@@ -2,6 +2,13 @@
 GET http://localhost:8080/hello
 
 ###
+POST http://localhost:8080/bind/bindQuery
+Content-Type: application/json
+
+{}
+
+
+###
 GET http://localhost:8080/test/3
 
 ###
