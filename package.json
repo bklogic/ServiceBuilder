@@ -31,7 +31,7 @@
 			},
 			{
 				"command": "servicebuilderExplorer.workspace",
-				"title": "Workspace"
+				"title": "Workspace Connection"
 			},
 			{
 				"command": "servicebuilderExplorer.refresh",
@@ -334,11 +334,6 @@
 					"command": "servicebuilderExplorer.openTutorial",
 					"when": "view == servicebuilderExplorer",
 					"group": "more@2"
-				},
-				{
-					"command": "servicebuilderExplorer.connect",
-					"when": "view == servicebuilderExplorer",
-					"group": "more@3"
 				},
 				{
 					"command": "servicebuilderExplorer.workspace",

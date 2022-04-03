@@ -95,6 +95,7 @@ Backlog:
         ☐ list parameter for SQL service
         ✘ Table binding, operationIndicator @cancelled(21-10-07 19:23)
         ☐ Test service - SQL exception hanlding: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Out of range value for column 'rental_rate' at row 1
+        ☐ Schema switching - to run a service using different schema. implemented in service engine and builder. need it in service runtime.
 
     Bugs:
         ☐ BUG, with create module, module folder does not expand
@@ -115,6 +116,41 @@ Backlog:
         ☐ CRUD. generate object and input. numeric id made string.
         ☐ CRUD version. OptimisticLockException should not print stack.
 
+        4/1/2022:
+            ☐ CRUD test template: needs to be more inteligent
+            ☐ CRUD create: return null
+            ☐ Rename service: prepopulate input with current name
+            ☐ SQL service, generate input and output: both datetime and id field gets "abc".
+            ☐ TEST error message: remove JavaSqlException, but display SQL error
+                TEST EXCEPTION: 
+                    {
+                        "type": "SYSTEM",
+                        "name": "UnknownExceptuion",
+                        "message": "java.sql.SQLException: You can't specify target table 'TRY_WORKSPACE' for update in FROM clause"
+                    }
+                TEST EXCEPTION: 
+                    {
+                        "type": "SystemException",
+                        "name": "UndeterminedException",
+                        "message": "net.backlogic.persistence.engine.exception.DataSourceException: data source config not found for application: default/try"
+                    }
+            ☐ data source, test: confusing, password masked after test
+            ☐ data source: change file format, replace url with host, port and database
+            ☐ data source: how to cache data source?
+            ✔ builder backend: set spring.groovy.template.check-template-location=false @done(22-04-02 15:37)
+            ☐ messages: most should go to status bar
+                "input and output are generated", "input and output bindings are generated"
+            ☐ Service Deployment, view data source: showing password
+            ☐ generate simple CRUD services: need warning if table selection is empty
+            ☐ generate simple CRUD services: service name first letter shall be upper case
+            ☐ generate simple CRUD services, key column(s): shall set inputField so as return object for create operation
+            ☐ generate simple CRUD services: shall also create tests
+            ☐ generate simple CRUD services: how to default "update default"? null or insert default?
+            ☐ CRUD service, create: value overriden by insert default
+            ☐ CRUD service, update: undefined value is updated to null
+            ☐ CRUD service, update: value overriden by update default
+            ☐ create application: no .gitignore file
+            
     Tests:
 
     Engine Bugs:

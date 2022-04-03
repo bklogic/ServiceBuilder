@@ -276,7 +276,7 @@ export class ApplicationService {
 		let exists = true;
 		try {
 			const stat = await vscode.workspace.fs.stat(uri);
-		} catch (error) {
+		} catch (error: any) {
 			if (error.code === 'FileNotFound') {
 				return false;
 			}

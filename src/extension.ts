@@ -12,22 +12,6 @@ import { HttpService } from './core/httpService';
 
 // this method is called when your extension is activated
 export function activate(context: vscode.ExtensionContext) {
-	// check env
-	let ws = process.env.WORKSPACE; 
-	let url = process.env.BUILDERURL;
-	let token = process.env.BUILDERTOKEN;
-	if (ws) {
-		console.log("preset builder workspace: " + ws);
-		context.secrets.store('servicebuilder.workspace', ws);
-	}
-	if (url) {
-		console.log("preset builder url: " + url);
-		context.secrets.store('servicebuilder.url', url);
-	}
-	if (token) {
-		context.secrets.store('servicebuilder.token', token);
-	}
-
 	// initiate util
 	util.createGetWorkspaceUtil(context);
 

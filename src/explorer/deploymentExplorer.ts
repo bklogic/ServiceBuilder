@@ -43,7 +43,7 @@ export class DeploymentExplorer {
             await util.sleep(100);
             this.refresh();
             vscode.window.setStatusBarMessage('Application list refreshed.');
-        } catch (error) {
+        } catch (error: any) {
             vscode.window.showErrorMessage(error.message);
         }
 	}
@@ -54,7 +54,7 @@ export class DeploymentExplorer {
             this.dataProvider.refresh();
             this.treeView.reveal(app, {expand: 2, focus: true, select: true});
             vscode.window.setStatusBarMessage('Application loaded.');
-        } catch (error) {
+        } catch (error: any) {
             vscode.window.showErrorMessage(error.message);
         }
 	}
@@ -67,7 +67,7 @@ export class DeploymentExplorer {
             this.treeView.reveal(service, {expand: 2, focus: true, select: true});
             vscode.window.showTextDocument(vscode.Uri.joinPath(service.fileUri, 'tests.http'), {preview: false});
             vscode.window.setStatusBarMessage('Tests generated.');
-        } catch (error) {
+        } catch (error: any) {
             vscode.window.showErrorMessage(error.message);
         }
     }
@@ -77,7 +77,7 @@ export class DeploymentExplorer {
             const docUri = await this.deploymentService.loadDataSource(app);
             vscode.window.showTextDocument(docUri);
             vscode.window.setStatusBarMessage('Data source loaded.');
-        } catch (error) {
+        } catch (error: any) {
             vscode.window.showErrorMessage(error.message);
         }
     }
@@ -88,7 +88,7 @@ export class DeploymentExplorer {
             util.sleep(200);
             this.dataProvider.refresh();
             vscode.window.setStatusBarMessage('Application cleaned');
-        } catch (error) {
+        } catch (error: any) {
             vscode.window.showErrorMessage(error.message);
         }
     }
@@ -98,7 +98,7 @@ export class DeploymentExplorer {
             const docUri = await this.deploymentService.loadService(service);
             vscode.window.showTextDocument(docUri);
             vscode.window.setStatusBarMessage('Service loaded.');
-        } catch (error) {
+        } catch (error: any) {
             vscode.window.showErrorMessage(error.message);
         }
     }

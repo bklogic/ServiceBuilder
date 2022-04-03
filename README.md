@@ -7,25 +7,26 @@ The rapid development tool for data access services. The true SQL-first approach
 This extension adds two tree views to the built-in vscode explorer.
 
 - Service Builder  - the tool for developing data access applications
-  - connect to BackLogic workspace
-  - create data access application
-  - cretea data access module
-  - create data access services  
+  - Connect to BackLogic workspace
+  - Create data access application
+  - Cretea data access module
+  - Create data access services
+  - Deploy data access application, module and sevices to DevTime
 
-- Service Explorer - the tool for viewing, testing and managing applications deployed on Service DevTime
-  - Explor applications deployed on Service DevTime
+- Service Explorer - the tool for exploring applications deployed on Service DevTime
+  - View applications deployed on Service DevTime
   - Test services deployed on Service DevTime, and
-  - Manager services deployed on Service DevTime
+  - Clean up application, module and services deployed on Service DevTime
 
 # BackLogic Workspace
 
-The Service Builder must connect to a BackLogic workspace in order to work. The BackLogic workspace is a virtual private develpment environment hosted on BackLogic cloud.  
+![BackLogic Workspace](./resources/images/backlogic-workspace.svg)
 
-Inside the workspace are a Service Builder Backend and a Service DevTime. The Service Builder Backend does the heavey lifting for Service Builder. The Service DevTime runs data access applications in the workdpace for development purpose. The Service Builder automatically deployes the application and module to Service DevTime upon creation, and services to Service DevTime upon successful testing.
+The Service Builder must connect to a BackLogic workspace to work. The BackLogic workspace is a virtual private develpment environment hosted in BackLogic cloud.  
 
-The application developer is to connect his application in development to Service DevTime for data access.
+Inside the workspace are a Service Builder Backend and a Service DevTime. The Service Builder Backend helps connect to the user DEV database for DB meta data and deploy data access services to the Service DevTime. The Service DevTime runs the data access applications in the workdpace and provides data access to the DEV database at the service endpoint of the workspace.  
 
-(Fig here)
+The Service Builder automatically deployes the application and module to Service DevTime upon creation, and deployes the service upon a successful test.
 
 # Usage
 
@@ -39,7 +40,7 @@ Press F1, type ext install then search for service-builder.
 
 This is a quick walk-through of the steps for creating a data access application. It assums that the data source is the `classicmodels` MySQL database for `MySQL tutorial`. The ER diagram for this database is [here](https://www.mysqltutorial.org/mysql-sample-database.aspx).
 
-## Connect To Your BackLogic Workspace
+## Connect To BackLogic Workspace
 
 - Move mouse over `Service Builder` in EXPLORER and click `More Actions` icon and select `Connect`.
 - Paste your workspace URL in the input box opened, and hit Enter
@@ -60,7 +61,7 @@ This is a quick walk-through of the steps for creating a data access application
 - Click `Test Data Source Configuration` ![Alt](./resources/dark/play.svg "Test Data Source Configuration") button to test database connection
 - Click `Save and Apply Data Source Configuration` ![Alt](./resources/dark/save-all.svg "Save and Apply Data Source Configuration") button to save and apply data source configuration to workspce
 
-> Service Buider access your database from BackLogic cloud. You may need whitelist 10.0.0.0 to provide access to your database.
+> Service Buider access your DEV database through a NAT server in BackLogic cloud. The public IP address for this NAT server is 10.0.0.0. You may need to whitelist this IP address, if your database is protected by a security group.
 
 ## Create Module
 
@@ -196,7 +197,7 @@ This is a quick walk-through of the steps for creating a data access application
 > Note: here we are to creat a SQL command service to clone a product line and its products.
 
 1. Generate service
-    - Move mouse over `myMod` module and click `New SQL Service` ![Alt](./dark/server-process.svg "New SQL Service")
+    - Move mouse over `myMod` module and click `New SQL Service` ![Alt](./resources/dark/server-process.svg "New SQL Service")
     - Enter "cloneProductLine" as service name. Hit Enter.
 
     Service is generated in seconds.
@@ -263,20 +264,20 @@ This is a quick walk-through of the steps for creating a data access application
     ```
 
 6. Generate input and output Bindings
-    - Move mouse over `cloneProductLine` service and click `Generate Input and Output Bindings` ![Alt](./dark/references.svg "Generate Input and Output Bindings")
+    - Move mouse over `cloneProductLine` service and click `Generate Input and Output Bindings` ![Alt](./resources/dark/references.svg "Generate Input and Output Bindings")
     - Review and edit input and out bindings if necessary (skip)
 
 7. Test Service
-    - Move mouse over `Tests` folder and click `Add Test` ![Alt](./dark/add.svg "Add Test"), to generate a test file
+    - Move mouse over `Tests` folder and click `Add Test` ![Alt](./resources/dark/add.svg "Add Test"), to generate a test file
     - Review and edit input parameters in `test01.json` file
-    - click `Run Test` ![Alt](./dark/play.svg "Run Test") button to test the service
+    - click `Run Test` ![Alt](./resources/dark/play.svg "Run Test") button to test the service
 
 ## Creating CRUD Service
 
 > Note: here we are to create a CRUD service for an aggregate root object Order. For CRUD service, read and write may be asymmetric. You will see in this example, the read operation reads from 4 tables but the write operations only write to 2 tables.
 
 1. Generate service
-    - Move mouse over `myMod` module and click New CRUD Service ![Alt](./dark/symbol-method.svg "New CRUD Service")
+    - Move mouse over `myMod` module and click New CRUD Service ![Alt](./resources/dark/symbol-method.svg "New CRUD Service")
     - Enter "Order" as service name. Hit Enter.
 
     Service is generated in seconds.
@@ -323,15 +324,15 @@ This is a quick walk-through of the steps for creating a data access application
     ```
 
 4. Generate input and output Bindings
-    - Move mouse over `Order` service and click `Generate Input and Output Bindings` ![Alt](./dark/references.svg "Generate Input and Output Bindings")
+    - Move mouse over `Order` service and click `Generate Input and Output Bindings` ![Alt](./resources/dark/references.svg "Generate Input and Output Bindings")
     - Review and edit input and out bindings if necessary (skip)
 
 5. Generate table bindings
-    - Move mouse over `Order` service and click `Generate Table Bindings` ![Alt](./dark/multiple-windows.svg "Generate Table Bindings")
+    - Move mouse over `Order` service and click `Generate Table Bindings` ![Alt](./resources/dark/multiple-windows.svg "Generate Table Bindings")
     - Review and edit tables bindings if necessary (skip)
 
 6. Test Service
-    - Move mouse over `Tests` folder and click `Add Test` ![Alt](./dark/add.svg "Add Test"), to generate a test file
+    - Move mouse over `Tests` folder and click `Add Test` ![Alt](./resources/dark/add.svg "Add Test"), to generate a test file
     - Review and edit input parameters in `test01.json` file. Make it like:
 
     ```json
@@ -358,7 +359,7 @@ This is a quick walk-through of the steps for creating a data access application
     }
     ```
 
-    - Move mouse over `Tests` folder and click `Add Test` ![Alt](./dark/add.svg "Add Test"), to generate another test file
+    - Move mouse over `Tests` folder and click `Add Test` ![Alt](./resources/dark/add.svg "Add Test"), to generate another test file
     - Review and edit input parameters in `test02.json` file. Make it like:
 
     ```json
@@ -385,7 +386,7 @@ This is a quick walk-through of the steps for creating a data access application
     }
     ```
 
-    - click `Run Test` ![Alt](./dark/play.svg "Run Test") button to test the service
+    - click `Run Test` ![Alt](./resources/dark/play.svg "Run Test") button to test the service
 
 ## Generate Simple CRUD Service from Database Tables
 
@@ -399,13 +400,13 @@ Two simple CRUD services are generated in seconds.
 You may deploy a service, a module or a whole application to DevTime as you please. Once deployed, the services are accesible through the DevTime endpoint.
 
 1. Deploy service to DevTime
-    - Move mouse over `getCustomersByState` service and click `Deploy Service` ![Alt](./dark/sync.svg "Deploy Service"), to deploy service `getCustomersByState`.
+    - Move mouse over `getCustomersByState` service and click `Deploy Service` ![Alt](./resources/dark/sync.svg "Deploy Service"), to deploy service `getCustomersByState`.
 
 2. Deploy module to DevTime
-    - Move mouse over `myMod` module and click `Deploy Module` ![Alt](./dark/sync.svg "Deploy Module"), to deploy module `myMod`.
+    - Move mouse over `myMod` module and click `Deploy Module` ![Alt](./resources/dark/sync.svg "Deploy Module"), to deploy module `myMod`.
 
 3. Deploy application to DevTime
-    - Move mouse over `myApp` application and click `Deploy Application` ![Alt](./dark/sync.svg "Deploy Application"), to deploy application `myApp`.
+    - Move mouse over `myApp` application and click `Deploy Application` ![Alt](./resources/dark/sync.svg "Deploy Application"), to deploy application `myApp`.
 
 # Get Started with Service Explorer
 
@@ -415,7 +416,16 @@ This is a quick walk-through of things you can do with Service Explorer.
 
 ## Test a Service
 
+> Requires REST Client extension
+
 ## Clean Up Applications on DevTime
+
+
+# Tips
+
+# Deep Dives
+
+
 
 
 # Release Notes

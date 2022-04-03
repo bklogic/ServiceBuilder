@@ -90,7 +90,7 @@ export class ApplicationExplorer {
 						if (token) {
 							// parse url for workspace
 							const host = new URL.URL(url).host;
-							const workspace = host.substr(0, host.indexOf("."));
+							const workspace = (host.match('localhost')) ? 'default' : host.substr(0, host.indexOf("."));
 
 							// save connection
 							await this.context.secrets.store('servicebuilder.url', url);
@@ -120,27 +120,37 @@ export class ApplicationExplorer {
 			// test connection
 			workspace.versions = await this.builderService.getBuilderVersions();
 			// show
+			const switchBtn = "Switch Workspace";
 			vscode.window.showInformationMessage(
-			   `Workspace Connection Is Good. \n
-				Name: ${workspace.name} \n
-				Url: ${workspace.url} \n
-				Versions: 
-					engine:  ${workspace.versions.engine}
-					deployer:  ${workspace.versions.deployer}
-					builder:  ${workspace.versions.builder}`,
-				{ modal: true },
-				"OK"
-			);
-		} catch(error) {
+				`Workspace is connected. \n
+				 Name: ${workspace.name}
+				 Url: ${workspace.url}
+				 Version: 
+				 \t  \t engine:  ${workspace.versions.engine}
+				 \t  \t deployer:  ${workspace.versions.deployer}
+				 \t  \t builder:  ${workspace.versions.builder}`,
+				 { modal: true },
+				 switchBtn
+			).then( btn => {
+				if ( btn === switchBtn) {
+					this.connect();
+				}
+			});
+
+		 } catch(error: any) {
+			const connBtn = "Connect/Reconnect"; 
 			vscode.window.showErrorMessage(
-				`Workspace Connection Not Working. Please check connection parameters.\n
-				 Name: ${workspace.name} \n
-				 Url: ${workspace.url} \n
-				 Token: ${workspace.token} \n
+				`Workspace is NOT connected. Please check connection parameters.\n
+				 Url: ${workspace.url}
+				 Access Token: ${workspace.token}
 				 Message: ${error.message}`,
-				{ modal: true },
-				"OK"
-			);
+				 { modal: true },
+				 connBtn
+				).then( btn => {
+				if ( btn === connBtn) {
+					this.connect();
+				}
+			});
 		}
 	}
 
@@ -213,7 +223,7 @@ export class ApplicationExplorer {
 				// inform user
 				vscode.window.setStatusBarMessage('application is created.');
 			});		
-	} catch (error) {
+	} catch (error: any) {
 			let message: string;
 			switch (error.code) {
 				case 'FileExists':
@@ -243,7 +253,7 @@ export class ApplicationExplorer {
 				// inform user
 				vscode.window.setStatusBarMessage('application is deployed.');
 			});		
-		} catch (error) {
+		} catch (error: any) {
 			console.error('Error in deploying application', error);
 			vscode.window.showErrorMessage(error.message);
 		}
@@ -267,7 +277,7 @@ export class ApplicationExplorer {
 				this.deployModule(mod);
 				// inform user
 				vscode.window.setStatusBarMessage('Module is created.');
-			} catch (error) {
+			} catch (error: any) {
 				let message: string;
 				switch (error.code) {
 					case 'FileExists':
@@ -298,7 +308,7 @@ export class ApplicationExplorer {
 				// inform user
 				vscode.window.setStatusBarMessage('module is deployed.');
 			});		
-		} catch (error) {
+		} catch (error: any) {
 			console.error('Error in deploying module', error);
 			vscode.window.showErrorMessage(error.message);
 		}
@@ -319,7 +329,7 @@ export class ApplicationExplorer {
 					this.treeView.reveal(service, {expand: 2, focus: true, select: true});	
 					// inform user
 					vscode.window.setStatusBarMessage('service is created.');
-				} catch (error) {
+				} catch (error: any) {
 					let message: string;
 					switch (error.code) {
 						case 'FileExists':
@@ -351,7 +361,7 @@ export class ApplicationExplorer {
 				// inform user
 				vscode.window.setStatusBarMessage('service is deployed.');
 			});		
-		} catch (error) {
+		} catch (error: any) {
 			console.error('Error in deploying service', error);
 			vscode.window.showErrorMessage(error.message);
 		}
@@ -372,7 +382,7 @@ export class ApplicationExplorer {
 			} else {
 				this.refresh();
 			}	
-		} catch (error) {
+		} catch (error: any) {
 			vscode.window.showErrorMessage(error.message);
 		}
 	}
@@ -405,7 +415,7 @@ export class ApplicationExplorer {
 		// rename
 		try {
 			await this.appService.rename(entry.uri, targetUri);
-		} catch (error) {
+		} catch (error: any) {
 			vscode.window.showErrorMessage(error.message);
 		}
 
@@ -437,7 +447,7 @@ export class ApplicationExplorer {
 		// 		newEntry.parent = null;
 		// 	}
 		// 	this.treeView.reveal(newEntry, {focus: true});	
-		// } catch (error) {
+		// } catch (error: any) {
 		// 	let message: string;
 		// 	switch (error.code) {
 		// 		case 'FileExists':
@@ -464,7 +474,7 @@ export class ApplicationExplorer {
 		let source: Entry;
 		try {
 			source = JSON.parse(text) as Entry;
-		} catch (error) {
+		} catch (error: any) {
 			vscode.window.setStatusBarMessage('No entry to paste');
 			return;
 		}
@@ -547,7 +557,7 @@ export class ApplicationExplorer {
 				this.createCruds(module, results);
 				// inform user
 				vscode.window.setStatusBarMessage('CRUD services are generated');
-			} catch (error) {
+			} catch (error: any) {
 				console.error('Error in generating crud services', error);
 				vscode.window.showErrorMessage(error.message);
 			}
@@ -575,7 +585,7 @@ export class ApplicationExplorer {
 			vscode.window.showTextDocument(outputUri, {preview: false});
 			// inform user
 			vscode.window.showInformationMessage('input and output are generated');
-		} catch (error) {
+		} catch (error: any) {
 			console.error('Error in generating query input and output', error);
 			vscode.window.showErrorMessage(error.message);
 		}
@@ -609,7 +619,7 @@ export class ApplicationExplorer {
 				vscode.window.showTextDocument(outputBidningsUri, {preview: false});
 				// inform user
 				vscode.window.showInformationMessage('input and output bindings are generated');
-			} catch (error) {
+			} catch (error: any) {
 				console.error('Error in generating query input and output bindings', error);
 				vscode.window.showErrorMessage(error.message);
 			}
@@ -640,7 +650,7 @@ export class ApplicationExplorer {
 			vscode.window.showTextDocument(outputUri, {preview: false});
 			// inform user
 			vscode.window.showInformationMessage('input and output are generated');
-		} catch (error) {
+		} catch (error: any) {
 			console.error('Error in generating sql input and output', error);
 			vscode.window.showErrorMessage(error.message);
 		}
@@ -670,7 +680,7 @@ export class ApplicationExplorer {
 			vscode.window.showTextDocument(outputBidningsUri, {preview: false});
 			// inform user
 			vscode.window.showInformationMessage('input and output bindings are generated');
-		} catch (error) {
+		} catch (error: any) {
 			console.error('Error in generating sqls input and output bindings', error);
 			vscode.window.showErrorMessage(error.message);
 		}
@@ -696,7 +706,7 @@ export class ApplicationExplorer {
 			vscode.window.showTextDocument(inputUri, {preview: false});
 			// inform user
 			vscode.window.showInformationMessage('object is generated');
-		} catch (error) {
+		} catch (error: any) {
 			console.error('Error in generating crud object', error);
 			vscode.window.showErrorMessage(error.message);
 		}
@@ -725,7 +735,7 @@ export class ApplicationExplorer {
 			vscode.window.showTextDocument(outputBidningsUri, {preview: false});
 			// inform user
 			vscode.window.showInformationMessage('input and output bindings are generated');
-		} catch (error) {
+		} catch (error: any) {
 			console.error('Error in generating crud input and output bindings', error);
 			vscode.window.showErrorMessage(error.message);
 		}
@@ -767,7 +777,7 @@ export class ApplicationExplorer {
 			this.revealTables(service);
 			// inform user
 			vscode.window.showInformationMessage('table bindings are generated');
-		} catch (error) {
+		} catch (error: any) {
 			console.error('Error in generating crud tables bindings', error);
 			vscode.window.showErrorMessage(error.message);
 		}
@@ -796,7 +806,7 @@ export class ApplicationExplorer {
 			this.dataProvider.fire(testFolder);
 			this.treeView.reveal(testFile, {focus: true, select: false});
 			vscode.window.showTextDocument(testFile.uri, {preview: false});
-		} catch(error){
+		} catch(error: any){
 			vscode.window.showErrorMessage(error.message);
 		}
 	}
@@ -810,7 +820,7 @@ export class ApplicationExplorer {
 			this.dataProvider.fire(testFile.parent);
 			this.treeView.reveal(testFile, {focus: true, select: false});
 			vscode.window.showTextDocument(testFile.uri, {preview: false});
-		} catch(error){
+		} catch(error: any){
 			vscode.window.showErrorMessage(error.message);
 		}
 	}
