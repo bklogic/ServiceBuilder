@@ -146,9 +146,9 @@ Backlog:
             ☐ generate simple CRUD services, key column(s): shall set inputField so as return object for create operation
             ☐ generate simple CRUD services: shall also create tests
             ☐ generate simple CRUD services: how to default "update default"? null or insert default?
-            ☐ CRUD service, create: value overriden by insert default
-            ☐ CRUD service, update: undefined value is updated to null
-            ☐ CRUD service, update: value overriden by update default
+            ✘ CRUD service, create: value overriden by insert default @cancelled(22-04-03 07:39): it is correct.
+            ✘ CRUD service, update: undefined value is updated to null @cancelled(22-04-03 07:40): it is correct.
+            ✘ CRUD service, update: value overriden by update default @cancelled(22-04-03 07:40): it is correct.
             ☐ create application: no .gitignore file
             
     Tests:

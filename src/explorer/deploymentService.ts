@@ -207,7 +207,7 @@ export class DeploymentService {
             );    
             // return item list
             return items;
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
             throw new Error('Error to load modules');
         }

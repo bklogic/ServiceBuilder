@@ -3,9 +3,8 @@ import * as https from 'https';
 import {HttpConfig} from './httpModel';
 
 const axios = require('axios');
-const formData = require('form-data');
 
-export class HttpService {
+export class TryHttpService {
 
     private context: vscode.ExtensionContext;
     private rejectUnauthorized = true;
@@ -19,12 +18,9 @@ export class HttpService {
     }
 
     async httpConfig(timeout?: number): Promise<HttpConfig> {
-        // get connection data
-        let [url, token] = await Promise.all([
-            this.context.secrets.get('servicebuilder.url'),
-            this.context.secrets.get('servicebuilder.token')    
-        ]);
-        url = (url) ? url : 'http://localhost:8080';
+        // get try service endpoint
+        const url = vscode.workspace.getConfiguration('servicebuilder').get('tryServiceEndpoint') as string;
+        const token = vscode.workspace.getConfiguration('servicebuilder').get('tryServiceApiToken') as string;
 
         // create and return config
         const config: HttpConfig = {
@@ -40,6 +36,7 @@ export class HttpService {
         };  
         return config; 
     }
+
 
     async get(url: string, timeout?: number): Promise<any> {
         const config = await this.httpConfig(timeout);
@@ -68,26 +65,4 @@ export class HttpService {
           }    
     }
 
-    async postArchive(url: string, data: any, archive: Buffer, timeout?: number): Promise<any> {
-        const config = await this.httpConfig(timeout);
-        try {
-            // construct form
-            const form = new formData();
-            for (const key in data) {
-                form.append(key, data[key]);
-            }
-            form.append('archive', archive, 'archive.zip');
-            config.headers = form.getHeaders();
-            // post form
-            const response = await axios.post(config.baseURL + url, form, {"headers": config.headers} );
-            return response.data;
-          } catch (error: any) {
-            console.error('http post archive error: ', error.message || error.response.data.message, '\n',  'url: ', config.baseURL + url);
-            console.info('Data: ');
-            console.info(data);
-            console.error(error);
-            error.message = error.message + ' | ' + error.message || error.response.data.message;
-            throw error;
-          }    
-    }
 }

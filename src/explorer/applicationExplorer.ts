@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as URL from 'url';
 import * as util from '../core/util';
 import {ApplicationDataProvider} from './applicationDataProvider';
 import {ApplicationService} from "./applicationService";
@@ -24,7 +25,6 @@ import {
 	WhereClauseType,
 	Versions
 } from '../core/builderService';
-import * as URL from 'url';
 
 
 export class ApplicationExplorer {
@@ -43,8 +43,6 @@ export class ApplicationExplorer {
 		this.treeView = vscode.window.createTreeView('servicebuilderExplorer', { treeDataProvider: this.dataProvider, showCollapseAll: true });
 		context.subscriptions.push(this.treeView);
 		vscode.commands.registerCommand('servicebuilderExplorer.openResource', (resource) => this.openResource(resource));
-		vscode.commands.registerCommand('servicebuilderExplorer.connect', () => this.connect());
-		vscode.commands.registerCommand('servicebuilderExplorer.workspace', () => this.workspace());
 		vscode.commands.registerCommand('servicebuilderExplorer.openWelcome', () => this.openWelcome());
 		vscode.commands.registerCommand('servicebuilderExplorer.openTutorial', () => this.openTutorial());
 		vscode.commands.registerCommand('servicebuilderExplorer.refresh', () => this.refresh());
@@ -80,78 +78,6 @@ export class ApplicationExplorer {
 
 	refresh(): void {
 		this.dataProvider.refresh();
-	}
-
-	connect(): void {
-		vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "Workspace URL", prompt: "from Service Console"})
-			.then( url => {
-				if (url) {
-					vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "Access Token", prompt: "from Service Console"}).then( async (token) => {
-						if (token) {
-							// parse url for workspace
-							const host = new URL.URL(url).host;
-							const workspace = (host.match('localhost')) ? 'default' : host.substr(0, host.indexOf("."));
-
-							// save connection
-							await this.context.secrets.store('servicebuilder.url', url);
-							await this.context.secrets.store('servicebuilder.token', token);
-							await this.context.secrets.store('servicebuilder.workspace', workspace);
-							this.workspace();
-						} else {
-							vscode.window.showErrorMessage("no token entered.");
-						}
-					});
-				} else {
-					vscode.window.showErrorMessage("no url entered.");
-				}
-			});		
-	}
-
-	async workspace(): Promise<void> {
-		// get workspace
-		const workspace = {
-			name: await this.context.secrets.get("servicebuilder.workspace"),
-			url: await this.context.secrets.get("servicebuilder.url"),
-			token: await this.context.secrets.get("servicebuilder.token"),
-			versions: {} as Versions
-		};
-		// get builder versions
-		try {
-			// test connection
-			workspace.versions = await this.builderService.getBuilderVersions();
-			// show
-			const switchBtn = "Switch Workspace";
-			vscode.window.showInformationMessage(
-				`Workspace is connected. \n
-				 Name: ${workspace.name}
-				 Url: ${workspace.url}
-				 Version: 
-				 \t  \t engine:  ${workspace.versions.engine}
-				 \t  \t deployer:  ${workspace.versions.deployer}
-				 \t  \t builder:  ${workspace.versions.builder}`,
-				 { modal: true },
-				 switchBtn
-			).then( btn => {
-				if ( btn === switchBtn) {
-					this.connect();
-				}
-			});
-
-		 } catch(error: any) {
-			const connBtn = "Connect/Reconnect"; 
-			vscode.window.showErrorMessage(
-				`Workspace is NOT connected. Please check connection parameters.\n
-				 Url: ${workspace.url}
-				 Access Token: ${workspace.token}
-				 Message: ${error.message}`,
-				 { modal: true },
-				 connBtn
-				).then( btn => {
-				if ( btn === connBtn) {
-					this.connect();
-				}
-			});
-		}
 	}
 
 	openWelcome(): void {

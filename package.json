@@ -16,6 +16,21 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"configuration": {
+			"title": "Service Builder",
+			"properties": {
+				"servicebuilder.tryServiceEndpoint": {
+				  "type": "string",
+				  "default": "http://localhost:8080",
+				  "description": "Endpoint for TryWithoutSignup service"
+				},
+				"servicebuilder.tryServiceApiToken": {
+					"type": "string",
+					"default": "bncxnzghghhgdhsgfgybbbd",
+					"description": "API token for TryWithoutSignup service"
+				}
+			}
+		},
 		"commands": [
 			{
 				"command": "servicebuilderExplorer.openResource",
@@ -32,6 +47,10 @@
 			{
 				"command": "servicebuilderExplorer.workspace",
 				"title": "Workspace Connection"
+			},
+			{
+				"command": "servicebuilderExplorer.try",
+				"title": "Try Without Signup"
 			},
 			{
 				"command": "servicebuilderExplorer.refresh",
@@ -339,6 +358,11 @@
 					"command": "servicebuilderExplorer.workspace",
 					"when": "view == servicebuilderExplorer",
 					"group": "more@4"
+				},
+				{
+					"command": "servicebuilderExplorer.try",
+					"when": "view == servicebuilderExplorer",
+					"group": "more@5"
 				},
 				{
 					"command": "servicebuilderExplorer.createApplication",

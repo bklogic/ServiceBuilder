@@ -9,6 +9,10 @@ import { TestEditor } from './editor/testEditor';
 import { DeployService } from './core/deployService';
 import { DeploymentExplorer } from './explorer/deploymentExplorer';
 import { HttpService } from './core/httpService';
+import { TryService } from './explorer/tryService';
+import { TryHttpService } from './core/tryHttpService';
+import { WorkspaceHandler } from './explorer/workspaceHandler';
+import { TryHandler } from './explorer/tryHandler';
 
 // this method is called when your extension is activated
 export function activate(context: vscode.ExtensionContext) {
@@ -17,8 +21,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// construct builder service
 	const httpService = new HttpService(context);
+	const tryHttpService = new TryHttpService(context);
 	const builderService = new BuilderService(httpService);
 	const deployService = new DeployService(httpService);
+	const tryService = new TryService(tryHttpService);
 
 	// register viewVersion command
 	let disposable = vscode.commands.registerCommand('servicebuilder.versions', () => {
@@ -33,6 +39,8 @@ export function activate(context: vscode.ExtensionContext) {
 	// explorer
 	new ApplicationExplorer(context, builderService);
 	new DeploymentExplorer(context, deployService);
+	new WorkspaceHandler(context, builderService, tryService);
+	new TryHandler(context, tryService);
 
 	// editors
 	new DataSourceEditor(context, builderService);
