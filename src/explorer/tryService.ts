@@ -15,7 +15,7 @@ export class TryService {
 		return workspace;
 	}
 
-	async createTrySession(requestId: number, workspaceId: number): Promise<TrySession> {
+	async startTrySession(TryWorkspace: workspace): Promise<TrySession> {
 		const url = '/try/createTrySession';
 		// const session = await this.http.get(url);
 		const session = {

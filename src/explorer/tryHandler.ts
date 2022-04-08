@@ -38,15 +38,18 @@ export class TryHandler {
                     "All workspaces are taken at the moment. Please try later."
                 );    
             }
-    
-		}catch(error: any) {
-		}
+		} catch(error: any) {
+            console.error('Error in requesting workspace.', error);
+            vscode.window.showErrorMessage(
+                error.message
+            );    
+        }
 
 		// display message
 	}
 
     async startTrySession(workspace: TryWorkspace) {
-
+        
     }
 
 }

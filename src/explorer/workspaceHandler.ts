@@ -160,9 +160,11 @@ export class WorkspaceHandler {
             }
 
 		}catch(error: any) {
+            console.error('Error in requesting workspace.', error);
+            vscode.window.showErrorMessage(
+                error.message
+			);
 		}
-
-		// display message
 	}
 
     async startTrySession(workspace: TryWorkspace) {

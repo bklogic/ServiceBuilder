@@ -52,3 +52,19 @@ Authorization: Bearer ABCDEFG132334
     }
 ]
 
+
+### Try - Request
+POST http://localhost:8080/try/requestWorkspace
+Content-Type: application/json
+
+{
+    "email": "me@you.com"
+}
+
+### Try - Session
+POST http://localhost:8080/try/startSession
+Content-Type: application/json
+
+{
+    "workspaceId": 1
+}
