@@ -8,9 +8,11 @@ import {
 
 export class DataSourceEditor {
 
+    private context: vscode.ExtensionContext;
     private builderService: BuilderService;
     
     constructor(context: vscode.ExtensionContext, builderService: BuilderService) {
+        this.context = context;
         this.builderService = builderService;
 		vscode.commands.registerCommand('servicebuilderEditor.testDataSource', (resource) => this.testDataSource(resource.path));
     }
@@ -26,29 +28,36 @@ export class DataSourceEditor {
         try {
             // read data source config
             const dataSource = JSON.parse(editor.document.getText()) as DataSource;
+            if (dataSource.password === util.passwordMask) {
+                dataSource.password = await util.retrievePassword(this.context, path);
+            }
+
             // make request
             const testRequest: TestDataSourceRequest = {
                 applicationUri: await util.applicationUriForDataSource(path),
                 dbType: dataSource.dbType,
-                jdbcUrl: 'jdbc:' + dataSource.url,
+                host: dataSource.host,
+                port: dataSource.port,
+                database: dataSource.database,
                 username: dataSource.username,
                 password: dataSource.password
             };
             // call service
             const result = await this.builderService.testDataSource(testRequest);
             if (result.succeed) {
-                // save data source
-                dataSource.password = "**********";
+                // store password in secret
+                util.storePassword(this.context, path,  dataSource.password);
+                // save data source file
+                dataSource.password = util.passwordMask;
                 const text = JSON.stringify(dataSource, null, 4) + "\n"; 
                 editor.edit(rewriteDocumentCallback(editor, text));       
                 await editor.document.save();
-
                 // inform user
                 vscode.window.showInformationMessage(result.message);
             } else {
                 vscode.window.showWarningMessage(result.message);
             }            
-        } catch (error) {
+        } catch (error: any) {
             vscode.window.showErrorMessage('failed. cause: ' + error.message);
         }
     }
@@ -67,7 +76,9 @@ export function rewriteDocumentCallback(editor: vscode.TextEditor, newText: stri
 
 export interface DataSource {
     dbType: string;
-    url: string;
+    host: string;
+    port: number;
+    database: string
     username: string;
     password: string;
 }

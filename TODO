@@ -117,11 +117,11 @@ Backlog:
         ☐ CRUD version. OptimisticLockException should not print stack.
 
         4/1/2022:
-            ☐ CRUD test template: needs to be more inteligent
-            ☐ CRUD create: return null
+            ☐ CRUD test template: needs to be more intelligent
+            ✘ CRUD create: return null @cancelled(22-04-16 15:43)
             ☐ Rename service: prepopulate input with current name
             ☐ SQL service, generate input and output: both datetime and id field gets "abc".
-            ☐ TEST error message: remove JavaSqlException, but display SQL error
+            ✔ TEST error message: remove JavaSqlException, but display SQL error  (How to handle exception in service engine?) @done(22-04-15 10:43)
                 TEST EXCEPTION: 
                     {
                         "type": "SYSTEM",
@@ -134,13 +134,13 @@ Backlog:
                         "name": "UndeterminedException",
                         "message": "net.backlogic.persistence.engine.exception.DataSourceException: data source config not found for application: default/try"
                     }
-            ☐ data source, test: confusing, password masked after test
-            ☐ data source: change file format, replace url with host, port and database
-            ☐ data source: how to cache data source?
+            ✔ data source, test: confusing, password masked after test @done(22-04-15 10:25)
+            ✔ data source: change file format, replace url with host, port and database @done(22-04-15 10:25)
+            ✔ data source: how to cache data source? password in secret @done(22-04-15 10:25)
             ✔ builder backend: set spring.groovy.template.check-template-location=false @done(22-04-02 15:37)
             ☐ messages: most should go to status bar
                 "input and output are generated", "input and output bindings are generated"
-            ☐ Service Deployment, view data source: showing password
+            ✔ Service Deployment, view data source: showing password @done(22-04-15 10:24)
             ☐ generate simple CRUD services: need warning if table selection is empty
             ☐ generate simple CRUD services: service name first letter shall be upper case
             ☐ generate simple CRUD services, key column(s): shall set inputField so as return object for create operation
@@ -152,7 +152,11 @@ Backlog:
             ☐ create application: no .gitignore file
             ☐ Application/Data source not deployed: should be 400 error not 500
                 data source config not found for application: quert01/try
-                
+            ☐ rename application/module/service should change name in application/module/service json files
+            ☐ error message: when server is done
+                failed. cause: connect ECONNREFUSED 127.0.0.1:8080 | connect ECONNREFUSED 127.0.0.1:8080
+            ☐ json datetime format: should support both "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" and "yyyy-MM-dd'T'HH:mm:ss'Z'"
+
     Tests:
 
     Engine Bugs:

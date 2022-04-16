@@ -15,6 +15,27 @@ export function createGetWorkspaceUtil(context: vscode.ExtensionContext): void {
     };
 }
 
+/**
+ * Methods for storing data source password
+ */
+export const passwordMask = '*********';
+
+export async function storePassword(context: vscode.ExtensionContext, dataSourcePath: string, password: string): Promise<void> {
+    const secretName = await passwordSecretName(context, dataSourcePath);
+    context.secrets.store(secretName, password);
+}
+
+export async function retrievePassword(context: vscode.ExtensionContext, dataSourcePath: string): Promise<string> {
+    const secretName = await passwordSecretName(context, dataSourcePath);
+    const password = await context.secrets.get(secretName);
+    return password || '';
+}
+
+export async function passwordSecretName(context: vscode.ExtensionContext, dataSourcePath: string): Promise<string> {
+    const appUri = await applicationUriForDataSource(dataSourcePath);
+    return `servicebuilder.${appUri.replace('/', '.')}`;
+}
+
 export function getWorkFolder(): vscode.WorkspaceFolder | undefined {
 		// if no workspace folders
 		if (!vscode.workspace.workspaceFolders) {
@@ -24,23 +45,23 @@ export function getWorkFolder(): vscode.WorkspaceFolder | undefined {
 		return vscode.workspace.workspaceFolders.filter(folder => folder.uri.scheme === 'file')[0];
 }
 
-export function applicationUriForDataSource(dataSourcePath: string) {
+export function applicationUriForDataSource(dataSourcePath: string): Promise<string> {
     return applicationUri(fromDataSource(dataSourcePath));
 }
 
-export function applicationUriForApplication(appPath: string) {
+export function applicationUriForApplication(appPath: string): Promise<string> {
     return applicationUri(fromApplication(appPath));
 }
 
-export function applicationUriForModule(modPath: string) {
+export function applicationUriForModule(modPath: string): Promise<string> {
     return applicationUri(fromModule(modPath));
 }
 
-export function applicationUriForService(servicePath: string) {
+export function applicationUriForService(servicePath: string): Promise<string> {
     return applicationUri(fromService(servicePath));
 }
 
-export function applicationUriForTest(testPath: string) {
+export function applicationUriForTest(testPath: string): Promise<string> {
     return applicationUri(fromTest(testPath));
 }
 
@@ -130,12 +151,12 @@ export function fromTest(path: string): Resource {
  * Functions below produce URIs for builder and devtime.
  * Builder workspace is different from local workfolder.
  */
-export async function applicationUri(resource: Resource) {
+export async function applicationUri(resource: Resource): Promise<string> {
     const builderWorkspace = await getWorkspace();
     return `${builderWorkspace}/${resource.application}`;
 }
 
-export async function moduleUri(resource: Resource) {
+export async function moduleUri(resource: Resource): Promise<string> {
     const builderWorkspace = await getWorkspace();
     return `${builderWorkspace}/${resource.application}/${resource.module}`;
 }
@@ -247,7 +268,9 @@ export class DoubleClick {
 
 }
 
-
+/*
+* Methods to get file archives
+*/
 export function getArchive(fsPath: string): Buffer {
     const archive = new ZIP();
     archive.addLocalFolder(fsPath);
@@ -255,3 +278,25 @@ export function getArchive(fsPath: string): Buffer {
     return buffer;	
 }
 
+export async function getApplicationArchive(uri: vscode.Uri, context: vscode.ExtensionContext): Promise<Buffer> {
+    // restore password
+    let dataSource: any;
+    const dataSourceUri = vscode.Uri.joinPath(uri, 'src', 'datasource.json');
+    const password = await retrievePassword(context, dataSourceUri.path);
+    if (!password) {
+        dataSource = await readJsonFile(dataSourceUri);
+        dataSource.password = password;
+    }
+
+    // get archive
+    const buffer = getArchive(uri.fsPath);
+
+    // remask password
+    if (!password) {
+        dataSource.password = passwordMask;
+        writeJsonFile(dataSourceUri, dataSource);
+    }
+
+    // return
+    return buffer;	
+}

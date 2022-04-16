@@ -25,7 +25,7 @@ export class DeploymentService {
         // get remote workspace
         const workspace = await this.context.secrets.get('servicebuilder.workspace');
         if (!workspace) {
-            console.warn('Not connected to workspace.');
+            vscode.window.setStatusBarMessage('Not connected to workspace.');
             return;
         }
         // fresh deployment folder

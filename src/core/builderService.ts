@@ -14,7 +14,7 @@ export class BuilderService {
 	 */
 	async getBuilderVersions(): Promise<Versions> {
 		const url = '/builder/getVersions';
-		const versions = await this.http.get(url);
+		const versions = await this.http.builderGet(url);
 		return versions;
 	}
 	
@@ -23,7 +23,7 @@ export class BuilderService {
 	 */
 	async testDataSource(request: TestDataSourceRequest): Promise<TestDataSourceResult> {
 		const url = '/test/testDataSource';
-		const result = await this.http.post(url, request);
+		const result = await this.http.builderPost(url, request);
 		return result;
 	}
 
@@ -42,55 +42,55 @@ export class BuilderService {
 	 */
 	async bindQuery(request: BindQueryRequest): Promise<BindQueryResult> {
 		const url = '/bind/bindQuery';
-		const result = await this.http.post(url, request);
+		const result = await this.http.builderPost(url, request);
 		return result;
 	}
 
 	async bindSql(request: BindSqlsRequest): Promise<BindSqlsResult> {
 		const url = '/bind/bindSqls';
-		const result = await this.http.post(url, request);
+		const result = await this.http.builderPost(url, request);
 		return result;
 	}
 
 	async bindCrudQuery(request: BindCrudQueryRequest): Promise<BindCrudQueryResult> {
 		const url = '/bind/bindCrudQuery';
-		const result = await this.http.post(url, request);
+		const result = await this.http.builderPost(url, request);
 		return result;
 	}
 
 	async bindCrudTable(request: BindCrudTableRequest): Promise<Table[]> {
 		const url = '/bind/bindCrudTable';
-		const result = await this.http.post(url, request);
+		const result = await this.http.builderPost(url, request);
 		return result;
 	}
 
 	async genQueryInputOutput(request: GenerateInputOutputRequest): Promise<GenerateInputOutputResult> {
 		const url = '/gen/generateQueryInputOutput';
-		const result = await this.http.post(url, request);
+		const result = await this.http.builderPost(url, request);
 		return result;
 	}
 
 	async genSqlInputOutput(request: GenerateInputOutputRequest): Promise<GenerateInputOutputResult> {
 		const url = '/gen/generateSqlInputOutput';
-		const result = await this.http.post(url, request);
+		const result = await this.http.builderPost(url, request);
 		return result;
 	}
 
 	async genCrudObject(request: GenerateObjectRequest): Promise<GenerateObjectResult> {
 		const url = '/gen/generateCrudObject';
-		const result = await this.http.post(url, request);
+		const result = await this.http.builderPost(url, request);
 		return result;
 	}
 
 	async getTableList(request: GetTableListRequest): Promise<string[]> {
 		const url = '/sql/getTableList';
-		const tables = await this.http.post(url, request);
+		const tables = await this.http.builderPost(url, request);
 		return tables;
 	}
 
 	async genCruds(request: GenerateCrudRequest): Promise<GenerateCrudResult[]> {
 		const url = '/gen/generateCruds';
-		const result = await this.http.post(url, request);
+		const result = await this.http.builderPost(url, request);
 		return result;
 	}
 
@@ -125,7 +125,9 @@ export interface Versions {
 export interface TestDataSourceRequest {
 	applicationUri: string;
 	dbType: string;
-	jdbcUrl: string;
+	host: string;
+	port: number;
+	database: string;
 	username: string;
 	password: string;
 }

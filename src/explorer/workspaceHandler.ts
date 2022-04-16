@@ -5,22 +5,17 @@ import * as util from '../core/util';
 import {
     BuilderService, Versions
 } from '../core/builderService';
-import {TryService} from "./tryService";
-import { TryWorkspace } from './tryModel';
 
 
 export class WorkspaceHandler {
 	private context: vscode.ExtensionContext;
 	private builderService: BuilderService;
-    private tryService: TryService;
 
-	constructor(context: vscode.ExtensionContext, builderService: BuilderService, tryService: TryService) {
+	constructor(context: vscode.ExtensionContext, builderService: BuilderService) {
         this.context = context;
 		this.builderService = builderService;
-        this.tryService = tryService;
 		vscode.commands.registerCommand('servicebuilderExplorer.connect', () => this.connect());
 		vscode.commands.registerCommand('servicebuilderExplorer.workspace', () => this.workspace());
-		vscode.commands.registerCommand('servicebuilderExplorer.try', () => this.try());
     }
 
 	async connect(): Promise<void> {
@@ -69,7 +64,7 @@ export class WorkspaceHandler {
 		// otherwise, test connection by getting builder versions
 		try {
 			// test connection
-			const versions = await this.builderService.getBuilderVersions();
+			workspace.versions = await this.builderService.getBuilderVersions();
 			
 			// show
 			this.showConnectedMessage(workspace);
@@ -132,54 +127,6 @@ export class WorkspaceHandler {
 			}
 		});
 	}
-
-
-	async try(): Promise<void> {
-		// request workspace
-		try {
-			const workspace = await this.tryService.requestTryWorkspace();
-
-            if (workspace) {
-                vscode.window.showInformationMessage(
-                    `Workspace found for your try. You may connect now. \n
-					Workspace Details:
-					\t  \t Name: ${workspace.workspaceName}
-					\t  \t Url: ${workspace.workspaceUrl}`,
-					{ modal: true },
-                    'Connect'
-                ).then( btn => {
-                    if ( btn === 'Connect') {
-                        this.startTrySession(workspace);
-                    }
-                });    
-            } else {
-                vscode.window.showInformationMessage(
-                    "All workspaces are taken at the moment. \n\nPlease try later.  ",
-					{ modal: true }
-				);    
-            }
-
-		}catch(error: any) {
-            console.error('Error in requesting workspace.', error);
-            vscode.window.showErrorMessage(
-                error.message
-			);
-		}
-	}
-
-    async startTrySession(workspace: TryWorkspace) {
-		// create session
-		const trySession = await this.tryService.createTrySession(workspace.requestId, workspace.workspaceId);
-
-		// save connection
-		await this.context.secrets.store('servicebuilder.url', trySession.workspaceUrl);
-		await this.context.secrets.store('servicebuilder.token', trySession.accessToken);
-		await this.context.secrets.store('servicebuilder.workspace', trySession.workspaceName);
-
-		// show workspace
-		this.workspace();
-    }
-
 }
 
 export interface Workspace {

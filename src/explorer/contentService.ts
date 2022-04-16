@@ -12,20 +12,22 @@ export function applicationFile(applicationName: string, dbType: string, version
 }
 
 export function dataSourceFile(dbType: string): Uint8Array {		
-	let url;
+	let port;
 	switch(dbType) {
 		case 'mysql':
-			url = "mysql://{host}:{port}/{database}";
+			port = 3306;
 			break;
 		default:
-			url = "jdbcUrl for " + dbType + " database";
+			port = 0;
 	}
 	const content = {
 		"dbType": dbType,
-		"url": url,
+		"host": "",
+		"port": port,
+		"database": "",
 		"username": "",
 		"password": "",
-		"comments": "Complete url, username and password. Test data source using the TEST editor button."
+		"comments": "Complete host, port, database, username and password. Test data source using the TEST editor button."
 	};
 	return util.toUint8Array(content);
 }

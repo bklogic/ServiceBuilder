@@ -4,7 +4,16 @@ export interface TryWorkspace {
     requestId: number;
     workspaceName: string;
     workspaceUrl: string;
-    accessToken: string;
+    accessCode: string;
+}
+
+export interface TryDataSource {
+    dbType: string;
+    host: string;
+    port: string;
+    dbName: string;
+    username: string;
+    password: string;
 }
 
 export interface TrySession {
@@ -13,4 +22,6 @@ export interface TrySession {
     workspaceUrl: string;
     accessToken: string;
     expireAt: Date;
+    dataSource: TryDataSource;
 }
+

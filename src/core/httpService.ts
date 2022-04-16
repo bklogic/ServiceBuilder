@@ -18,7 +18,7 @@ export class HttpService {
         }
     }
 
-    async httpConfig(timeout?: number): Promise<HttpConfig> {
+    async builderHttpConfig(timeout?: number): Promise<HttpConfig> {
         // get connection data
         let [url, token] = await Promise.all([
             this.context.secrets.get('servicebuilder.url'),
@@ -41,8 +41,24 @@ export class HttpService {
         return config; 
     }
 
-    async get(url: string, timeout?: number): Promise<any> {
-        const config = await this.httpConfig(timeout);
+    async tryHttpConfig(timeout?: number): Promise<HttpConfig> {
+        // get url
+        const url = vscode.workspace.getConfiguration('servicebuilder').get('tryServiceEndpoint') as string;
+        // create and return config
+        const config: HttpConfig = {
+            baseURL: url,
+            timeout: (timeout) ? timeout : 5000,
+            headers: {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                'Content-Type': 'application/json'
+            },
+            httpsAgent: new https.Agent({ keepAlive: true, rejectUnauthorized: this.rejectUnauthorized })
+        };  
+        return config; 
+    }
+
+
+    async get(url: string, config: HttpConfig): Promise<any> {
         try {           
             const response = await axios.get(url, config);
             return response.data;
@@ -53,8 +69,7 @@ export class HttpService {
         }    
     }
     
-    async post(url: string, data: any, timeout?: number): Promise<any> {
-        const config = await this.httpConfig(timeout);
+    async post(url: string, data: any, config: HttpConfig): Promise<any> {
         try {
             const response = await axios.post(url, data, config);
             return response.data;
@@ -69,7 +84,7 @@ export class HttpService {
     }
 
     async postArchive(url: string, data: any, archive: Buffer, timeout?: number): Promise<any> {
-        const config = await this.httpConfig(timeout);
+        const config = await this.builderHttpConfig(timeout);
         try {
             // construct form
             const form = new formData();
@@ -91,5 +106,20 @@ export class HttpService {
           }    
     }
 
+
+    async builderGet(url: string, timeout?: number): Promise<any> {
+        const config = await this.builderHttpConfig(timeout);
+        return this.get(url, config);
+    }
+
+    async builderPost(url: string, data: any, timeout?: number): Promise<any> {
+        const config = await this.builderHttpConfig(timeout);
+        return this.post(url, data, config);
+    }
+
+    async tryPost(url: string, data: any, timeout?: number): Promise<any> {
+        const config = await this.tryHttpConfig(timeout);
+        return this.post(url, data, config);
+    }
 
 }

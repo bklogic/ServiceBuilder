@@ -35,9 +35,9 @@ export class ApplicationExplorer {
 	private builderService: BuilderService;
 	private doubleClick = new util.DoubleClick();
 
-	constructor(context: vscode.ExtensionContext, builderService: BuilderService) {
+	constructor(context: vscode.ExtensionContext, appService: ApplicationService, builderService: BuilderService) {
 		this.context = context;
-		this.appService = new ApplicationService();
+		this.appService = appService;
 		this.builderService = builderService;
 		this.dataProvider = new ApplicationDataProvider(this.appService);
 		this.treeView = vscode.window.createTreeView('servicebuilderExplorer', { treeDataProvider: this.dataProvider, showCollapseAll: true });
@@ -125,30 +125,65 @@ export class ApplicationExplorer {
 			});
 	}
 
-	async createApplication(appName: string, dbType: string): Promise<void> {
+	// async createApplication(appName: string, dbType: string): Promise<Entry|void> {
+	// 	try {
+	// 		vscode.window.withProgress({
+	// 			location: vscode.ProgressLocation.Window,
+	// 			cancellable: false,
+	// 			title: 'Creating application'
+	// 		}, async (progress) => {
+	// 			// clear status message
+	// 			vscode.window.setStatusBarMessage('');
+
+	// 			// create application
+	// 			const versions = await this.builderService.getBuilderVersions();
+	// 			const app = await this.appService.createApplication(this.dataProvider.workfolder, appName, dbType, versions);
+
+	// 			// reveal
+	// 			this.refresh();
+	// 			this.treeView.reveal(app, {expand: 2, focus: true, select: true});
+
+	// 			// deploy application
+	// 			await this.deployApplication(app); 
+
+	// 			// inform user
+	// 			vscode.window.setStatusBarMessage('application is created.');
+
+	// 			return app;
+	// 		});		
+	// } catch (error: any) {
+	// 		let message: string;
+	// 		switch (error.code) {
+	// 			case 'FileExists':
+	// 				message = 'Application name exists.';
+	// 				break;
+	// 			default:
+	// 				message = error.message;
+	// 		}
+	// 		vscode.window.showErrorMessage(message);
+	// 	}
+	// }
+
+	async createApplication(appName: string, dbType: string): Promise<Entry|void> {
 		try {
-			vscode.window.withProgress({
-				location: vscode.ProgressLocation.Window,
-				cancellable: false,
-				title: 'Creating application'
-			}, async (progress) => {
-				// clear status message
-				vscode.window.setStatusBarMessage('');
+			// clear status message
+			vscode.window.setStatusBarMessage('');
 
-				// create application
-				const versions = await this.builderService.getBuilderVersions();
-				const app = await this.appService.createApplication(this.dataProvider.workfolder, appName, dbType, versions);
+			// create application
+			const versions = await this.builderService.getBuilderVersions();
+			const app = await this.appService.createApplication(this.dataProvider.workfolder, appName, dbType, versions);
 
-				// reveal
-				this.refresh();
-				this.treeView.reveal(app, {expand: 2, focus: true, select: true});
+			// reveal
+			this.refresh();
+			this.treeView.reveal(app, {expand: 2, focus: true, select: true});
 
-				// deploy application
-				this.deployApplication(app); 
+			// deploy application
+			await this.deployApplication(app); 
 
-				// inform user
-				vscode.window.setStatusBarMessage('application is created.');
-			});		
+			// inform user
+			vscode.window.setStatusBarMessage('application is created.');
+
+			return app;
 	} catch (error: any) {
 			let message: string;
 			switch (error.code) {
@@ -173,7 +208,7 @@ export class ApplicationExplorer {
 				vscode.window.setStatusBarMessage('');
 				// zip application
 				const appUri = await util.applicationUriForApplication(app.uri.path);
-				const archive = await util.getArchive(app.uri.fsPath);
+				const archive = await util.getApplicationArchive(app.uri, this.context);
 				// call service
 				await this.builderService.deployApplication(appUri, archive);
 				// inform user
@@ -185,36 +220,62 @@ export class ApplicationExplorer {
 		}
 	}
 
+	// async createModule(app: Entry, modName: string): Promise<void> {
+	// 	vscode.window.withProgress({
+	// 		location: vscode.ProgressLocation.Window,
+	// 		cancellable: false,
+	// 		title: 'Creating module'
+	// 	}, async (progress) => {
+	// 		try {
+	// 			// clear status message
+	// 			vscode.window.setStatusBarMessage('');
+	// 			// create module
+	// 			const mod = await this.appService.createModule(app, modName);
+	// 			// reveal
+	// 			this.dataProvider.fire(app);
+	// 			this.treeView.reveal(mod, {expand: 2, focus: true, select: true});	
+	// 			// deploy module
+	// 			this.deployModule(mod);
+	// 			// inform user
+	// 			vscode.window.setStatusBarMessage('Module is created.');
+	// 		} catch (error: any) {
+	// 			let message: string;
+	// 			switch (error.code) {
+	// 				case 'FileExists':
+	// 					message = 'Module name exists.';
+	// 					break;
+	// 				default:
+	// 					message = error.message;
+	// 			}
+	// 			vscode.window.showErrorMessage(message);
+	// 		}
+	// 	});		
+	// }
+
 	async createModule(app: Entry, modName: string): Promise<void> {
-		vscode.window.withProgress({
-			location: vscode.ProgressLocation.Window,
-			cancellable: false,
-			title: 'Creating module'
-		}, async (progress) => {
-			try {
-				// clear status message
-				vscode.window.setStatusBarMessage('');
-				// create module
-				const mod = await this.appService.createModule(app, modName);
-				// reveal
-				this.dataProvider.fire(app);
-				this.treeView.reveal(mod, {expand: 2, focus: true, select: true});	
-				// deploy module
-				this.deployModule(mod);
-				// inform user
-				vscode.window.setStatusBarMessage('Module is created.');
-			} catch (error: any) {
-				let message: string;
-				switch (error.code) {
-					case 'FileExists':
-						message = 'Module name exists.';
-						break;
-					default:
-						message = error.message;
-				}
-				vscode.window.showErrorMessage(message);
+		try {
+			// clear status message
+			vscode.window.setStatusBarMessage('');
+			// create module
+			const mod = await this.appService.createModule(app, modName);
+			// reveal
+			this.dataProvider.fire(app);
+			this.treeView.reveal(mod, {expand: 2, focus: true, select: true});	
+			// deploy module
+			await this.deployModule(mod);
+			// inform user
+			vscode.window.setStatusBarMessage('Module is created.');
+		} catch (error: any) {
+			let message: string;
+			switch (error.code) {
+				case 'FileExists':
+					message = 'Module name exists.';
+					break;
+				default:
+					message = error.message;
 			}
-		});		
+			vscode.window.showErrorMessage(message);
+		}
 	}
 
 	async deployModule(mod: Entry): Promise<void> {

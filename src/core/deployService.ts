@@ -10,37 +10,37 @@ export class DeployService {
 
 	async getApplications(workspace: string): Promise<Application[]> {
 		const url = '/deploy/getApplications/' + workspace;
-		const apps = await this.http.get(url);
+		const apps = await this.http.builderGet(url);
 		return apps;
 	}
 
 	async getApplicationAggregate(appUri: string): Promise<ApplicationAggregate> {
 		const url = '/deploy/getApplicationAggregate/' + appUri;
-		const app = await this.http.get(url);
+		const app = await this.http.builderGet(url);
 		return app;
 	}
 
 	async getTests(serviceUri: string): Promise<Test[]> {
 		const url = '/deploy/getTests/' + serviceUri;
-		const tests = await this.http.get(url);
+		const tests = await this.http.builderGet(url);
 		return tests;
 	}
 
 	async getDataSource(appUri: string): Promise<DataSource> {
 		const url = '/deploy/getDataSource/' + appUri;
-		const dataSource = await this.http.get(url);
+		const dataSource = await this.http.builderGet(url);
 		return dataSource;
 	}
 
 	async cleanApplication(appUri: string): Promise<DataSource> {
 		const url = '/deploy/cleanApplication/' + appUri;
-		const dataSource = await this.http.post(url, {});
+		const dataSource = await this.http.builderPost(url, {});
 		return dataSource;
 	}
 
 	async getService(serviceUri: string): Promise<DataSource> {
 		const url = '/deploy/getService/' + serviceUri;
-		const service = await this.http.get(url);
+		const service = await this.http.builderGet(url);
 		return service;
 	}
 

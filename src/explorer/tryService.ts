@@ -1,28 +1,23 @@
-import {TryHttpService} from '../core/tryHttpService';
+import {HttpService} from '../core/httpService';
 import {TryWorkspace, TrySession} from './tryModel';
 
 export class TryService {
 
-	private http: TryHttpService;
+	private http: HttpService;
 
-	constructor(http: TryHttpService) {
+	constructor(http: HttpService) {
 		this.http = http;
 	}
 
-	async requestTryWorkspace(): Promise<TryWorkspace | null> {
+	async requestTryWorkspace(email: string | null): Promise<TryWorkspace | null> {
 		const url = '/try/requestWorkspace';
-		const workspace = await this.http.get(url);
-		return workspace;
+		return await this.http.tryPost(url, {email}, 15000);
 	}
 
-	async startTrySession(TryWorkspace: workspace): Promise<TrySession> {
-		const url = '/try/createTrySession';
-		// const session = await this.http.get(url);
-		const session = {
-			workspaceName: "quert01",
-			workspaceUrl: "http://localhost:8080",
-			accessToken: "abcdefg"
-		} as TrySession;
+	async startTrySession(workspaceId: number, accessCode: string): Promise<TrySession> {
+		const url = '/try/startSession';
+		const data = {workspaceId, accessCode};
+		const session = await this.http.tryPost(url, data);
 		return session;
 	}
 
