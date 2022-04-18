@@ -95,30 +95,46 @@ export function tablesFile(): Uint8Array {
 	return util.toUint8Array(content);
 }
 
-export function testFile(input: any, serviceType: string, testType: string | undefined): Uint8Array {
+export function testFile(input: any, serviceName: string, testType: string | undefined): Uint8Array {
 	let content;
 	switch (testType) {
 		case 'read':
 			content = {
-				name: 'ReadCustomerById',
+				name: `read${serviceName}`,
 				input: input,
 				operation: 'read',
-				comments: 'Modify the example test name and input'
+				comments: 'Modify the example test name and input.'
 			};	
 			break;
-		case 'write':
+		case 'creat':
 			content = {
-				name: 'CreateCustomer',
+				name: `create${serviceName}`,
 				input: input,
 				operation: 'create',
-				comments: 'Modify the example test name, input and operation. Valid operations: create, delete, update, merge, save.'
+				comments: 'Modify the example test name and input.'
+			};	
+			break;
+		case 'update':
+			content = {
+				name: `update${serviceName}`,
+				input: input,
+				operation: 'update',
+				comments: 'Modify the example test name and input.'
+			};	
+			break;
+		case 'delete':
+			content = {
+				name: `delete${serviceName}`,
+				input: input,
+				operation: 'delete',
+				comments: 'Modify the example test name and input.'
 			};	
 			break;
 		default:
 			content = {
-				name: 'QueryCustomerById',
+				name: serviceName,
 				input: input,
-				comments: 'Modify the example test name and input'
+				comments: 'Modify the example test name and input.'
 			};		
 	}
 	return util.toUint8Array(content);

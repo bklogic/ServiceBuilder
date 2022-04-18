@@ -117,10 +117,6 @@ Backlog:
         ☐ CRUD version. OptimisticLockException should not print stack.
 
         4/1/2022:
-            ☐ CRUD test template: needs to be more intelligent
-            ✘ CRUD create: return null @cancelled(22-04-16 15:43)
-            ☐ Rename service: prepopulate input with current name
-            ☐ SQL service, generate input and output: both datetime and id field gets "abc".
             ✔ TEST error message: remove JavaSqlException, but display SQL error  (How to handle exception in service engine?) @done(22-04-15 10:43)
                 TEST EXCEPTION: 
                     {
@@ -138,25 +134,34 @@ Backlog:
             ✔ data source: change file format, replace url with host, port and database @done(22-04-15 10:25)
             ✔ data source: how to cache data source? password in secret @done(22-04-15 10:25)
             ✔ builder backend: set spring.groovy.template.check-template-location=false @done(22-04-02 15:37)
-            ☐ messages: most should go to status bar
                 "input and output are generated", "input and output bindings are generated"
             ✔ Service Deployment, view data source: showing password @done(22-04-15 10:24)
-            ☐ generate simple CRUD services: need warning if table selection is empty
-            ☐ generate simple CRUD services: service name first letter shall be upper case
-            ☐ generate simple CRUD services, key column(s): shall set inputField so as return object for create operation
-            ☐ generate simple CRUD services: shall also create tests
-            ☐ generate simple CRUD services: how to default "update default"? null or insert default?
+            ✔ generate simple CRUD services: need warning if table selection is empty @done(22-04-17 01:31)
+            ✔ generate simple CRUD services: service name first letter shall be upper case @started(22-04-17 00:52) @done(22-04-17 01:19) @lasted(27m53s)
+            ✔ generate simple CRUD services, key column(s): shall set inputField so as return object for create operation @started(22-04-17 00:53) @done(22-04-17 01:19) @lasted(26m59s)
+            ✔ generate simple CRUD services: how to default "update value"? null or insert value? @started(22-04-17 00:54) @done(22-04-17 01:22) @lasted(28m19s)
             ✘ CRUD service, create: value overriden by insert default @cancelled(22-04-03 07:39): it is correct.
             ✘ CRUD service, update: undefined value is updated to null @cancelled(22-04-03 07:40): it is correct.
             ✘ CRUD service, update: value overriden by update default @cancelled(22-04-03 07:40): it is correct.
+            ✔ error message: when server is done @done(22-04-17 01:32)
+                failed. cause: connect ECONNREFUSED 127.0.0.1:8080 | connect ECONNREFUSED 127.0.0.1:8080
+            ✘ CRUD create: return null @cancelled(22-04-16 15:43)
+            ✔ Rename service: prepopulate input with current name @done(22-04-17 14:11)
+            ☐ rename application/module/service should change name in application/module/service json files @started(22-04-17 14:11)
+            ✔ rename application/module/service should redeploy @done(22-04-17 22:10)
+            ☐ CRUD test template: needs to be more intelligent
+            ☐ generate simple CRUD services: shall also create tests
+            ✔ messages: most should go to status bar @done(22-04-17 22:10)
             ☐ create application: no .gitignore file
             ☐ Application/Data source not deployed: should be 400 error not 500
                 data source config not found for application: quert01/try
-            ☐ rename application/module/service should change name in application/module/service json files
-            ☐ error message: when server is done
-                failed. cause: connect ECONNREFUSED 127.0.0.1:8080 | connect ECONNREFUSED 127.0.0.1:8080
+            ☐ SQL Service, bind input and output: missing data source causes 500 error
+                Request failed with status code 500 | Request failed with status code 500
             ☐ json datetime format: should support both "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" and "yyyy-MM-dd'T'HH:mm:ss'Z'"
-
+            ☐ SQL service, generate input and output: both datetime and id field gets "abc".
+            ☐ Service Explorer, Refresh Application list - error in first time run of this command:
+                Unable to resolve nonexistent file 'c:\S8\workspaces\das\.deployments'
+    
     Tests:
 
     Engine Bugs:

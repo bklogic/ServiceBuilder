@@ -3,7 +3,8 @@ import * as vscode from 'vscode';
 import * as util from '../core/util';
 import {
     BuilderService, 
-    TestDataSourceRequest
+    DataSource,
+    TestDataSourceRequest,
 } from '../core/builderService';
 
 export class DataSourceEditor {
@@ -74,11 +75,3 @@ export function rewriteDocumentCallback(editor: vscode.TextEditor, newText: stri
     };
 }
 
-export interface DataSource {
-    dbType: string;
-    host: string;
-    port: number;
-    database: string
-    username: string;
-    password: string;
-}

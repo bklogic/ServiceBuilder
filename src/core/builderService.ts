@@ -112,6 +112,24 @@ export class BuilderService {
 		return result;
 	}
 
+	async undeployApplication(appUri: string): Promise<DeployResult> {
+		const url = '/deploy/undeployApplication';
+		const result = await this.http.builderPost(url, {appUri});
+		return result;
+	}
+
+	async undeployModule(appUri: string, modName: string): Promise<DeployResult> {
+		const url = '/deploy/undeployModule';
+		const result = await this.http.builderPost(url, {appUri, modName});
+		return result;
+	}
+
+	async undeployService(appUri: string, modName: string, serviceName: string): Promise<DeployResult> {
+		const url = '/deploy/undeployService';
+		const result = await this.http.builderPost(url, {appUri, modName, serviceName});
+		return result;
+	}
+
 }
 
 
@@ -120,6 +138,15 @@ export interface Versions {
 	engine: string; 
 	deployer: string; 
 	builder: string
+}
+
+export interface DataSource {
+    dbType: string;
+    host: string;
+    port: number;
+    database: string
+    username: string;
+    password: string;
 }
 
 export interface TestDataSourceRequest {

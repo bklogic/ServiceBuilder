@@ -23,7 +23,9 @@ import {
 	NameConvention,
 	Table,
 	WhereClauseType,
-	Versions
+	Versions,
+	DataSource,
+	TestDataSourceRequest
 } from '../core/builderService';
 
 
@@ -98,11 +100,11 @@ export class ApplicationExplorer {
 						if (dbType) {
 							this.createApplication(name, dbType);							
 						} else {
-							vscode.window.showErrorMessage("no database type selected.");
+							vscode.window.setStatusBarMessage("No database type selected.");
 						}
 					});
 				} else {
-					vscode.window.showErrorMessage("no application name specified.");
+					vscode.window.setStatusBarMessage("No application name specified.");
 				}
 			});
 	}
@@ -216,9 +218,32 @@ export class ApplicationExplorer {
 			});		
 		} catch (error: any) {
 			console.error('Error in deploying application', error);
-			vscode.window.showErrorMessage(error.message);
+			vscode.window.setStatusBarMessage('Failed to deploy application: ' + error.message);
 		}
 	}
+
+	async undeployApplication(app: Entry): Promise<void> {
+		try {
+			vscode.window.withProgress({
+				location: vscode.ProgressLocation.Window,
+				cancellable: false,
+				title: 'undeploying application'
+			}, async (progress) => {
+				// clear status message
+				vscode.window.setStatusBarMessage('');
+				// zip application
+				const appUri = await util.applicationUriForApplication(app.uri.path);
+				// call service
+				await this.builderService.undeployApplication(appUri);
+				// inform user
+				vscode.window.setStatusBarMessage('application is undeployed.');
+			});		
+		} catch (error: any) {
+			console.error('Error in undeploying application', error);
+			vscode.window.setStatusBarMessage('Failed to undeploy application: ' + error.message);
+		}
+	}
+
 
 	// async createModule(app: Entry, modName: string): Promise<void> {
 	// 	vscode.window.withProgress({
@@ -297,10 +322,31 @@ export class ApplicationExplorer {
 			});		
 		} catch (error: any) {
 			console.error('Error in deploying module', error);
-			vscode.window.showErrorMessage(error.message);
+			vscode.window.setStatusBarMessage('Failed to deploy module: ' + error.message);
 		}
 	}
 
+	async undeployModule(mod: Entry): Promise<void> {
+		try {
+			vscode.window.withProgress({
+				location: vscode.ProgressLocation.Window,
+				cancellable: false,
+				title: 'undeploying module'
+			}, async (progress) => {
+				// clear status message
+				vscode.window.setStatusBarMessage('');
+				// zip module
+				const appUri = await util.applicationUriForModule(mod.uri.path);
+				// call service
+				await this.builderService.undeployModule(appUri, mod.name);
+				// inform user
+				vscode.window.setStatusBarMessage('module is undeployed.');
+			});		
+		} catch (error: any) {
+			console.error('Error in undeploying module', error);
+			vscode.window.setStatusBarMessage('Failed to undeploy module: ' + error.message);
+		}
+	}
 	async createService(mod: Entry, name: string, type: string): Promise<void> {
 			vscode.window.withProgress({
 				location: vscode.ProgressLocation.Window,
@@ -350,9 +396,31 @@ export class ApplicationExplorer {
 			});		
 		} catch (error: any) {
 			console.error('Error in deploying service', error);
-			vscode.window.showErrorMessage(error.message);
+			vscode.window.setStatusBarMessage('Failed to deploy service: ' + error.message);
 		}
+	}
 
+	async undeployService(service: Entry): Promise<void> {
+		try {
+			vscode.window.withProgress({
+				location: vscode.ProgressLocation.Window,
+				cancellable: false,
+				title: 'undeploying service'
+			}, async (progress) => {
+				// clear status message
+				vscode.window.setStatusBarMessage('');
+				// zip 
+				const appUri = await util.applicationUriForService(service.uri.path);
+				const modName = service.parent?.name || 'modName';  // service.parent never be null
+				// call service
+				await this.builderService.undeployService(appUri, modName, service.name);
+				// inform user
+				vscode.window.setStatusBarMessage('service is undeployed.');
+			});		
+		} catch (error: any) {
+			console.error('Error in undeploying service', error);
+			vscode.window.setStatusBarMessage('Failed to undeploy service: ' + error.message);
+		}
 	}
 
 	async delete(entry: Entry): Promise<void> {
@@ -370,13 +438,15 @@ export class ApplicationExplorer {
 				this.refresh();
 			}	
 		} catch (error: any) {
-			vscode.window.showErrorMessage(error.message);
+			vscode.window.setStatusBarMessage('Failed to delete item: ' + error.message);
 		}
 	}
 
 	private onRename(entry: Entry): void {
 		this.treeView.reveal(entry, {select: true});
-		vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: `new ${entry.type} name`, prompt: "must be an alphanumberic"})
+		vscode.window.showInputBox({
+			ignoreFocusOut: true, placeHolder: `new ${entry.type} name`, value: entry.name, prompt: "must be an alphanumberic"
+		})
 			.then( name => {
 				if (name) {
 					this.rename(entry, name);
@@ -403,8 +473,19 @@ export class ApplicationExplorer {
 		try {
 			await this.appService.rename(entry.uri, targetUri);
 		} catch (error: any) {
-			vscode.window.showErrorMessage(error.message);
+			vscode.window.setStatusBarMessage('Failed to rename item: ' + error.message);
+			return;
 		}
+
+		// redeploy
+		const newEntry = {
+			uri: targetUri,
+			name: name,
+			type: entry.type,
+			fileType: entry.fileType,
+			parent: entry.parent
+		} as Entry;
+		this.redeploy(entry, newEntry);
 
 		// show
 		if (!entry.parent) {
@@ -445,6 +526,47 @@ export class ApplicationExplorer {
 		// 	}
 		// 	vscode.window.showErrorMessage(message);
 		// }
+	}
+
+	async redeploy(entry: Entry, newEntry: Entry) {
+		switch (entry.type) {
+			case EntryType.Application:
+				await this.resavePassword(entry, newEntry);
+				await this.undeployApplication(entry);
+				await this.deployApplication(newEntry);
+				await this.testDataSource(newEntry);
+				break;
+			case EntryType.Module:
+				await this.undeployModule(entry);
+				await this.deployModule(newEntry);
+				break;
+			case EntryType.QueryService: case EntryType.SqlService: case EntryType.CrudService:
+				await this.undeployService(entry);
+				await this.deployService(newEntry);
+				break;
+		}
+	}
+
+	private async testDataSource(app: Entry) {
+        const dataSourceUri = vscode.Uri.joinPath(app.uri, 'src', 'datasource.json');
+		const dataSource = await util.readJsonFile(dataSourceUri) as DataSource;
+		const testReq: TestDataSourceRequest =  {
+			applicationUri: await util.applicationUriForApplication(app.uri.path),
+			dbType: dataSource.dbType,
+			host: dataSource.host,
+			port: dataSource.port,
+			database: dataSource.database,
+			username: dataSource.username,
+			password: await util.retrievePassword(this.context, dataSourceUri.path)
+		 } ;
+		this.builderService.testDataSource(testReq);
+	}
+
+	private async resavePassword(app: Entry, newApp: Entry): Promise<void> {
+        const dataSourceUri = vscode.Uri.joinPath(app.uri, 'src', 'datasource.json');
+        const newDataSourceUri = vscode.Uri.joinPath(newApp.uri, 'src', 'datasource.json');
+		const password = await util.retrievePassword(this.context, dataSourceUri.path);
+		util.storePassword(this.context, newDataSourceUri.path, password);
 	}
 
 	private copy(entry: Entry) {
@@ -500,7 +622,7 @@ export class ApplicationExplorer {
 		// displace table pick
 		vscode.window.showQuickPick(tables, {ignoreFocusOut: true, placeHolder: "tables", canPickMany: true}).then( (tbls) => {
 			const conventions = ['Camel', 'None'];
-			if (tbls) {
+			if (tbls && tbls.length > 0) {
 				// display name convention
 				vscode.window.showQuickPick(conventions, {ignoreFocusOut: true, placeHolder: "name conventions", canPickMany: false}).then( (convn) => {
 					if (convn) {
@@ -518,11 +640,11 @@ export class ApplicationExplorer {
 						const options: GenerateCrudOptions = { whereClause: WhereClauseType.keys, fieldNameConvention: cvn };
 						this.generateCrud(module, applicationUri, tbls, options);
 					} else {
-						vscode.window.showInformationMessage('no name convention selected');
+						vscode.window.setStatusBarMessage('No name convention selected');
 					}
 				});
 			} else {
-				vscode.window.showInformationMessage('no table selected');
+				vscode.window.setStatusBarMessage('No table selected');
 			}
 		});
 	}
@@ -537,7 +659,7 @@ export class ApplicationExplorer {
 				// prepare request
 				const request: GenerateCrudRequest = {
 					applicationUri, tableNames, options
-				} ;
+				};
 				// call service
 				const results: GenerateCrudResult[] = await this.builderService.genCruds(request);
 				// process result
@@ -546,7 +668,7 @@ export class ApplicationExplorer {
 				vscode.window.setStatusBarMessage('CRUD services are generated');
 			} catch (error: any) {
 				console.error('Error in generating crud services', error);
-				vscode.window.showErrorMessage(error.message);
+				vscode.window.setStatusBarMessage('Failed to generate crud services: ' + error.message);
 			}
 		});
 	}
@@ -571,10 +693,10 @@ export class ApplicationExplorer {
 			vscode.window.showTextDocument(inputUri, {preview: false});
 			vscode.window.showTextDocument(outputUri, {preview: false});
 			// inform user
-			vscode.window.showInformationMessage('input and output are generated');
+			vscode.window.setStatusBarMessage('input and output are generated');
 		} catch (error: any) {
 			console.error('Error in generating query input and output', error);
-			vscode.window.showErrorMessage(error.message);
+			vscode.window.setStatusBarMessage('Failed to generate query input and output: ' + error.message);
 		}
 	}
 
@@ -605,10 +727,10 @@ export class ApplicationExplorer {
 				vscode.window.showTextDocument(inputBidningsUri, {preview: false});
 				vscode.window.showTextDocument(outputBidningsUri, {preview: false});
 				// inform user
-				vscode.window.showInformationMessage('input and output bindings are generated');
+				vscode.window.setStatusBarMessage('input and output bindings are generated');
 			} catch (error: any) {
 				console.error('Error in generating query input and output bindings', error);
-				vscode.window.showErrorMessage(error.message);
+				vscode.window.setStatusBarMessage('Failed to generate query input and output bindings: ' + error.message);
 			}
 		});
 	}
@@ -636,10 +758,10 @@ export class ApplicationExplorer {
 			vscode.window.showTextDocument(inputUri, {preview: false});
 			vscode.window.showTextDocument(outputUri, {preview: false});
 			// inform user
-			vscode.window.showInformationMessage('input and output are generated');
+			vscode.window.setStatusBarMessage('input and output are generated');
 		} catch (error: any) {
 			console.error('Error in generating sql input and output', error);
-			vscode.window.showErrorMessage(error.message);
+			vscode.window.setStatusBarMessage('Failed to generate sql input and output: ' + error.message);
 		}
 	}
 
@@ -666,10 +788,10 @@ export class ApplicationExplorer {
 			vscode.window.showTextDocument(inputBidningsUri, {preview: false});
 			vscode.window.showTextDocument(outputBidningsUri, {preview: false});
 			// inform user
-			vscode.window.showInformationMessage('input and output bindings are generated');
+			vscode.window.setStatusBarMessage('input and output bindings are generated');
 		} catch (error: any) {
 			console.error('Error in generating sqls input and output bindings', error);
-			vscode.window.showErrorMessage(error.message);
+			vscode.window.setStatusBarMessage('Failed to generate sqls input and output bindings: ' + error.message);
 		}
 	}
 
@@ -692,10 +814,10 @@ export class ApplicationExplorer {
 			vscode.window.showTextDocument(objectUri, {preview: false});
 			vscode.window.showTextDocument(inputUri, {preview: false});
 			// inform user
-			vscode.window.showInformationMessage('object is generated');
+			vscode.window.setStatusBarMessage('object is generated');
 		} catch (error: any) {
 			console.error('Error in generating crud object', error);
-			vscode.window.showErrorMessage(error.message);
+			vscode.window.setStatusBarMessage('Failed to generate crud object: ' + error.message);
 		}
 	}
 
@@ -721,10 +843,10 @@ export class ApplicationExplorer {
 			vscode.window.showTextDocument(inputBidningsUri, {preview: false});
 			vscode.window.showTextDocument(outputBidningsUri, {preview: false});
 			// inform user
-			vscode.window.showInformationMessage('input and output bindings are generated');
+			vscode.window.setStatusBarMessage('input and output bindings are generated');
 		} catch (error: any) {
 			console.error('Error in generating crud input and output bindings', error);
-			vscode.window.showErrorMessage(error.message);
+			vscode.window.setStatusBarMessage('Failed to generate crud input and output bindings: ' + error.message);
 		}
 	}
 
@@ -763,10 +885,10 @@ export class ApplicationExplorer {
 			this.dataProvider.fire(service);
 			this.revealTables(service);
 			// inform user
-			vscode.window.showInformationMessage('table bindings are generated');
+			vscode.window.setStatusBarMessage('table bindings are generated');
 		} catch (error: any) {
 			console.error('Error in generating crud tables bindings', error);
-			vscode.window.showErrorMessage(error.message);
+			vscode.window.setStatusBarMessage('Failed to generate crud table bindings: ' + error.message);
 		}
 	}
 
@@ -794,7 +916,7 @@ export class ApplicationExplorer {
 			this.treeView.reveal(testFile, {focus: true, select: false});
 			vscode.window.showTextDocument(testFile.uri, {preview: false});
 		} catch(error: any){
-			vscode.window.showErrorMessage(error.message);
+			vscode.window.setStatusBarMessage('Failed to add test: ' + error.message);
 		}
 	}
 
@@ -808,7 +930,7 @@ export class ApplicationExplorer {
 			this.treeView.reveal(testFile, {focus: true, select: false});
 			vscode.window.showTextDocument(testFile.uri, {preview: false});
 		} catch(error: any){
-			vscode.window.showErrorMessage(error.message);
+			vscode.window.setStatusBarMessage('Failed to duplicate test: ' + error.message);
 		}
 	}
 
