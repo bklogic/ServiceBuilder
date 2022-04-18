@@ -495,36 +495,6 @@ export class ApplicationExplorer {
 		} else {
 			this.dataProvider.fire(entry.parent);
 		}
-
-		// try {
-		// 	let newEntry: Entry;
-		// 	if (entry.parent) { 
-		// 		await this.appService.rename(entry.uri, vscode.Uri.joinPath(entry.parent.uri, name));
-		// 		const parent = (entry.parent.name === 'src') ? entry.parent.parent : entry.parent;
-		// 		if (parent === null) { 
-		// 			vscode.window.showErrorMessage("Parent is null. Should never happen.");
-		// 			return;
-		// 		}; 
-		// 		this.dataProvider.fire(parent);
-		// 		newEntry = this.appService.defaultEntry(name, entry.fileType, entry.parent);
-		// 	} else {
-		// 		await this.appService.rename(entry.uri, vscode.Uri.joinPath(this.dataProvider.workfolder.uri, name));
-		// 		this.refresh();
-		// 		newEntry = this.appService.defaultEntry(name, entry.fileType, this.dataProvider.workfolder);
-		// 		newEntry.parent = null;
-		// 	}
-		// 	this.treeView.reveal(newEntry, {focus: true});	
-		// } catch (error: any) {
-		// 	let message: string;
-		// 	switch (error.code) {
-		// 		case 'FileExists':
-		// 			message = 'Name exists.';
-		// 			break;
-		// 		default:
-		// 			message = error.message;
-		// 	}
-		// 	vscode.window.showErrorMessage(message);
-		// }
 	}
 
 	async redeploy(entry: Entry, newEntry: Entry) {

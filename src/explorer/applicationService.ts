@@ -252,33 +252,8 @@ export class ApplicationService {
 		await vscode.workspace.fs.delete(uri, {recursive: true, useTrash: false});
 	}
 
-
 	async rename(uri: vscode.Uri, newUri: vscode.Uri): Promise<void> {
 		await vscode.workspace.fs.rename(uri, newUri, {overwrite: false});
-	}
-
-	async renameApplication(uri: vscode.Uri, newUri: vscode.Uri): Promise<void> {
-		// rename file
-		await vscode.workspace.fs.rename(uri, newUri, {overwrite: false});
-		// clean old application
-
-		// redeploy new application
-	}
-
-	async renameModule(uri: vscode.Uri, newUri: vscode.Uri): Promise<void> {
-		// rename file
-		await vscode.workspace.fs.rename(uri, newUri, {overwrite: false});
-		// clean old application
-
-		// redeploy new application
-	}
-
-	async renameService(uri: vscode.Uri, newUri: vscode.Uri): Promise<void> {
-		// rename file
-		await vscode.workspace.fs.rename(uri, newUri, {overwrite: false});
-		// clean old service
-		
-		// redeploy new service
 	}
 
 	async getCopyTarget(name: string, target: vscode.Uri): Promise<vscode.Uri> {

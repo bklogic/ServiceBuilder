@@ -611,6 +611,11 @@
 					"when": "view == servicebuilderExplorer && viewItem == testfile",
 					"group": "inline@2"
 				},
+				{
+					"command": "servicebuilderExplorer.rename",
+					"when": "view == servicebuilderExplorer && viewItem == testfile",
+					"group": "1_ctx@1"
+				},
 
 				{
 					"command": "servicedeploymentExplorer.refreshApplication",
