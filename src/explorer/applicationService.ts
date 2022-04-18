@@ -206,15 +206,15 @@ export class ApplicationService {
 		let inputUri;
 		switch (testType) {
 			case 'read': case 'delete':
-				fileName = `${testType}${service.name}`;
+				fileName = `test${util.initCap(testType)}${util.initCap(service.name)}`;
 				inputUri = vscode.Uri.joinPath(service.uri, 'read', 'input.json');
 				break;
 			case 'create': case 'update': 
-				fileName = `${testType}${service.name}`;
+				fileName = `test${util.initCap(testType)}${util.initCap(service.name)}`;
 				inputUri = vscode.Uri.joinPath(service.uri, 'object.json');
 				break;
 			default:
-				fileName = service.name;
+				fileName = `test${util.initCap(service.name)}`;
 				inputUri = vscode.Uri.joinPath(service.uri, 'input.json');
 		}
 

@@ -602,11 +602,6 @@
 					"group": "inline"
 				},
 				{
-					"command": "servicebuilderExplorer.addTest",
-					"when": "view == servicebuilderExplorer && viewItem == crudtests",
-					"group": "inline"
-				},
-				{
 					"command": "servicebuilderExplorer.duplicateTest",
 					"when": "view == servicebuilderExplorer && viewItem == testfile",
 					"group": "inline@1"
@@ -696,12 +691,12 @@
 				},
 				{
 					"command": "servicebuilderEditor.runTest",
-					"when": "resourceFilename =~ /^test\\d{2}.json$/",
+					"when": "resourceFilename =~ /^test\\w+\\.json$/",
 					"group": "navigation@1"
 				},
 				{
 					"command": "servicebuilderEditor.runTestWithoutCommit",
-					"when": "resourceFilename =~ /^test\\d{2}.json$/",
+					"when": "resourceFilename =~ /^test\\w+\\.json$/",
 					"group": "navigation@2"
 				}
 			],
@@ -713,12 +708,12 @@
 				},
 				{
 					"command": "servicebuilderEditor.runTest",
-					"when": "resourceFilename =~ /^test\\d{2}.json$/",
+					"when": "resourceFilename =~ /^test\\w+\\.json$/",
 					"group": "a_test@1"
 				},
 				{
 					"command": "servicebuilderEditor.runTestWithoutCommit",
-					"when": "resourceFilename =~ /^test\\d{2}.json$/",
+					"when": "resourceFilename =~ /^test\\w+\\.json$/",
 					"group": "a_test@2"
 				}
 			]

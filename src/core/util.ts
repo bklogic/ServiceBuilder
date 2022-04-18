@@ -300,3 +300,11 @@ export async function getApplicationArchive(uri: vscode.Uri, context: vscode.Ext
     // return
     return buffer;	
 }
+
+export function initCap(str: string | null | undefined): string {
+    if (str) {
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
+    } else {
+        return '';
+    }
+}
