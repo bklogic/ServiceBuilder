@@ -111,7 +111,7 @@ export class DeploymentService {
 
     writeTest(test: Test, builderUrl: string, token: string | undefined, serviceType: ItemType): string[] {
         const content : string[] = []; 
-        content.push(`### ${test.testId} - ${test.name}`); 
+        content.push(`### ${test.testId}`); 
         if (serviceType === ItemType.CrudService) {
             content.push(`POST ${builderUrl}/service/${test.serviceUri}/${test.operation}`);     
         } else {
