@@ -27,6 +27,7 @@ import {
 	DataSource,
 	TestDataSourceRequest
 } from '../core/builderService';
+import { Application, Module, Service } from '../core/deployService';
 
 
 export class ApplicationExplorer {
@@ -485,7 +486,7 @@ export class ApplicationExplorer {
 			fileType: entry.fileType,
 			parent: entry.parent
 		} as Entry;
-		this.redeploy(entry, newEntry);
+		await this.redeploy(entry, newEntry);
 
 		// show
 		if (!entry.parent) {
@@ -531,16 +532,28 @@ export class ApplicationExplorer {
 	async redeploy(entry: Entry, newEntry: Entry) {
 		switch (entry.type) {
 			case EntryType.Application:
+				const appUri = vscode.Uri.joinPath(newEntry.uri, 'src', 'application.json');
+				const app = await util.readJsonFile(appUri) as Application;
+				app.name = newEntry.name;
+				await util.writeJsonFile(appUri, app);
 				await this.resavePassword(entry, newEntry);
 				await this.undeployApplication(entry);
 				await this.deployApplication(newEntry);
 				await this.testDataSource(newEntry);
 				break;
 			case EntryType.Module:
+				const modUri = vscode.Uri.joinPath(newEntry.uri, 'module.json');
+				const mod = await util.readJsonFile(modUri) as Module;
+				mod.name = newEntry.name;
+				await util.writeJsonFile(modUri, mod);
 				await this.undeployModule(entry);
 				await this.deployModule(newEntry);
 				break;
 			case EntryType.QueryService: case EntryType.SqlService: case EntryType.CrudService:
+				const serviceUri = vscode.Uri.joinPath(newEntry.uri, 'service.json');
+				const service = await util.readJsonFile(serviceUri) as Service;
+				service.name = newEntry.name;
+				await util.writeJsonFile(serviceUri, service);
 				await this.undeployService(entry);
 				await this.deployService(newEntry);
 				break;

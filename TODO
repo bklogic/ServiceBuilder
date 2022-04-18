@@ -147,12 +147,12 @@ Backlog:
                 failed. cause: connect ECONNREFUSED 127.0.0.1:8080 | connect ECONNREFUSED 127.0.0.1:8080
             ✘ CRUD create: return null @cancelled(22-04-16 15:43)
             ✔ Rename service: prepopulate input with current name @done(22-04-17 14:11)
-            ☐ rename application/module/service should change name in application/module/service json files @started(22-04-17 14:11)
+            ✔ rename application/module/service should change name in application/module/service json files @started(22-04-17 14:11) @done(22-04-17 22:47) @lasted(8h36m4s)
             ✔ rename application/module/service should redeploy @done(22-04-17 22:10)
             ☐ CRUD test template: needs to be more intelligent
             ☐ generate simple CRUD services: shall also create tests
             ✔ messages: most should go to status bar @done(22-04-17 22:10)
-            ☐ create application: no .gitignore file
+            ✘ create application: no .gitignore file @cancelled(22-04-17 22:17)
             ☐ Application/Data source not deployed: should be 400 error not 500
                 data source config not found for application: quert01/try
             ☐ SQL Service, bind input and output: missing data source causes 500 error
