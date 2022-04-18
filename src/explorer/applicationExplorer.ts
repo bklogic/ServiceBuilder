@@ -70,8 +70,6 @@ export class ApplicationExplorer {
 		vscode.commands.registerCommand('servicebuilderExplorer.genCrudTableBindings', (resource) => this.genCrudTableBindings(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.deployService', (resource) => this.deployService(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.addTest', (resource) => this.addTest(resource));
-		vscode.commands.registerCommand('servicebuilderExplorer.addReadTest', (resource) => this.addTest(resource, 'read'));
-		vscode.commands.registerCommand('servicebuilderExplorer.addWriteTest', (resource) => this.addTest(resource, 'write'));
 		vscode.commands.registerCommand('servicebuilderExplorer.duplicateTest', (resource) => this.duplicateTest(resource));
 	}
 
@@ -922,12 +920,40 @@ export class ApplicationExplorer {
 		this.treeView.reveal(tables, {expand: true, select: true});
 	}
 
-	async addTest(testFolder: Entry, testType?: string): Promise<void> {
+	async addTest(testFolder: Entry): Promise<void> {
+		const serviceType = testFolder.parent?.serviceType;
+		if (!serviceType) { // never happen
+			return;
+		}
+
+		// get operation if crud service
+		let testTypes: string [] = [];
+		if (serviceType === 'crud') {
+			await vscode.window.showQuickPick(['all', 'read', 'create', 'update', 'delete'], {ignoreFocusOut: true, placeHolder: "select an operation", 
+					canPickMany: false}).then( (operation) => {
+				if (operation) {
+					testTypes = (operation==='all') ? ['read', 'create', 'update', 'delete'] : [operation];		
+				} else {
+					vscode.window.setStatusBarMessage("No operation selected.");
+					return;
+				}
+			});
+		} else {
+			testTypes = [serviceType];
+		}
+
+		// add tests
 		try {
-			const testFile = await this.appService.addTest(testFolder, testType);
-			this.dataProvider.fire(testFolder);
-			this.treeView.reveal(testFile, {focus: true, select: false});
-			vscode.window.showTextDocument(testFile.uri, {preview: false});
+			let testFile;
+			const tests = testTypes.length;
+			for (let testType of testTypes) {
+				testFile = await this.appService.addTest(testFolder, testType);				
+				this.dataProvider.fire(testFolder);
+				this.treeView.reveal(testFile, {focus: true, select: false});
+				if (tests === 1) {
+					vscode.window.showTextDocument(testFile.uri, {preview: false});
+				}
+			}
 		} catch(error: any){
 			vscode.window.setStatusBarMessage('Failed to add test: ' + error.message);
 		}

@@ -16,7 +16,6 @@ export class ApplicationService {
 	 * @param uri workfolder uri
 	 */
 	public createWorkspacefolder(uri: vscode.Uri) {
-
 	}
 
 	/**
@@ -198,29 +197,32 @@ export class ApplicationService {
 	}
 
 	async addTest(testFolder: Entry, testType: string | undefined): Promise<Entry> {
-		const newFileName = await this.newTestFileName(testFolder);
-		const newFileUri = vscode.Uri.joinPath(testFolder.uri, newFileName);
-
-		// input uri
+		// test file name and input uri
 		const service = testFolder.parent;
 		if (!service?.serviceType) { // never happen unless bug
 			return {} as Entry;
 		}
+		let fileName;
 		let inputUri;
 		switch (testType) {
-			case 'read': 
+			case 'read': case 'delete':
+				fileName = `${testType}${service.name}`;
 				inputUri = vscode.Uri.joinPath(service.uri, 'read', 'input.json');
 				break;
-			case 'write':
+			case 'create': case 'update': 
+				fileName = `${testType}${service.name}`;
 				inputUri = vscode.Uri.joinPath(service.uri, 'object.json');
 				break;
 			default:
+				fileName = service.name;
 				inputUri = vscode.Uri.joinPath(service.uri, 'input.json');
 		}
 
 		// input and test file
+		const newFileName = await this.newTestFileName(testFolder, fileName);
+		const newFileUri = vscode.Uri.joinPath(testFolder.uri, newFileName);
 		const input = await util.readJsonFile(inputUri);
-		const content =cs.testFile(input, service.serviceType, testType);
+		const content =cs.testFile(input, fileName, testType);
 		await vscode.workspace.fs.writeFile(newFileUri, content);
 
 		//return
@@ -232,7 +234,7 @@ export class ApplicationService {
 		if (!sourceTest.parent) { // never unless bug
 			return {} as Entry;
 		}
-		const newFileName = await this.newTestFileName(sourceTest.parent);
+		const newFileName = await this.newTestFileName(sourceTest.parent, sourceTest.name.replace('.json', ''));
 		const newFileUri = vscode.Uri.joinPath(sourceTest.parent.uri, newFileName);
 
 		// duplicate test
@@ -328,9 +330,7 @@ export class ApplicationService {
 				return this.getChildrenForWrite(entry);
 			case EntryType.Tests:
 				return this.getChildrenForTests(entry);
-			case EntryType.CrudTests:
-				return this.getChildrenForTests(entry);
-				default:
+			default:
 				return this.getChildrenForOther(entry);
 		}
 	}
@@ -492,7 +492,7 @@ export class ApplicationService {
 					child.seqNo = 0;
 					break;
 				case 'tests':
-					child.type = EntryType.CrudTests;
+					child.type = EntryType.Tests;
 					child.seqNo = 1000;
 					break;
 				case 'object.json':
@@ -573,8 +573,8 @@ export class ApplicationService {
 		const children = await vscode.workspace.fs.readDirectory(entry.uri);
 		return children.map(([name, fileType]) => {
 			let child: Entry = this.defaultEntry(name, fileType, entry);
-			if (fileType === vscode.FileType.File && name.match(/^test\d{2}.json$/)) {
-				child.type = EntryType.TestFile;
+			if (fileType === vscode.FileType.File) {
+					child.type = EntryType.TestFile;
 			}
 			return child;
 		});	
@@ -620,21 +620,13 @@ export class ApplicationService {
 		}
 	}
 
-	async newTestFileName(testFolder: Entry): Promise<string> {
-		// get test files
-		const files = await vscode.workspace.fs.readDirectory(testFolder.uri);
-		const testFiles = files.filter( ([name, fileType]) => { 
-			return (fileType === vscode.FileType.File && name.match(/^test\d{2}.json$/));
-		});
-
-		// get last test file number
-		let lastFileNo = 0;
-		if (testFiles.length > 0) {
-			lastFileNo = +testFiles[testFiles.length-1][0].substr(4, 2);	
+	async newTestFileName(testFolder: Entry, fileName: string): Promise<string> {
+		let i = 2;
+		let newFileName = `${fileName}.json`;
+		while (await util.fileExists( vscode.Uri.joinPath(testFolder.uri, newFileName))){
+			newFileName = `${fileName + i.toString()}.json`;
+			i++;
 		}
-
-		// new test file name
-		const newFileName = `test${(lastFileNo+1).toString().padStart(2, '0')}.json`;
 		return Promise.resolve(newFileName);
 	}
 

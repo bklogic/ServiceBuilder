@@ -40,7 +40,7 @@ export class DeploymentExplorer {
 	async refreshAppList(): Promise<void> {
         try {
             await this.deploymentService.refreshAppList();
-            await util.sleep(100);
+            await util.sleep(200);
             this.refresh();
             vscode.window.setStatusBarMessage('Application list refreshed.');
         } catch (error: any) {

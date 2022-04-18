@@ -229,22 +229,6 @@
 				}
 			},
 			{
-				"command": "servicebuilderExplorer.addReadTest",
-				"title": "Add Read Test",
-				"icon": {
-					"light": "resources/light/book.svg",
-					"dark": "resources/dark/book.svg"
-				}
-			},
-			{
-				"command": "servicebuilderExplorer.addWriteTest",
-				"title": "Add Write Test",
-				"icon": {
-					"light": "resources/light/edit.svg",
-					"dark": "resources/dark/edit.svg"
-				}
-			},
-			{
 				"command": "servicebuilderExplorer.duplicateTest",
 				"title": "Duplicate",
 				"icon": {
@@ -618,14 +602,9 @@
 					"group": "inline"
 				},
 				{
-					"command": "servicebuilderExplorer.addReadTest",
+					"command": "servicebuilderExplorer.addTest",
 					"when": "view == servicebuilderExplorer && viewItem == crudtests",
-					"group": "inline@1"
-				},
-				{
-					"command": "servicebuilderExplorer.addWriteTest",
-					"when": "view == servicebuilderExplorer && viewItem == crudtests",
-					"group": "inline@2"
+					"group": "inline"
 				},
 				{
 					"command": "servicebuilderExplorer.duplicateTest",

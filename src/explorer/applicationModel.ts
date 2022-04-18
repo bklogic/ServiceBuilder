@@ -35,8 +35,6 @@ export enum EntryType {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	Tests = 'tests',
 	// eslint-disable-next-line @typescript-eslint/naming-convention
-	CrudTests = 'crudtests',
-	// eslint-disable-next-line @typescript-eslint/naming-convention
 	TestFile = 'testfile',
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	Read = 'read',
