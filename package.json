@@ -314,15 +314,24 @@
 				}
 			}
 		],
+		"viewsContainers": {
+			"activitybar": [
+			  {
+				"id": "service-builder",
+				"title": "Service Builder",
+				"icon": "resources/images/builder-icon.svg"
+			  }
+			]
+		  },
 		"views": {
-			"explorer": [
+			"service-builder": [
 				{
 					"id": "servicebuilderExplorer",
-					"name": "Service Builder"
+					"name": "Applications"
 				},
 				{
 					"id": "servicedeploymentExplorer",
-					"name": "Service Deployment"
+					"name": "Deployments"
 				}
 			]
 		},
