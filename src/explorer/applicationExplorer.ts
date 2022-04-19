@@ -644,7 +644,11 @@ export class ApplicationExplorer {
 				// call service
 				const results: GenerateCrudResult[] = await this.builderService.genCruds(request);
 				// process result
-				this.createCruds(module, results);
+				const services = await this.createCruds(module, results);
+				// deploy services
+				for (let service of services) {
+					this.deployService(service);
+				}
 				// inform user
 				vscode.window.setStatusBarMessage('CRUD services are generated');
 			} catch (error: any) {
@@ -943,13 +947,16 @@ export class ApplicationExplorer {
 		}
 	}
 
-    async createCruds(mod: Entry, cruds: GenerateCrudResult[]): Promise<void> {
+    async createCruds(mod: Entry, cruds: GenerateCrudResult[]): Promise<Entry[]> {
+		const services: Entry[] = [];
         for (let crud of cruds) {
-            this.createCrud(mod, crud);
+            const service = await this.createCrud(mod, crud);
+			services.push(service);
         }
+		return services;
     }
 
-    async createCrud(mod: Entry, crud: GenerateCrudResult): Promise<void> {
+    async createCrud(mod: Entry, crud: GenerateCrudResult): Promise<Entry> {
 		// create service
 		await this.appService.createService(mod, crud.serviceName, 'crud');
 
@@ -972,11 +979,13 @@ export class ApplicationExplorer {
 		const service = {
 			uri: vscode.Uri.joinPath(mod.uri, crud.serviceName),
 			type: EntryType.CrudService,
+			name: crud.serviceName,
 			fileType: vscode.FileType.Directory,
 			parent: mod
 		} as Entry;
 		this.dataProvider.fire(mod);
 		this.treeView.reveal(service, {expand: 3, select: true});
+		return service;
     }
     
     async createTables(serviceUri: vscode.Uri, tables: Table[]): Promise<void> {

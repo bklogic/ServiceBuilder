@@ -150,7 +150,6 @@ Backlog:
             ✔ rename application/module/service should change name in application/module/service json files @started(22-04-17 14:11) @done(22-04-17 22:47) @lasted(8h36m4s)
             ✔ rename application/module/service should redeploy @done(22-04-17 22:10)
             ✔ CRUD test template: needs to be more intelligent @done(22-04-18 14:57)
-            ☐ generate simple CRUD services: shall also create tests
             ✔ messages: most should go to status bar @done(22-04-17 22:10)
             ✘ create application: no .gitignore file @cancelled(22-04-17 22:17)
             ☐ Application/Data source not deployed: should be 400 error not 500
@@ -159,6 +158,7 @@ Backlog:
                 Request failed with status code 500 | Request failed with status code 500
             ☐ json datetime format: should support both "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" and "yyyy-MM-dd'T'HH:mm:ss'Z'"
             ☐ SQL service, generate input and output: both datetime and id field gets "abc".
+            ☐ generate simple CRUD services: shall also create tests
             ☐ Service Explorer, Refresh Application list - error in first time run of this command:
                 Unable to resolve nonexistent file 'c:\S8\workspaces\das\.deployments'
                     
