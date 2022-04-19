@@ -32,10 +32,9 @@ export class DeployService {
 		return dataSource;
 	}
 
-	async cleanApplication(appUri: string): Promise<DataSource> {
+	async cleanApplication(appUri: string): Promise<void> {
 		const url = '/deploy/cleanApplication/' + appUri;
-		const dataSource = await this.http.builderPost(url, {});
-		return dataSource;
+		this.http.builderPost(url, {});
 	}
 
 	async getService(serviceUri: string): Promise<DataSource> {

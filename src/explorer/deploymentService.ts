@@ -18,7 +18,7 @@ export class DeploymentService {
 
     async refreshAppList(): Promise<void> {
         // get local workfolder
-        const workfolder = util.getWorkFolder();
+        const workfolder: vscode.WorkspaceFolder | undefined = util.getWorkFolder();
         if (!workfolder) {
             return;
         }
@@ -29,20 +29,19 @@ export class DeploymentService {
             return;
         }
         // fresh deployment folder
-        const deployFolder = await this.refreshDeployFolder(workfolder.uri);
+        const deployFolder = vscode.Uri.joinPath(workfolder.uri, '.devtime');
+        await this.refreshDeployFolder(deployFolder);
         // get applicationas
         const apps = await this.deployService.getApplications(workspace);
         // write app list
         await this.writeAppList(deployFolder, apps);
     }
 
-    async refreshDeployFolder(workFolder: vscode.Uri): Promise<vscode.Uri> {
-        const deployFolder = vscode.Uri.joinPath(workFolder, '.deployments');
+    async refreshDeployFolder(deployFolder: vscode.Uri): Promise<void> {
         if (await util.fileExists(deployFolder)) {
-            vscode.workspace.fs.delete(deployFolder, {recursive: true});
+            await vscode.workspace.fs.delete(deployFolder, {recursive: true});
         }
         await vscode.workspace.fs.createDirectory(deployFolder);
-        return deployFolder;
     }
 
     async writeAppList(deployFolder: vscode.Uri, apps: Application[]): Promise<void> {
@@ -152,7 +151,7 @@ export class DeploymentService {
         }
 
         // check deployment folder
-        const deployFolder = vscode.Uri.joinPath(workfolder.uri, '.deployments');
+        const deployFolder = vscode.Uri.joinPath(workfolder.uri, '.devtime');
         const exists = await util.fileExists(deployFolder);
         if (!exists) {
             return [];
