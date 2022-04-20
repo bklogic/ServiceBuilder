@@ -80,14 +80,14 @@ export class HttpService {
             return response.data;
           } catch (error: any) {
             if (!error.response) {
-                error.message = 'Server is down.';
+                error.message = 'Cannot connect to Server.';
                 throw error;    
             } else {
-                console.error('http post error: ', error.message || error.response.data.message, '\n',  'url: ', config.baseURL + url);
+                console.error('http post error: ', error.response.data.message, '\n',  'url: ', config.baseURL + url);
                 console.info('Data: ');
                 console.info(data);
                 console.error(error);
-                error.message = error.message + ' | ' + error.message || error.response.data.message;
+                error.message = error.response.data.message;
                 throw error;
             }
           }    

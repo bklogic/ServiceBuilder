@@ -46,7 +46,7 @@
 			},
 			{
 				"command": "servicebuilderExplorer.workspace",
-				"title": "Workspace Connection",
+				"title": "Connection...",
 				"icon": {
 					"light": "resources/light/plug.svg",
 					"dark": "resources/dark/plug.svg"

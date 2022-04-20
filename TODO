@@ -15,12 +15,12 @@ Gen Commands:
     Generate input, output from query/sql
     Generate object from query
 
-Remote:
+✘ Remote: @cancelled(22-04-19 22:06)
     ☐ test remote setup
     ☐ test code-server setup
 
 Misc:
-    ☐ editor button location
+    ✘ editor button location @cancelled(22-04-19 22:07)
     ✔ explorer tooltip @done(21-06-07 13:18)
     ✔ deploy application upon creation @done(21-06-07 13:18)
     ✔ auto-save before test @done(21-06-07 13:17)
@@ -105,8 +105,8 @@ Backlog:
         ☐ Exception in thread "File Watcher" java.lang.NullPointerException: Cannot invoke method invalidate() on null object
         at net.backlogic.persistence.servicerepository.file.FileServiceRepository.postDataSourceChange(FileServiceRepository.java:513)
         ☐ Query Input generation: binary type shall start with base64
-        ☐ test name for query service may default to service name
-        ☐ renaming service does not change the name in the service file
+        ✔ test name for query service may default to service name @done(22-04-19 22:08)
+        ✔ renaming service does not change the name in the service file @done(22-04-19 22:09)
         ☐ message for workspace not avaiable to connect
         ☐ data type of generated input, output and object fields of number and date type.
         ☐ name convention of generated input, output and object fields
@@ -154,14 +154,14 @@ Backlog:
             ✘ create application: no .gitignore file @cancelled(22-04-17 22:17)
             ✔ Service Explorer, Refresh Application list - error in first time run of this command: @done(22-04-18 19:57)
                 Unable to resolve nonexistent file 'c:\S8\workspaces\das\.deployments'
-            ☐ Application/Data source not deployed: should be 400 error not 500
+            ✔ Application/Data source not deployed: should be 400 error not 500 @done(22-04-19 22:05)
                 data source config not found for application: quert01/try
-            ☐ SQL Service, bind input and output: missing data source causes 500 error
+            ✔ SQL Service, bind input and output: missing data source causes 500 error @done(22-04-19 22:05)
                 Request failed with status code 500 | Request failed with status code 500
             ☐ json datetime format: should support both "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" and "yyyy-MM-dd'T'HH:mm:ss'Z'"
             ☐ SQL service, generate input and output: both datetime and id field gets "abc".
             ☐ generate simple CRUD services: shall also create tests
-                    
+            ☐ TryWithoutSignup: need progress indicator or message, as it has a few seconds wait
                 
     Tests:
 
