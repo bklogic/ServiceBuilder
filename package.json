@@ -262,19 +262,11 @@
 				"title": "Open File"
 			},
 			{
-				"command": "servicedeploymentExplorer.refresh",
-				"title": "Refresh Explorer",
-				"icon": {
-					"light": "resources/light/refresh.svg",
-					"dark": "resources/dark/refresh.svg"
-				}
-			},
-			{
 				"command": "servicedeploymentExplorer.refreshAppList",
-				"title": "Refresh Application List",
+				"title": "Reload Application List",
 				"icon": {
-					"light": "resources/light/list-flat.svg",
-					"dark": "resources/dark/list-flat.svg"
+					"light": "resources/light/sync.svg",
+					"dark": "resources/dark/sync.svg"
 				}
 			},
 			{
@@ -368,14 +360,9 @@
 				},
 
 				{
-					"command": "servicedeploymentExplorer.refresh",
-					"when": "view == servicedeploymentExplorer",
-					"group": "navigation@7"
-				},
-				{
 					"command": "servicedeploymentExplorer.refreshAppList",
 					"when": "view == servicedeploymentExplorer",
-					"group": "more@5"
+					"group": "navigation@7"
 				}
 			],
 			"view/item/context": [

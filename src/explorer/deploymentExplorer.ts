@@ -20,7 +20,6 @@ export class DeploymentExplorer {
         this.treeView = vscode.window.createTreeView('servicedeploymentExplorer', { treeDataProvider: this.dataProvider, showCollapseAll: true });
         context.subscriptions.push(this.treeView);
 		vscode.commands.registerCommand('servicedeploymentExplorer.openResource', (resource) => this.openResource(resource));
-		vscode.commands.registerCommand('servicedeploymentExplorer.refresh', () => this.refresh());
 		vscode.commands.registerCommand('servicedeploymentExplorer.refreshAppList', () => this.refreshAppList());
 		vscode.commands.registerCommand('servicedeploymentExplorer.refreshApplication', (resource) => this.refreshApplication(resource));
 		vscode.commands.registerCommand('servicedeploymentExplorer.loadTest', (resource) => this.loadTest(resource));
