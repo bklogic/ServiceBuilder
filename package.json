@@ -46,7 +46,11 @@
 			},
 			{
 				"command": "servicebuilderExplorer.workspace",
-				"title": "Workspace Connection"
+				"title": "Workspace Connection",
+				"icon": {
+					"light": "resources/light/plug.svg",
+					"dark": "resources/dark/plug.svg"
+				}
 			},
 			{
 				"command": "servicebuilderExplorer.try",
@@ -332,30 +336,25 @@
 				{
 					"id": "servicedeploymentExplorer",
 					"name": "Deployments"
+				},
+				{
+					"id": "servicebuilderWorkspace",
+					"name": "Workspace"
 				}
 			]
 		},
+		"viewsWelcome": [
+			{
+			  "view": "servicebuilderWorkspace",
+			  "contents": "[Try without Signup](command:servicebuilderExplorer.try)\n[Docs](command:servicebuilderExplorer.openWelcome)"
+			}
+		  ],
 		"menus": {
 			"view/title": [
 				{
-					"command": "servicebuilderExplorer.openWelcome",
-					"when": "view == servicebuilderExplorer",
-					"group": "more@1"
-				},
-				{
-					"command": "servicebuilderExplorer.openTutorial",
-					"when": "view == servicebuilderExplorer",
-					"group": "more@2"
-				},
-				{
 					"command": "servicebuilderExplorer.workspace",
-					"when": "view == servicebuilderExplorer",
-					"group": "more@4"
-				},
-				{
-					"command": "servicebuilderExplorer.try",
-					"when": "view == servicebuilderExplorer",
-					"group": "more@5"
+					"when": "view == servicebuilderWorkspace",
+					"group": "navigation@7"
 				},
 				{
 					"command": "servicebuilderExplorer.createApplication",
