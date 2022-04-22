@@ -16,10 +16,17 @@ export class WorkspaceHandler {
 		this.builderService = builderService;
 		vscode.commands.registerCommand('servicebuilderExplorer.connect', () => this.connect());
 		vscode.commands.registerCommand('servicebuilderExplorer.workspace', () => this.workspace());
+		vscode.commands.registerCommand('servicebuilderExplorer.openGettingStarted', () => this.openGettingStarted());
     }
 
+	openGettingStarted(): void {
+		const uri = vscode.Uri.file(path.join(__filename, '..', '..', '..', 'resources', 'GettingStarted.md'));
+		vscode.commands.executeCommand("markdown.showPreviewToSide", uri);	
+	}
+
 	async connect(): Promise<void> {
-		vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "Workspace URL", prompt: "from Service Console"})
+		const url = await this.context.secrets.get('servicebuilder.url');
+		vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "Workspace URL", value: url, prompt: "from Service Console"})
 			.then( url => {
 				if (url) {
 					vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "Access Token", prompt: "from Service Console"}).then( async (token) => {
@@ -74,7 +81,6 @@ export class WorkspaceHandler {
 			this.showNotConnectedMessageForConnectionIssue(workspace);
 		}
 	}
-
 
 	showConnectedMessage(workspace: Workspace) {
 			vscode.window.showInformationMessage(

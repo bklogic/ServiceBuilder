@@ -47,7 +47,6 @@ export class ApplicationExplorer {
 		context.subscriptions.push(this.treeView);
 		vscode.commands.registerCommand('servicebuilderExplorer.openResource', (resource) => this.openResource(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.openWelcome', () => this.openWelcome());
-		vscode.commands.registerCommand('servicebuilderExplorer.openTutorial', () => this.openTutorial());
 		vscode.commands.registerCommand('servicebuilderExplorer.refresh', () => this.refresh());
 		vscode.commands.registerCommand('servicebuilderExplorer.rename', (resource) => this.onRename(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.delete', (resource) => this.delete(resource));
@@ -84,11 +83,6 @@ export class ApplicationExplorer {
 	openWelcome(): void {
 		const uri = vscode.Uri.file(path.join(__filename, '..', '..', '..', 'resources', 'Welcome.md'));
 		vscode.commands.executeCommand("markdown.showPreview", uri);	
-	}
-
-	openTutorial(): void {
-		const uri = vscode.Uri.file(path.join(__filename, '..', '..', '..', 'resources', 'Tutorial.md'));
-		vscode.commands.executeCommand("markdown.showPreviewToSide", uri);	
 	}
 
 	onCreateApplication(): void {

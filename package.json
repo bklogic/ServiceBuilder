@@ -65,8 +65,8 @@
 				}
 			},
 			{
-				"command": "servicebuilderExplorer.openTutorial",
-				"title": "Tutorial"
+				"command": "servicebuilderExplorer.openGettingStarted",
+				"title": "GettingStarted"
 			},
 			{
 				"command": "servicebuilderExplorer.openWelcome",
@@ -338,7 +338,7 @@
 		"viewsWelcome": [
 			{
 			  "view": "servicebuilderWorkspace",
-			  "contents": "[Try without Signup](command:servicebuilderExplorer.try)\n[Docs](command:servicebuilderExplorer.openWelcome)"
+			  "contents": "[Try without Signup](command:servicebuilderExplorer.try)\n[Getting Started](command:servicebuilderExplorer.openGettingStarted)"
 			}
 		  ],
 		"menus": {

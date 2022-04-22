@@ -12,10 +12,10 @@ export class HttpService {
 
     constructor(context: vscode.ExtensionContext) {
         this.context = context;
-        if (process.env.IGNORE_SSL) {
-            this.rejectUnauthorized = false;
-            process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-        }
+        // if (process.env.IGNORE_SSL) {
+        //     this.rejectUnauthorized = false;
+        //     process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+        // }
     }
 
     async builderHttpConfig(timeout?: number): Promise<HttpConfig> {
@@ -64,7 +64,8 @@ export class HttpService {
             return response.data;
         } catch (error: any) {
             if (!error.response) {
-                error.message = 'Server is down.';
+                error.message = 'Server connection error - ' + error.message;
+                console.error('Server connection error', error);
                 throw error;    
             } else {
                 console.error('http get error: ', error.response?.data?.message, '\n',  'url: ', config.baseURL + url, '\n', error);

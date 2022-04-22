@@ -47,7 +47,7 @@ export function activate(context: vscode.ExtensionContext) {
 	new TestEditor(context, builderService);
 
 	// open welcome
-	vscode.commands.executeCommand("servicebuilderExplorer.openWelcome");	
+//	vscode.commands.executeCommand("servicebuilderExplorer.openWelcome");	
 }
 
 // this method is called when your extension is deactivated
