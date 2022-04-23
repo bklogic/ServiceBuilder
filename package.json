@@ -37,6 +37,14 @@
 				"title": "Open File"
 			},
 			{
+				"command": "servicebuilderExplorer.openWithJsonViewer",
+				"title": "Open with JSON viewer",
+				"icon": {
+					"light": "resources/light/open-json-viewer.svg",
+					"dark": "resources/dark/open-json-viewer.svg"
+				}
+			},
+			{
 				"command": "servicebuilderExplorer.connect",
 				"title": "Connect",
 				"icon": {
@@ -611,7 +619,12 @@
 					"when": "view == servicebuilderExplorer && viewItem == testfile",
 					"group": "1_ctx@1"
 				},
-
+				{
+					"command": "servicebuilderExplorer.openWithJsonViewer",
+					"when": "view == servicebuilderExplorer && viewItem == bindings",
+					"group": "inline@1"
+				},
+				
 				{
 					"command": "servicedeploymentExplorer.refreshApplication",
 					"when": "view == servicedeploymentExplorer && viewItem == application",

@@ -41,6 +41,8 @@ export enum EntryType {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	Write = 'write',
 	// eslint-disable-next-line @typescript-eslint/naming-convention
+	Bindings = 'bindings',
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	Component = 'component',
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	Other = 'other'

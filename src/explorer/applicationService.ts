@@ -445,9 +445,11 @@ export class ApplicationService {
 						break;
 					case 'input-bindings':
 						child.seqNo = 5;
+						child.type = EntryType.Bindings;
 						break;
 					case 'output-bindings':
 						child.seqNo = 6;
+						child.type = EntryType.Bindings;
 						break;
 					}
 			} 
@@ -506,9 +508,11 @@ export class ApplicationService {
 						break;
 					case 'input-bindings':
 						child.seqNo = 3	;
+						child.type = EntryType.Bindings;
 						break;
 					case 'output-bindings':
 						child.seqNo = 4;
+						child.type = EntryType.Bindings;
 						break;
 				}
 			} 
@@ -538,6 +542,7 @@ export class ApplicationService {
 				child.componentType = 'columns';
 				child.seqNo = i++;
 			}
+			child.type = EntryType.Bindings;
 			return child;
 		}).sort( (a, b) => {
 			return a.seqNo - b.seqNo;

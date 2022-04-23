@@ -28,6 +28,7 @@ import {
 	TestDataSourceRequest
 } from '../core/builderService';
 import { Application, Module, Service } from '../core/deployService';
+import { ViewColumn } from 'vscode';
 
 
 export class ApplicationExplorer {
@@ -46,6 +47,7 @@ export class ApplicationExplorer {
 		this.treeView = vscode.window.createTreeView('servicebuilderExplorer', { treeDataProvider: this.dataProvider, showCollapseAll: true });
 		context.subscriptions.push(this.treeView);
 		vscode.commands.registerCommand('servicebuilderExplorer.openResource', (resource) => this.openResource(resource));
+		vscode.commands.registerCommand('servicebuilderExplorer.openWithJsonViewer', (resource) => this.openWithJsonViewer(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.openWelcome', () => this.openWelcome());
 		vscode.commands.registerCommand('servicebuilderExplorer.refresh', () => this.refresh());
 		vscode.commands.registerCommand('servicebuilderExplorer.rename', (resource) => this.onRename(resource));
@@ -74,6 +76,10 @@ export class ApplicationExplorer {
 
 	openResource(resource: Entry): void {
 		vscode.window.showTextDocument(resource.uri, {preview: !this.doubleClick.check(resource)});
+	}
+
+	openWithJsonViewer(resource: Entry): void {
+		vscode.commands.executeCommand('vscode.openWith', resource.uri, 'jsonGridViewer.json', ViewColumn.Beside);
 	}
 
 	refresh(): void {
