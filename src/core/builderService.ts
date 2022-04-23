@@ -248,17 +248,18 @@ export interface Table {
 }
 
 export interface Column {
+	position: number;
 	column: string;
 	field: string;
-	position: number;
-	dataType: string;
-	insertValue: string;
-	updateValue: string;
 	key: boolean;
 	autoGenerate: boolean;
-	notNull: boolean;
+	inputField: string;
+	insertValue: string;
+	updateValue: string;
 	version: boolean;
 	softDelete: boolean;
+	dataType: string;
+	notNull: boolean;
 	keyEligible: boolean;
 	versionEligible: boolean;
 	softDeleteEligible: boolean;
