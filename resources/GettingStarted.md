@@ -11,6 +11,7 @@
 - [Generate simple CRUD services from database tables](#generate-simple-crud-services-from-database-tables)
 - [Deploy service, module and application to DevTime](#deploy-service-module-and-application-to-devtime)
 - [View and test services deployed on DevTime](#view-and-test-and-services-deployed-on-devtime)
+- [What is next](#what-is-next)
 
 This tutorial walks you throught the general steps of working with Service Builder. The sample database used for this tutorial is the `classicmodels` database from `mysqltutorial.org`. The ER diagram is available [here](https://www.mysqltutorial.org/mysql-sample-database.aspx).  
 
@@ -19,7 +20,7 @@ This tutorial walks you throught the general steps of working with Service Build
 - A BackLogic account, so that you can connect to a BackLogic workspace.
 - A MySql database accesible from BackLogic workspace and pre-loaded with the `classicmodels` database.
 
-However, if you are trying without signup, you will be assigned with a guest workspace and a guest database. After you start the try session, the application and module are automatically created for you. Please jump to the [create guery service](#create-query-service) section directly.
+However, if you are trying without signup, you will be assigned with a guest workspace and a guest database. After you start the try session, the application and module are automatically created for you, and you may jump to the [create guery service](#create-query-service) section directly.
 
 Otherwise, start from here.
 
@@ -199,19 +200,19 @@ Otherwise, start from here.
     - Copy and paste the following into `sqls.sql` file
 
     ```sql
-    insert into classicmodels.productlines (
+    insert into productlines (
     productLine, textDescription, htmlDescription, image
     )
     select :newProductLine, textDescription, htmlDescription, image
-    from classicmodels.productlines
+    from productlines
     where productLine = :scourceProductLine
     ;
 
-    insert into classicmodels.products (
+    insert into products (
     productCode, productName, productLine, productScale, productVendor, productDescription, quantityinStock, buyPrice, MSRP
     )
     select concat('N_', productCode) as productCode, productName, :newProductLine, productScale, productVendor, productDescription, 0, buyPrice, MSRP
-    from classicmodels.products
+    from products
     where productLine = :scourceProductLine
     ;
     ```
@@ -223,7 +224,7 @@ Otherwise, start from here.
     select pl.productLine, pl.textDescription as description,
         p.productCode, p.productName, productVendor,
         p.productDescription, buyPrice, MSRP
-    from classicmodels.products p, classicmodels.productlines pl
+    from products p, productlines pl
     where p.productLine = pl.productLine
         and p.productLine = :newProductLine
     ```
@@ -252,29 +253,44 @@ Otherwise, start from here.
 
     ```json
     {
-        "ordernumber": 123,
-        "orderdate": "2021-01-01T00:00:00.000Z",
-        "status": "abc",
-        "comments": "abc",
-        "customernumber": 123,
-        "customername": "abc",
+        "orderNumber": 10101,
+        "orderDate": "2003-01-09T00:00:00.000Z",
+        "requiredDate": "2003-01-09T00:00:00.000Z",
+        "shippedDate": "2003-01-09T00:00:00.000Z",
+        "status": "Shipped",
+        "comments": "Check on availability.",
+        "customerNumber": 128,
+        "customerName": "Blauer See Auto, Co.",
         "orderLines": [{
-            "orderlinenumber": 123,
-            "productcode": "abc",
-            "productname": "abc",
-            "quantityordered": 123,
-            "priceeach": 123
+            "orderLineNumber": 1,
+            "productCode": "S18_2795",
+            "productName": "1928 Mercedes-Benz SSK",
+            "quantityOrdered": 26,
+            "priceEach": 167.06
         }]
     }
     ```
 
-3. Compose READ query
+3. Compose READ input
+
+```json
+{
+    "orderNumber": 10101,
+    "customerNumber": 128
+    "startDate": "2003-01-09T00:00:00.000Z",
+    "endDate": "2003-06-09T00:00:00.000Z"
+}
+```
+
+4. Compose READ query
     - Copy and paste the following into `query.sql` file
 
     ```sql
-    select ord.orderNumber, ord.orderDate, ord.status, ord.comments,
-           _c.customerNumber, _c.customerName,
-           od.orderLineNumber, _p.productCode, _p.productName, 
+    select ord.orderNumber, ord.orderDate, 
+           ord.requiredDate, ord.shippedDate,
+           ord.status, ord.comments,
+           ord.customerNumber, _c.customerName,
+           od.orderLineNumber, od.productCode, _p.productName, 
            od.quantityOrdered, od.priceEach
     from orders ord
     join customers _c on ord.customerNumber = _c.customerNumber
@@ -284,71 +300,88 @@ Otherwise, start from here.
       and ord.orderNumber = :orderNumber
       and ord.customerNumber = :customerNumber
       and ord.orderDate between :startDate and :endDate
-      and status = :status
     order by ord.orderNumber, od.orderLineNumber
     ```
 
-4. Generate input and output Bindings
+5. Generate input and output Bindings
     - Move mouse over `Order` service and click `Generate Input and Output Bindings` ![Alt](./dark/references.svg "Generate Input and Output Bindings")
     - Review and edit input and out bindings if necessary (skip)
 
-5. Generate table bindings
+6. Generate table bindings
     - Move mouse over `Order` service and click `Generate Table Bindings` ![Alt](./dark/multiple-windows.svg "Generate Table Bindings") icon;
     - Review and edit tables bindings if necessary (skip).
 
-6. Test Service
+7. Test Service
     - Move mouse over `Tests` folder and click `Add Test` ![Alt](./dark/add.svg "Add Test"), and select `all` in the opened input box, to generate a test file for each CRUD operation;
     - Review and edit input parameters in the test files.
 
     For `read` test,
-    - Mouse over the `testReadOrder.json` file and click `Duplicate` ![Alt](./dark/add.svg "Duplicate") icon, to duplicate a read test.
-    - Rename the two read test files to `testReadOrderByOrderNumber` and `testReadOrderByDatesAndStatus`, repectively.
-    - Edit the `testReadOrderByOrderNumber` file and make it looks like:
+    - Mouse over the `testReadOrder.json` file and click `Duplicate` ![Alt](./dark/add.svg "Duplicate") icon, to duplicate a read test;
+    - Repeat the about step to duplicate another read test;
+    - Rename the three read test files to `testReadOrderByOrderNumber.json`, `testReadOrderByCustomerNumber.json` and `testReadOrderByDates.json`, repectively.
+    - Edit the `testReadOrderByOrderNumber,json` file and make it looks like:
 
     ```json
     {
         "name": "testReadOrderByOrderNumber",
         "input": {
-            "ordernumber": 123
+            "orderNumber": 10101
         },
         "operation": "read"
     }
     ```
 
-    - Edit `testReadOrderByDatesAndStatus` file and make it looks like
+    - Click `Run Test` ![Alt](./dark/play.svg "Run Test") button to test the service.
+
+    - Edit the `testReadOrderByCustomerNumber.json` file and make it looks like:
 
     ```json
     {
-        "name": "testReadOrderByDatesAndStatus",
+        "name": "testReadOrderByCustomerNumber",
         "input": {
-            "startDate": "2003-01-06T00:00:00.000Z",
-            "startEnd": "2003-01-10T00:00:00.000Z",
-            "status": "Shipped",
+            "customerNumber": 128
         },
         "operation": "read"
     }
     ```
-    - Run a test for each.
+
+    - click `Run Test` ![Alt](./dark/play.svg "Run Test") button to test the service.
+
+    - Edit `testReadOrderByDates.json` file and make it looks like
+
+    ```json
+    {
+        "name": "testReadOrderByDates",
+        "input": {
+            "startDate": "2003-01-09T00:00:00.000Z",
+            "endDate": "2003-06-09T00:00:00.000Z"
+        },
+        "operation": "read",
+        "comments": "Modify the example test name and input."
+    }
+    ```
+
+    - Click `Run Test` ![Alt](./dark/play.svg "Run Test") button to test the service.
 
     For `create` test,
     - open `testCreateOrder.json` file, and make it look like:
 
     ```json
     {
-        "name": "create order",
+        "name": "testCreateOrder",
         "input": {
             "orderdate": "2021-01-01T00:00:00.000Z",
             "status": "In Process",
             "comments": "my comments",
-            "customernumber": 103,
-            "customername": "abc",
+            "customerNumber": 103,
+            "customerName": "abc",
             "orderLines": [
                 {
-                    "orderlinenumber": 12301,
-                    "productcode": "S12_1099",
-                    "productname": "1968 Ford Mustang",
-                    "quantityordered": 12,
-                    "priceeach": 123456
+                    "orderlineNumber": 12301,
+                    "productCode": "S12_1099",
+                    "productName": "1968 Ford Mustang",
+                    "quantityOrdered": 12,
+                    "priceEach": 123456
                 }
             ]
         },
@@ -356,7 +389,7 @@ Otherwise, start from here.
     }
     ```
 
-    - click `Run Test` ![Alt](./dark/play.svg "Run Test") button to test the service.
+    - Click `Run Test` ![Alt](./dark/play.svg "Run Test") button to test the service.
 
 ## Generate Simple CRUD Services from Database Tables
 
@@ -396,3 +429,7 @@ Two simple CRUD services are generated in seconds.
     - Open the `tests.http` file, and click any `Send Request` line you see.
 
 > You must have the [Rest Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) extension installed, in order to run the tests in the `tests.http` file.
+
+## What Is Next
+
+Read [Data Access Service Concepts](https:/backlogic.net) when it is out.

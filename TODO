@@ -169,6 +169,17 @@ Backlog:
             ☐ TryWithoutSignup: should open a TryWithoutSignUp message and Getting Started manual?
             ☐ TryWithoutSignup: the application and module names should be myApp and myMod, same as tutorial
             ☐ Workspace Explorer: clean workspace
+
+            4/22/2022
+            ☐ Crud test: error message
+            TEST EXCEPTION: 
+                {
+                    "type": "SYSTEM",
+                    "name": "java.lang.NullPointerException",
+                    "message": "java.lang.NullPointerException: Cannot invoke method endsWith() on null object"
+                }
+
+            
     Tests:
 
     Engine Bugs:
