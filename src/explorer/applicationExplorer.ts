@@ -806,7 +806,11 @@ export class ApplicationExplorer {
 		}
 	}
 
-	async genCrudInputOutputBindings(service: Entry): Promise<void> {
+	async genCrudInputOutputBindings(read: Entry): Promise<void> {
+		const service = read.parent;
+		if (!service) { // never happen
+			return;
+		}
 		try {
 			// prepare request
 			const [object, query, input] = await Promise.all([
@@ -835,7 +839,11 @@ export class ApplicationExplorer {
 		}
 	}
 
-	async genCrudTableBindings(service: Entry): Promise<void> {
+	async genCrudTableBindings(write: Entry): Promise<void> {
+		const service = write.parent;
+		if (!service) { // never happen
+			return;
+		}
 		try {
 			// prepare request
 			const [query, outputBindings] = await Promise.all([

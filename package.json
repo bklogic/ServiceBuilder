@@ -551,28 +551,18 @@
 				},
 				{
 					"command": "servicebuilderExplorer.genCrudInputOutputBindings",
-					"when": "view == servicebuilderExplorer && viewItem == crudservice",
+					"when": "view == servicebuilderExplorer && viewItem == read",
 					"group": "inline@2"
 				},
 				{
 					"command": "servicebuilderExplorer.genCrudTableBindings",
-					"when": "view == servicebuilderExplorer && viewItem == crudservice",
+					"when": "view == servicebuilderExplorer && viewItem == write",
 					"group": "inline@3"
 				},
 				{
 					"command": "servicebuilderExplorer.genCrudObject",
 					"when": "view == servicebuilderExplorer && viewItem == crudservice",
 					"group": "1_action@1"
-				},
-				{
-					"command": "servicebuilderExplorer.genCrudInputOutputBindings",
-					"when": "view == servicebuilderExplorer && viewItem == crudservice",
-					"group": "1_action@2"
-				},
-				{
-					"command": "servicebuilderExplorer.genCrudTableBindings",
-					"when": "view == servicebuilderExplorer && viewItem == crudservice",
-					"group": "1_action@3"
 				},
 				{
 					"command": "servicebuilderExplorer.deployService",
