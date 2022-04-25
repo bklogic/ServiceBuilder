@@ -271,19 +271,22 @@ Otherwise, start from here.
     }
     ```
 
+For Read,
+
 3. Compose READ input
+    - Copy and paste the following into `input.json` file and save.
 
 ```json
 {
     "orderNumber": 10101,
-    "customerNumber": 128
+    "customerNumber": 128,
     "startDate": "2003-01-09T00:00:00.000Z",
     "endDate": "2003-06-09T00:00:00.000Z"
 }
 ```
 
 4. Compose READ query
-    - Copy and paste the following into `query.sql` file
+    - Copy and paste the following into `query.sql` file and save.
 
     ```sql
     select ord.orderNumber, ord.orderDate, 
@@ -304,22 +307,26 @@ Otherwise, start from here.
     ```
 
 5. Generate input and output Bindings
-    - Move mouse over `Order` service and click `Generate Input and Output Bindings` ![Alt](./dark/references.svg "Generate Input and Output Bindings")
-    - Review and edit input and out bindings if necessary (skip)
+    - Move mouse over `Read` component and click `Generate Input and Output Bindings` ![Alt](./dark/references.svg "Generate Input and Output Bindings");
+    - Open the `input-bindings.json` and `output-bindings.json` files to review the input and output bindings;
+    - Mouse over the `input-bindings.json` and `output-bindings.json` files and click the `Open with Json Viewer` ![Alt](./dark/open-json-viewer.svg "Open with Json Viewer") icon, to view the input and output bindings in tabular form;
+    - Edit the input and output bindings if necessary (skip).
+
+For write,
 
 6. Generate table bindings
     - Move mouse over `Order` service and click `Generate Table Bindings` ![Alt](./dark/multiple-windows.svg "Generate Table Bindings") icon;
-    - Review and edit tables bindings if necessary (skip).
+    - open the `tables.json`, `order-column-bindings` and `orderdetail-column-bindings.json` files to review the table and column bindings.
+    - Mouse over the `order-column-bindings` and `orderdetail-column-bindings.json` files and click the `Open with Json Viewer` ![Alt](./dark/open-json-viewer.svg "Open with Json Viewer") icon, to view the column bindings in tabular form;
+    - Edit tables and columns bindings if necessary (skip).
 
 7. Test Service
-    - Move mouse over `Tests` folder and click `Add Test` ![Alt](./dark/add.svg "Add Test"), and select `all` in the opened input box, to generate a test file for each CRUD operation;
-    - Review and edit input parameters in the test files.
+    - Move mouse over `Tests` folder and click `Add Test` ![Alt](./dark/add.svg "Add Test"), and select `all` in the opened quick pick box, to generate a test file for each CRUD operation;
 
     For `read` test,
-    - Mouse over the `testReadOrder.json` file and click `Duplicate` ![Alt](./dark/add.svg "Duplicate") icon, to duplicate a read test;
-    - Repeat the about step to duplicate another read test;
+    - Mouse over the `testReadOrder.json` file and click `Duplicate` ![Alt](./dark/add.svg "Duplicate") icon twice, to duplicate two more read tests;
     - Rename the three read test files to `testReadOrderByOrderNumber.json`, `testReadOrderByCustomerNumber.json` and `testReadOrderByDates.json`, repectively.
-    - Edit the `testReadOrderByOrderNumber,json` file and make it looks like:
+    - Edit the `testReadOrderByOrderNumber.json` file and make it looks like:
 
     ```json
     {

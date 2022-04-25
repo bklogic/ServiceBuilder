@@ -1,16 +1,31 @@
 {
 	"name": "servicebuilder",
-	"displayName": "servicebuilder",
-	"description": "service builder",
-	"version": "1.0.0",
+	"displayName": "Service Builder",
+	"description": "Service Builder for developing data access service.",
+	"author": {
+		"name": "Ken"
+	},
+	"version": "0.1.0",
 	"publisher": "backlogic",
-	"repository": "https://gitlab.com/backlogic/ui/service-builder-vscode.git",
+	"license": "free",
+	"repository": {
+		"type": "git",
+		"url": "https://gitlab.com/backlogic/ui/service-builder-vscode.git"
+	},
+	"homepage": "https://backlogic.gitlab.io/web/vesper",
 	"engines": {
 		"vscode": "^1.51.1"
 	},
 	"categories": [
 		"Other"
 	],
+	"keywords": ["database", "data", "access", "persistence", "service"],
+	"preview": true,
+	"icon": "resources/images/vscode-icon-large.svg",
+	"galleryBanner": {
+		"color": "#C80000",
+		"theme": "dark"
+	},
 	"activationEvents": [
 		"onView:servicebuilderExplorer"
 	],
@@ -21,7 +36,7 @@
 			"properties": {
 				"servicebuilder.tryServiceEndpoint": {
 				  "type": "string",
-				  "default": "http://localhost:8080",
+				  "default": "http://try.backlogic.net",
 				  "description": "Endpoint for TryWithoutSignup service"
 				},
 				"servicebuilder.tryServiceApiToken": {
