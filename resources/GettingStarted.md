@@ -63,7 +63,7 @@ Otherwise, start from here.
 
 1. Generate service
     - Move mouse over `myMod` module and click `New Query Service` ![Alt](./dark/query-service.svg "New Query Service").
-    - Enter "getCustomersByState" as service name. Hit Enter.
+    - Enter `getCustomersByState` as service name. Hit Enter.
 
     Service is generated in seconds.
 
@@ -141,8 +141,12 @@ Otherwise, start from here.
     ```
 
 5. Generate input and output Bindings
-    - Move mouse over `getCustomersByState` service and click `Generate Input and Output Bindings` ![Alt](./dark/references.svg "Generate Input and Output Bindings") icon.
-    - Review and edit input and out bindings if necessary (no change here).
+    - Move mouse over `getCustomersByState` service and click `Generate Input and Output Bindings` ![Alt](./dark/references.svg "Generate Input and Output Bindings") icon;
+    - Open `input-bindings.json` and `output-bindings.json` files to review the input and output bindings;
+    - Mouse over the `input-bindings.json` and `output-bindings.json` files and click the `Open with Json Viewer` ![Alt](./dark/open-json-viewer.svg "Open with Json Viewer") icon to view the input and output bindings in tabular form;
+    - Edit input and output bindings if necessary (skip).
+
+> You must have the `json grid viewer` installed to open the input and output bindings file with json viewer.
 
 6. Test Service
     - Move mouse over `Tests` folder and click `Add Test` ![Alt](./dark/add.svg "Add Test"), to generate a test file.
@@ -165,7 +169,7 @@ Otherwise, start from here.
 
 1. Generate service
     - Move mouse over `myMod` module and click `New SQL Service` ![Alt](./dark/sql-service.svg "New SQL Service")
-    - Enter "cloneProductLine" as service name. Hit Enter.
+    - Enter `cloneProductLine` as service name. Hit Enter.
 
     Service is generated in seconds.
 
@@ -193,7 +197,7 @@ Otherwise, start from here.
             "buyprice": 98.58,
             "msrp": 214.3
         }]
-    }    
+    }
     ```
 
 4. Compose SQLs
@@ -214,7 +218,6 @@ Otherwise, start from here.
     select concat('N_', productCode) as productCode, productName, :newProductLine, productScale, productVendor, productDescription, 0, buyPrice, MSRP
     from products
     where productLine = :scourceProductLine
-    ;
     ```
 
 5. Compose the optional query
@@ -230,12 +233,14 @@ Otherwise, start from here.
     ```
 
 6. Generate input and output Bindings
-    - Move mouse over `cloneProductLine` service and click `Generate Input and Output Bindings` ![Alt](./dark/references.svg "Generate Input and Output Bindings") icon.
-    - Review and edit input and out bindings if necessary (skip)
+    - Move mouse over `cloneProductLine` service and click `Generate Input and Output Bindings` ![Alt](./dark/references.svg "Generate Input and Output Bindings") icon;
+    - Open `input-bindings.json` and `output-bindings.json` files to review the input and output bindings;
+    - Mouse over the `input-bindings.json` and `output-bindings.json` files and click the `Open with Json Viewer` ![Alt](./dark/open-json-viewer.svg "Open with Json Viewer") icon to view the input and output bindings in tabular form;
+    - Edit input and output bindings if necessary (skip).
 
 7. Test Service
     - Move mouse over `Tests` folder and click `Add Test` ![Alt](./dark/add.svg "Add Test"), to generate a test file
-    - Review and edit input parameters in `test01.json` file
+    - Review and edit input parameters in `testCloneProductLine.json` file
     - click `Run Test` ![Alt](./dark/play.svg "Run Test") button or `Run Test without Commit` ![Alt](./dark/debug-rerun.svg "Run Test without Commit") button to test the service.
 
 ## Create CRUD Service
@@ -244,7 +249,7 @@ Otherwise, start from here.
 
 1. Generate service
     - Move mouse over `myMod` module and click `New CRUD Service` ![Alt](./dark/crud-service.svg "New CRUD Service") icon.
-    - Enter "Order" as service name. Hit Enter.  
+    - Enter `Order` as service name. Hit Enter.  
 
     Service is generated in seconds.
 
@@ -307,7 +312,7 @@ For Read,
     ```
 
 5. Generate input and output Bindings
-    - Move mouse over `Read` component and click `Generate Input and Output Bindings` ![Alt](./dark/references.svg "Generate Input and Output Bindings");
+    - Move mouse over the `read` component and click `Generate Input and Output Bindings` ![Alt](./dark/references.svg "Generate Input and Output Bindings");
     - Open the `input-bindings.json` and `output-bindings.json` files to review the input and output bindings;
     - Mouse over the `input-bindings.json` and `output-bindings.json` files and click the `Open with Json Viewer` ![Alt](./dark/open-json-viewer.svg "Open with Json Viewer") icon, to view the input and output bindings in tabular form;
     - Edit the input and output bindings if necessary (skip).
@@ -315,8 +320,8 @@ For Read,
 For write,
 
 6. Generate table bindings
-    - Move mouse over `Order` service and click `Generate Table Bindings` ![Alt](./dark/multiple-windows.svg "Generate Table Bindings") icon;
-    - open the `tables.json`, `order-column-bindings` and `orderdetail-column-bindings.json` files to review the table and column bindings.
+    - Move mouse over the `write` component and click `Generate Table Bindings` ![Alt](./dark/multiple-windows.svg "Generate Table Bindings") icon;
+    - open the `tables.json`, `order.columns.json` and `orderdetail.columns.json` files to review the table and column bindings.
     - Mouse over the `order-column-bindings` and `orderdetail-column-bindings.json` files and click the `Open with Json Viewer` ![Alt](./dark/open-json-viewer.svg "Open with Json Viewer") icon, to view the column bindings in tabular form;
     - Edit tables and columns bindings if necessary (skip).
 
@@ -377,6 +382,7 @@ For write,
     {
         "name": "testCreateOrder",
         "input": {
+            "orderNumber": 10,
             "orderdate": "2021-01-01T00:00:00.000Z",
             "status": "In Process",
             "comments": "my comments",
@@ -400,23 +406,32 @@ For write,
 
 ## Generate Simple CRUD Services from Database Tables
 
-- Move mouse over `myMod` module, right-click and select `Generate CRUD from Table`
-- Select table "productLine" and "office". Hit Enter.
+To generate a simple CRUD service for `office` table:
 
-Two simple CRUD services are generated in seconds.
+- Move mouse over `myMod` module, right-click and select `Generate CRUD from Table`
+- Select table "office". Hit Enter.
+- Select name convention "none". Hit Enter.
+
+A simple CRUD service is generated in seconds.
 
 ## Deploy Service, Module and Application to DevTime
 
-> The application and module are automatically deployed to DevTime upon creation. The service are automatically deployed to DevTime upon a successful test. However, you deploy a service, a module or a whole application manually anytime as you please. Once deployed, the services are accesible through the DevTime endpoint.
+> The application and module are automatically deployed to DevTime upon creation. The service are automatically deployed to DevTime upon a successful test. However, you may deploy a service, a module or a whole application manually anytime as you please. Once deployed, the services are accesible through the DevTime endpoint.
 
 1. Deploy service to DevTime
     - Move mouse over `getCustomersByState` service, righ-click to show a context menu, and select `Deploy Service`, to deploy the service.
 
+The service is deployed in seconds.
+
 2. Deploy module to DevTime
     - Move mouse over `myMod` module, righ-click to show a context menu, and select `Deploy Module`, to deploy the module.
 
+The module is deployed in seconds.
+
 3. Deploy application to DevTime
     - Move mouse over `myApp` application righ-click to show a context menu, and select `Deploy Application`, to deploy the application.
+
+The application is deployed in seconds.
 
 ## View and Test and Services Deployed on DevTime
 
@@ -426,7 +441,7 @@ Two simple CRUD services are generated in seconds.
 
     A list of application is displayed.
 
-    - Mouse over `myApp` explorer, and click `Refresh Application`![Alt](./dark/sync.svg "Refresh Application") icon.
+    - Mouse over `myApp` application, and click `Refresh Application`![Alt](./dark/sync.svg "Refresh Application") icon.
 
     A list of services of the applications is displayed.
 
@@ -439,4 +454,4 @@ Two simple CRUD services are generated in seconds.
 
 ## What Is Next
 
-Read [Data Access Service Concepts](https:/backlogic.net) when it is out.
+Read [Data Access Service Concepts](https:/backlogic.net) when it is available.

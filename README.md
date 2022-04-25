@@ -1,7 +1,7 @@
 # Service Builder
 
 The rapid development tool for data access services. The true SQL-first approach to relational data access.
->[visit](https://web.backlogic.net) here to read more about data access service and BackLogic platform.
+>[visit our site](https://web.backlogic.net) to read more about data access service and BackLogic platform.
 
 # Features
 
@@ -25,7 +25,7 @@ The rapid development tool for data access services. The true SQL-first approach
 
 # BackLogic Workspace
 
-Service Builder VScode is just the UI. It must connect to a BackLogic workspace in order to work. The BackLogic workspace is your virtual private develpment environment for data access services.  
+Service Builder VScode is just the UI. It must connect to a BackLogic workspace to work. The BackLogic workspace is your virtual private develpment environment for data access services.  
 
 Inside the workspace are the Service Builder Backend, Service Repository and Service DevTime. The Service Builder Backend does the heavy lifting for Service Builder, and deploys the data access services into the Service Repository. The Service Devtime runs the data access services from the Service Repository for development purpose. Both the Service Builder and Service Devtime connects to your DEV database, for DB meta data and DB data, respectively.
 
@@ -53,10 +53,10 @@ However, if you are trying without signup, Service Builder will assign you a que
 
 - [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)  
   A great HTTP client tool. Required for testing data access service from Deployment Explorer.
+- [JSON Grid Viewer](https://marketplace.visualstudio.com/items?itemName=DutchIgor.json-viewer)  
+  A great tool for viewing input, output and table bindings in tabular form. Required for `open with json viewer` function for the input, output and table binding files.
 - [Database Client](https://marketplace.visualstudio.com/items?itemName=cweijan.vscode-database-client2)  
   A good database tool for testing SQLs in data access service.
-- [JSON Grid Viewer](https://marketplace.visualstudio.com/items?itemName=DutchIgor.json-viewer)  
-  A good tool for a better view of input, output and especially table bindings.
 - [Paste JSON as Code](https://marketplace.visualstudio.com/items?itemName=quicktype.quicktype)  
   Helpful if you want to generate classes of various languages from service input, output, and object.
 
