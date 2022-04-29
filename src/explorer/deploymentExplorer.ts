@@ -52,7 +52,7 @@ export class DeploymentExplorer {
             await this.deploymentService.refreshApp(app);
             this.dataProvider.refresh();
             this.treeView.reveal(app, {expand: 2, focus: true, select: true});
-            vscode.window.setStatusBarMessage('Application loaded.');
+            vscode.window.setStatusBarMessage('Application refreshed.');
         } catch (error: any) {
             vscode.window.showErrorMessage(error.message);
         }

@@ -62,7 +62,6 @@ export class DataSourceEditor {
             vscode.window.showErrorMessage('failed. cause: ' + error.message);
         }
     }
-
 }
 
 export function rewriteDocumentCallback(editor: vscode.TextEditor, newText: string): (editBuilder: vscode.TextEditorEdit) => void {

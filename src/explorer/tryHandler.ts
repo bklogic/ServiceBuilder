@@ -23,15 +23,16 @@ export class TryHandler {
 			const workspace = await this.tryService.requestTryWorkspace(email);
 
             if (workspace) {
+                workspace.durationInMinutes = (!workspace.durationInMinutes) ? 90 : workspace.durationInMinutes;
                 vscode.window.showInformationMessage(
-                    `Workspace found for your try. You may connect now. \n
-					Workspace Details:
-					\t  \t Name: ${workspace.workspaceName}
-					\t  \t Url: ${workspace.workspaceUrl}`,
+                    `A quest workspace is assigned to you. You have 90 min to finish the try session.\n
+					 Workspace Details:
+					 \t  \t Name: ${workspace.workspaceName}
+					 \t  \t Url: ${workspace.workspaceUrl}`,
 					{ modal: true },
-                    'Connect'
+                    'Proceed'
                 ).then( btn => {
-                    if ( btn === 'Connect') {
+                    if ( btn === 'Proceed') {
                         this.startTrySession(workspace);
                     }
                 });    
@@ -70,7 +71,7 @@ export class TryHandler {
 
         } catch (error: any) {
             // display error
-            vscode.window.showErrorMessage('Error to start try session. Pleaes try later. Error is: ' + error.message);
+            vscode.window.showErrorMessage('Error to start try session. Please try later. Error is: ' + error.message);
         }
     }
 
@@ -78,7 +79,7 @@ export class TryHandler {
         // delete try application is exists
 
         // create try application
-        const app = await this.appExplorer.createApplication('tryApp', 'mysql');
+        const app = await this.appExplorer.createApplication('myApp', 'mysql');
 
         // return if app not created
         if (!app) {
@@ -92,7 +93,10 @@ export class TryHandler {
         await util.writeJsonFile(dataSourceUri, dataSource);
 
         // create try module
-        await this.appExplorer.createModule(app, 'tryMod');
+        await this.appExplorer.createModule(app, 'myMod');
+        
+        // refresh tree view
+        await this.appExplorer.refresh();
 
         // deploy try application
         await this.appExplorer.deployApplication(app);

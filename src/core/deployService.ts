@@ -37,7 +37,7 @@ export class DeployService {
 		this.http.builderPost(url, {});
 	}
 
-	async getService(serviceUri: string): Promise<DataSource> {
+	async getService(serviceUri: string): Promise<Service> {
 		const url = '/deploy/getService/' + serviceUri;
 		const service = await this.http.builderGet(url);
 		return service;
@@ -65,7 +65,9 @@ export interface Service {
 
 export interface DataSource {
     dbType: string;
-    jbdcUrl: string;
+    host: string;
+	port: number;
+	database: string;
     username: string;
     password: string;
 }

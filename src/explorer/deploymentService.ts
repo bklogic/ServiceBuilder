@@ -296,9 +296,9 @@ export class DeploymentService {
     }
 
     async loadService(service: Item): Promise<vscode.Uri> {
-        // get data source
+        // get service
         const spec = await this.deployService.getService(service.uri);
-        // write data source
+        // write service
         const docUri = vscode.Uri.joinPath(service.fileUri, '.service');
         await util.writeJsonFile(docUri, spec);
         // return

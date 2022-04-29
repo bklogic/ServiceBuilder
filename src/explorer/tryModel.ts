@@ -5,13 +5,14 @@ export interface TryWorkspace {
     workspaceName: string;
     workspaceUrl: string;
     accessCode: string;
+    durationInMinutes: number;
 }
 
 export interface TryDataSource {
     dbType: string;
     host: string;
     port: string;
-    dbName: string;
+    database: string;
     username: string;
     password: string;
 }

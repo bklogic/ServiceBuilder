@@ -279,7 +279,7 @@ export class ApplicationExplorer {
 	async createModule(app: Entry, modName: string): Promise<void> {
 		try {
 			// clear status message
-			vscode.window.setStatusBarMessage('');
+			vscode.window.setStatusBarMessage('creating module: ' + modName);
 			// create module
 			const mod = await this.appService.createModule(app, modName);
 			// reveal

@@ -1,13 +1,12 @@
 {
 	"name": "servicebuilder",
 	"displayName": "Service Builder",
-	"description": "Service Builder for developing data access service.",
+	"description": "The rapid development tool for data access service.",
 	"author": {
 		"name": "Ken"
 	},
 	"version": "0.1.0",
-	"publisher": "backlogic",
-	"license": "free",
+	"publisher": "BackLogic",
 	"repository": {
 		"type": "git",
 		"url": "https://gitlab.com/backlogic/ui/service-builder-vscode.git"
@@ -21,7 +20,7 @@
 	],
 	"keywords": ["database", "data", "access", "persistence", "service"],
 	"preview": true,
-	"icon": "resources/images/vscode-icon-large.svg",
+	"icon": "resources/images/builder-icon-large.png",
 	"galleryBanner": {
 		"color": "#C80000",
 		"theme": "dark"
@@ -286,7 +285,7 @@
 			},
 			{
 				"command": "servicedeploymentExplorer.refreshAppList",
-				"title": "Reload Application List",
+				"title": "Refresh Application List",
 				"icon": {
 					"light": "resources/light/sync.svg",
 					"dark": "resources/dark/sync.svg"
@@ -294,7 +293,7 @@
 			},
 			{
 				"command": "servicedeploymentExplorer.refreshApplication",
-				"title": "Reload Application",
+				"title": "Refresh Application",
 				"icon": {
 					"light": "resources/light/sync.svg",
 					"dark": "resources/dark/sync.svg"
@@ -679,26 +678,6 @@
 					"command": "servicedeploymentExplorer.loadTest",
 					"when": "view == servicedeploymentExplorer && viewItem == crudservice",
 					"group": "ctx@1"
-				},
-				{
-					"command": "servicedeploymentExplorer.viewService",
-					"when": "view == servicedeploymentExplorer && viewItem == queryservice",
-					"group": "view@2"
-				},
-				{
-					"command": "servicedeploymentExplorer.viewService",
-					"when": "view == servicedeploymentExplorer && viewItem == sqlservice",
-					"group": "view@2"
-				},
-				{
-					"command": "servicedeploymentExplorer.viewService",
-					"when": "view == servicedeploymentExplorer && viewItem == crudservice",
-					"group": "view@2"
-				},
-				{
-					"command": "servicedeploymentExplorer.viewService",
-					"when": "view == servicedeploymentExplorer && viewItem == invalidservice",
-					"group": "inline@2"
 				}
 			],
 			"editor/title": [

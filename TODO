@@ -164,14 +164,15 @@ Backlog:
             ☐ json datetime format: should support both "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" and "yyyy-MM-dd'T'HH:mm:ss'Z'"
             ☐ SQL service, generate input and output: both datetime and id field gets "abc".
             ☐ generate simple CRUD services: shall also create tests
+
             ☐ TryWithoutSignup: need progress indicator or message, as it has a few seconds wait
-            ☐ TryWithoutSignup: tryMod is not showing
+            ✔ TryWithoutSignup: myMod is not showing @done(22-04-27 15:57)
             ☐ TryWithoutSignup: should open a TryWithoutSignUp message and Getting Started manual?
-            ☐ TryWithoutSignup: the application and module names should be myApp and myMod, same as tutorial
+            ✔ TryWithoutSignup: the application and module names should be myApp and myMod, same as tutorial @done(22-04-27 15:57)
             ☐ Workspace Explorer: clean workspace
 
             4/22/2022
-            ☐ Crud test: error message
+            ✔ Crud test: error message @done(22-04-27 15:59)
             TEST EXCEPTION: 
                 {
                     "type": "SYSTEM",

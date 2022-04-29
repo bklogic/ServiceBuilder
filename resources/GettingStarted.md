@@ -13,14 +13,14 @@
 - [View and test services deployed on DevTime](#view-and-test-and-services-deployed-on-devtime)
 - [What is next](#what-is-next)
 
-This tutorial walks you throught the general steps of working with Service Builder. The sample database used for this tutorial is the `classicmodels` database from `mysqltutorial.org`. The ER diagram is available [here](https://www.mysqltutorial.org/mysql-sample-database.aspx).  
+This tutorial walks you through the general steps of working with Service Builder. The sample database used for this tutorial is the `classicmodels` database from `mysqltutorial.org`. The ER diagram is available [here](https://www.mysqltutorial.org/mysql-sample-database.aspx).  
 
 ## Prerequite
 
 - A BackLogic account, so that you can connect to a BackLogic workspace.
 - A MySql database accesible from BackLogic workspace and pre-loaded with the `classicmodels` database.
 
-However, if you are trying without signup, you will be assigned with a guest workspace and a guest database. After you start the try session, the application and module are automatically created for you, and you may jump to the [create guery service](#create-query-service) section directly.
+However, if you are trying without signup, you will be assigned with a guest workspace and a guest database. After you start the try session, the application and module are automatically created for you, and you may jump to the [create query service](#create-query-service) section directly.
 
 Otherwise, start from here.
 
@@ -30,45 +30,55 @@ Otherwise, start from here.
 
 2. Connect to your workspace
     - Move mouse over `WORKSPACE` explorer and click `Connection` ![Alt](./dark/plug.svg "Connection") and then click the `Connect` button on the information box.
-    - Paste your workspace URL in the input box opened, and hit Enter
-    - Paste you access code in the next input box opened, and hit Enter
+    - Paste your workspace URL in the input box opened, and hit Enter.
+    - Paste you access code in the next input box opened, and hit Enter.
 
    Service Builder is connected to your BackLogic workspace.
+
+   ![Workspace Connection](./images/connect-workspace.png)
 
 ## Create Application
 
 1. Generate Application
-    - Move mouse over `APPLICATIONS` explorer and click `New Application` ![Alt](./dark/new-folder.svg "New Application")
+    - Move mouse over `APPLICATIONS` explorer and click `New Application` ![Alt](./dark/new-folder.svg "New Application") icon.
     - Enter "myApp" as application name. Hit Enter.
-    - Select "mysql" as database type.  Hit Entry.  
+    - Select "mysql" as database type.  Hit Entry.
 
     Application is generated in seconds.
+
+   ![New Application](./images/generate-application.png)
 
 2. Configure Data Source
     - Open `datasource.json` file.
     - Edit the host, port, database, username and password fields.
-    - Click `Test and Deploy Data Source Configuration` ![Alt](./dark/play.svg) to test database connection. If successful, the data source configuration will be automatically deployed to DevTime with the password encryped, and saved to your local file with the password masked.
+    - Click `Test and Deploy Data Source Configuration` ![Alt](./dark/play.svg) button to test database connection. If successful, the data source configuration will be automatically deployed to DevTime with the password encryped, and saved to your local file with the password masked.
+
+   ![New Application](./images/test-datasource.png)
 
 ## Create Module
 
 1. Generate Module
-    - Move mouse over `myApp` application and click `New Module` ![Alt](./dark/new-folder.svg "New Module").
+    - Move mouse over `myApp` application and click `New Module` ![Alt](./dark/new-folder.svg "New Module") icon.
     - Enter "myMod" as module name. Hit Enter.
 
     Module is generated in seconds for application `myApp`.
+
+   ![New Module](./images/generate-module.png)
 
 ## Create Query Service
 
 > Note: Here we are to create a query service to return a list of customers of complex structure by state.
 
 1. Generate service
-    - Move mouse over `myMod` module and click `New Query Service` ![Alt](./dark/query-service.svg "New Query Service").
+    - Move mouse over `myMod` module and click `New Query Service` ![Alt](./dark/query-service.svg "New Query Service") icon.
     - Enter `getCustomersByState` as service name. Hit Enter.
 
     Service is generated in seconds.
 
+   ![New Query Service](./images/generate-query-service.png)
+
 2. Compose input
-    - Copy and paste the following into `input.json` file
+    - Copy and paste the following into `input.json` file and save.
 
     ```json
     {
@@ -77,7 +87,7 @@ Otherwise, start from here.
     ```
 
 3. Compose output
-    - Copy and paste the following into `output.json` file
+    - Copy and paste the following into `output.json` file and save.
 
     ```json
     [{
@@ -115,7 +125,7 @@ Otherwise, start from here.
     ```
 
 4. Compose query
-    - Copy and paste the following into `query.sql` file
+    - Copy and paste the following into `query.sql` file and save.
 
     ```sql
     select c.customerNumber, c.customerName, c.phone, 
@@ -141,20 +151,22 @@ Otherwise, start from here.
     ```
 
 5. Generate input and output Bindings
-    - Move mouse over `getCustomersByState` service and click `Generate Input and Output Bindings` ![Alt](./dark/references.svg "Generate Input and Output Bindings") icon;
-    - Open `input-bindings.json` and `output-bindings.json` files to review the input and output bindings;
-    - Mouse over the `input-bindings.json` and `output-bindings.json` files and click the `Open with Json Viewer` ![Alt](./dark/open-json-viewer.svg "Open with Json Viewer") icon to view the input and output bindings in tabular form;
+    - Move mouse over `getCustomersByState` service and click `Generate Input and Output Bindings` ![Alt](./dark/references.svg "Generate Input and Output Bindings") icon.
+    - Open `input-bindings.json` and `output-bindings.json` files to review the input and output bindings.
+    - Mouse over the `input-bindings.json` and `output-bindings.json` files and click the `Open with Json Viewer` ![Alt](./dark/open-json-viewer.svg "Open with Json Viewer") icon to view the input and output bindings in tabular form.
     - Edit input and output bindings if necessary (skip).
 
-> You must have the `json grid viewer` installed to open the input and output bindings file with json viewer.
+    ![New Module](./images/generate-input-output-bindings.png)
+
+    > You must have the `json grid viewer` installed to open the input and output bindings file with json viewer.
 
 6. Test Service
-    - Move mouse over `Tests` folder and click `Add Test` ![Alt](./dark/add.svg "Add Test"), to generate a test file.
-    - Review and edit input parameters in `testGetCustomerByState.json` file. Make it looks like:
+    - Move mouse over `Tests` folder and click `Add Test` ![Alt](./dark/add.svg "Add Test") icon, to generate a test file.
+    - Review and edit input parameters in the `testGetCustomerByState.json` file generated. It should looks like:
 
     ```json
       {
-        "name": "getCustomerByState",
+        "name": "getCustomersByState",
         "input": {
             "state": "CA"
         }
@@ -163,18 +175,22 @@ Otherwise, start from here.
 
     - click `Run Test` ![Alt](./dark/play.svg "Run Test") button to test the service.
 
+    ![New Module](./images/test-query-service.gif)
+
 ## Create SQL Service
 
-> Note: here we are to creat a SQL command service to clone a product line and its products.
+> Note: here we are to create a SQL command service to clone a product line and its products.
 
 1. Generate service
-    - Move mouse over `myMod` module and click `New SQL Service` ![Alt](./dark/sql-service.svg "New SQL Service")
+    - Move mouse over `myMod` module and click `New SQL Service` ![Alt](./dark/sql-service.svg "New SQL Service") icon.
     - Enter `cloneProductLine` as service name. Hit Enter.
 
     Service is generated in seconds.
 
+   ![New Query Service](./images/generate-sql-service.png)
+
 2. Compose input
-    - Copy and paste the following into `input.json` file
+    - Copy and paste the following into `input.json` file and save.
 
     ```json
     {
@@ -184,7 +200,7 @@ Otherwise, start from here.
     ```
 
 3. Compose the optional output
-    - Copy and paste the following into `output.json` file
+    - Copy and paste the following into `output.json` file and save.
 
     ```json
     {
@@ -201,7 +217,7 @@ Otherwise, start from here.
     ```
 
 4. Compose SQLs
-    - Copy and paste the following into `sqls.sql` file
+    - Copy and paste the following into `sqls.sql` file and save.
 
     ```sql
     insert into productlines (
@@ -221,7 +237,7 @@ Otherwise, start from here.
     ```
 
 5. Compose the optional query
-    - Copy and paste the following into `query.sql` file
+    - Copy and paste the following into `query.sql` file and save.
 
     ```sql
     select pl.productLine, pl.textDescription as description,
@@ -233,19 +249,19 @@ Otherwise, start from here.
     ```
 
 6. Generate input and output Bindings
-    - Move mouse over `cloneProductLine` service and click `Generate Input and Output Bindings` ![Alt](./dark/references.svg "Generate Input and Output Bindings") icon;
-    - Open `input-bindings.json` and `output-bindings.json` files to review the input and output bindings;
-    - Mouse over the `input-bindings.json` and `output-bindings.json` files and click the `Open with Json Viewer` ![Alt](./dark/open-json-viewer.svg "Open with Json Viewer") icon to view the input and output bindings in tabular form;
+    - Move mouse over `cloneProductLine` service and click `Generate Input and Output Bindings` ![Alt](./dark/references.svg "Generate Input and Output Bindings") icon.
+    - Open `input-bindings.json` and `output-bindings.json` files to review the input and output bindings.
+    - Mouse over the `input-bindings.json` and `output-bindings.json` files and click the `Open with Json Viewer` ![Alt](./dark/open-json-viewer.svg "Open with Json Viewer") icon to view the input and output bindings in tabular form.
     - Edit input and output bindings if necessary (skip).
 
 7. Test Service
-    - Move mouse over `Tests` folder and click `Add Test` ![Alt](./dark/add.svg "Add Test"), to generate a test file
-    - Review and edit input parameters in `testCloneProductLine.json` file
+    - Move mouse over `Tests` folder and click `Add Test` ![Alt](./dark/add.svg "Add Test"), to generate a test file.
+    - Review and edit input parameters in `testCloneProductLine.json` file.
     - click `Run Test` ![Alt](./dark/play.svg "Run Test") button or `Run Test without Commit` ![Alt](./dark/debug-rerun.svg "Run Test without Commit") button to test the service.
 
 ## Create CRUD Service
 
-> Note: here we are to create a CRUD service for an aggregate root object Order. For CRUD service, read and write may be asymmetric. You will see in this example, the read operation reads from 4 tables but the write operations only write to 2 tables.
+> Note: here we are to create a CRUD service for an aggregate object: Order. For CRUD service, read and write may be asymmetric. You will see in this example, the read operation reads from 4 tables but the write operations only write to 2 tables.
 
 1. Generate service
     - Move mouse over `myMod` module and click `New CRUD Service` ![Alt](./dark/crud-service.svg "New CRUD Service") icon.
@@ -253,8 +269,10 @@ Otherwise, start from here.
 
     Service is generated in seconds.
 
+   ![New Query Service](./images/generate-crud-service.png)
+
 2. Compose object
-    - Copy and paste the following into `object.json` file
+    - Copy and paste the following into `object.json` file and save.
 
     ```json
     {
@@ -312,21 +330,25 @@ For Read,
     ```
 
 5. Generate input and output Bindings
-    - Move mouse over the `read` component and click `Generate Input and Output Bindings` ![Alt](./dark/references.svg "Generate Input and Output Bindings");
-    - Open the `input-bindings.json` and `output-bindings.json` files to review the input and output bindings;
-    - Mouse over the `input-bindings.json` and `output-bindings.json` files and click the `Open with Json Viewer` ![Alt](./dark/open-json-viewer.svg "Open with Json Viewer") icon, to view the input and output bindings in tabular form;
+    - Move mouse over the `read` component and click `Generate Input and Output Bindings` ![Alt](./dark/references.svg "Generate Input and Output Bindings") icon.
+    - Open the `input-bindings.json` and `output-bindings.json` files to review the input and output bindings.
+    - Mouse over the `input-bindings.json` and `output-bindings.json` files and click the `Open with Json Viewer` ![Alt](./dark/open-json-viewer.svg "Open with Json Viewer") icon, to view the input and output bindings in tabular form.
     - Edit the input and output bindings if necessary (skip).
+
+   ![New Query Service](./images/generate-read-input-output-bindings.png)
 
 For write,
 
 6. Generate table bindings
-    - Move mouse over the `write` component and click `Generate Table Bindings` ![Alt](./dark/multiple-windows.svg "Generate Table Bindings") icon;
+    - Move mouse over the `write` component and click `Generate Table Bindings` ![Alt](./dark/multiple-windows.svg "Generate Table Bindings") icon.
     - open the `tables.json`, `order.columns.json` and `orderdetail.columns.json` files to review the table and column bindings.
-    - Mouse over the `order-column-bindings` and `orderdetail-column-bindings.json` files and click the `Open with Json Viewer` ![Alt](./dark/open-json-viewer.svg "Open with Json Viewer") icon, to view the column bindings in tabular form;
+    - Mouse over the `order-column-bindings` and `orderdetail-column-bindings.json` files and click the `Open with Json Viewer` ![Alt](./dark/open-json-viewer.svg "Open with Json Viewer") icon, to view the column bindings in tabular form.
     - Edit tables and columns bindings if necessary (skip).
 
+   ![New Query Service](./images/generate-table-bindings.png)
+
 7. Test Service
-    - Move mouse over `Tests` folder and click `Add Test` ![Alt](./dark/add.svg "Add Test"), and select `all` in the opened quick pick box, to generate a test file for each CRUD operation;
+    - Move mouse over `Tests` folder and click `Add Test` ![Alt](./dark/add.svg "Add Test"), and then select `all` , to generate a test file for each CRUD operation;
 
     For `read` test,
     - Mouse over the `testReadOrder.json` file and click `Duplicate` ![Alt](./dark/add.svg "Duplicate") icon twice, to duplicate two more read tests;
@@ -404,15 +426,19 @@ For write,
 
     - Click `Run Test` ![Alt](./dark/play.svg "Run Test") button to test the service.
 
+   ![Test CRUD Service](./images/test-crud-service.gif)
+
 ## Generate Simple CRUD Services from Database Tables
 
 To generate a simple CRUD service for `office` table:
 
-- Move mouse over `myMod` module, right-click and select `Generate CRUD from Table`
+- Move mouse over `myMod` module, right-click and select `Generate CRUD from Table`.
 - Select table "office". Hit Enter.
 - Select name convention "none". Hit Enter.
 
 A simple CRUD service is generated in seconds.
+
+![Generate Simple CRUD Service](./images/generate-simple-crud-service.gif)
 
 ## Deploy Service, Module and Application to DevTime
 
@@ -447,8 +473,10 @@ The application is deployed in seconds.
 
 2. Test Service
 
-    - Mouse over `getCustomersByState` and click `Generate Tests`![Alt](./dark/sync.svg "Generate Tests") icon, to generate a `tests.http` file;
-    - Open the `tests.http` file, and click any `Send Request` line you see.
+    - Mouse over `getCustomersByState` and click `Generate Tests`![Alt](./dark/sync.svg "Generate Tests") icon, to generate a `tests.http` file.
+    - Open the `tests.http` file, and click any `Send Request` line you see to test the service.
+
+![Generate Simple CRUD Service](./images/deployment-explorer.gif)
 
 > You must have the [Rest Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) extension installed, in order to run the tests in the `tests.http` file.
 
