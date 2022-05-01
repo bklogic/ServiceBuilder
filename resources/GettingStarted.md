@@ -175,11 +175,13 @@ Otherwise, start from here.
 
     - click `Run Test` ![Alt](./dark/play.svg "Run Test") button to test the service.
 
+      The service output, or exception if error, shows in an output panel.
+
     ![New Module](./images/test-query-service.gif)
 
 ## Create SQL Service
 
-> Note: here we are to create a SQL command service to clone a product line and its products.
+> Note: here we are to create a SQL command service to clone and return a product line and its products.
 
 1. Generate service
     - Move mouse over `myMod` module and click `New SQL Service` ![Alt](./dark/sql-service.svg "New SQL Service") icon.
@@ -257,12 +259,26 @@ Otherwise, start from here.
 
 7. Test Service
     - Move mouse over `Tests` folder and click `Add Test` ![Alt](./dark/add.svg "Add Test"), to generate a test file.
-    - Review and edit input parameters in `testCloneProductLine.json` file.
+    - Review and edit input parameters in `testCloneProductLine.json` file.  It should looks like:
+
+    ```json
+      {
+        "name": "testCloneProductLine",
+        "input": {
+            "scourceProductLine": "Classic Cars",
+            "newProductLine": "Electric Cars"
+        },
+        "comments": "Modify the example test name and input."
+      }    
+    ```
+
     - click `Run Test` ![Alt](./dark/play.svg "Run Test") button or `Run Test without Commit` ![Alt](./dark/debug-rerun.svg "Run Test without Commit") button to test the service.
+
+      The service output, or exception if error, shows in an output panel.
 
 ## Create CRUD Service
 
-> Note: here we are to create a CRUD service for an aggregate object: Order. For CRUD service, read and write may be asymmetric. You will see in this example, the read operation reads from 4 tables but the write operations only write to 2 tables.
+> Note: here we are to create a CRUD service for `Order` object. For CRUD service, read and write may be asymmetric. You will see in this example, the read operation reads from 4 tables but the write operations only write to 2 tables.
 
 1. Generate service
     - Move mouse over `myMod` module and click `New CRUD Service` ![Alt](./dark/crud-service.svg "New CRUD Service") icon.
@@ -368,6 +384,8 @@ For write,
 
     - Click `Run Test` ![Alt](./dark/play.svg "Run Test") button to test the service.
 
+      The service output, or exception if error, shows in an output panel.
+
     - Edit the `testReadOrderByCustomerNumber.json` file and make it looks like:
 
     ```json
@@ -381,6 +399,8 @@ For write,
     ```
 
     - click `Run Test` ![Alt](./dark/play.svg "Run Test") button to test the service.
+
+      The service output, or exception if error, shows in an output panel.
 
     - Edit `testReadOrderByDates.json` file and make it looks like
 
@@ -397,6 +417,8 @@ For write,
     ```
 
     - Click `Run Test` ![Alt](./dark/play.svg "Run Test") button to test the service.
+
+      The service output, or exception if error, shows in an output panel.
 
     For `create` test,
     - open `testCreateOrder.json` file, and make it look like:
@@ -425,7 +447,9 @@ For write,
     }
     ```
 
-    - Click `Run Test` ![Alt](./dark/play.svg "Run Test") button to test the service.
+    - Click `Run Test` ![Alt](./dark/play.svg "Run Test") or `Run Test without Ccommit` ![Alt](./dark/play.svg "Run Test without Ccommit") button to test the service.
+
+      The service output, or exception if error, shows in an output panel.
 
    ![Test CRUD Service](./images/test-crud-service.gif)
 
@@ -433,7 +457,7 @@ For write,
 
 To generate a simple CRUD service for `office` table:
 
-- Move mouse over `myMod` module, right-click and select `Generate CRUD from Table`.
+- Right-click `myMod` module, and select `Generate CRUD from Table`.
 - Select table "office". Hit Enter.
 - Select name convention "none". Hit Enter.
 
@@ -446,17 +470,17 @@ A simple CRUD service is generated in seconds.
 > The application and module are automatically deployed to DevTime upon creation. The service are automatically deployed to DevTime upon a successful test. However, you may deploy a service, a module or a whole application manually anytime as you please. Once deployed, the services are accesible through the DevTime endpoint.
 
 1. Deploy service to DevTime
-    - Move mouse over `getCustomersByState` service, righ-click to show a context menu, and select `Deploy Service`, to deploy the service.
+    - Right-click `getCustomersByState` service, and select `Deploy Service`, to deploy the service.
 
 The service is deployed in seconds.
 
 2. Deploy module to DevTime
-    - Move mouse over `myMod` module, righ-click to show a context menu, and select `Deploy Module`, to deploy the module.
+    - Right-click `myMod` module, and select `Deploy Module`, to deploy the module.
 
 The module is deployed in seconds.
 
 3. Deploy application to DevTime
-    - Move mouse over `myApp` application righ-click to show a context menu, and select `Deploy Application`, to deploy the application.
+    - Right-click `myApp` application, and select `Deploy Application`, to deploy the application.
 
 The application is deployed in seconds.
 

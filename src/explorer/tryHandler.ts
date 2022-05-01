@@ -4,21 +4,25 @@ import {TryService} from "./tryService";
 import { TryWorkspace, TrySession, TryDataSource } from './tryModel';
 import { DataSource } from '../model/dataSource';
 import {ApplicationExplorer} from "./applicationExplorer";
+import { WorkspaceHandler } from './workspaceHandler';
 
 export class TryHandler {
 	private context: vscode.ExtensionContext;
     private tryService: TryService;
     private appExplorer: ApplicationExplorer;
+    private workspaceExplorer: WorkspaceHandler;
 
-	constructor(context: vscode.ExtensionContext, tryService: TryService, appExplorer: ApplicationExplorer) {
+	constructor(context: vscode.ExtensionContext, tryService: TryService, appExplorer: ApplicationExplorer, workspaceExplorer: WorkspaceHandler) {
         this.context = context;
         this.tryService = tryService;
         this.appExplorer = appExplorer;
+        this.workspaceExplorer = workspaceExplorer;
 		vscode.commands.registerCommand('servicebuilderExplorer.try', () => this.try());
     }
 
 	async try(): Promise<void> {
 		// request workspace
+        vscode.window.setStatusBarMessage("searching for a guest workspace...");
 		try {
             const email = null;
 			const workspace = await this.tryService.requestTryWorkspace(email);
@@ -26,7 +30,7 @@ export class TryHandler {
             if (workspace) {
                 workspace.durationInMinutes = (!workspace.durationInMinutes) ? 90 : workspace.durationInMinutes;
                 vscode.window.showInformationMessage(
-                    `A quest workspace is assigned to you. You have 90 min to finish the try session.\n
+                    `A quest workspace is assigned to you. You have 90 min to finish the try session. Please follow the instructions in the Getting Started Tutorial for creating query, SQL and CRUD services.\n
 					 Workspace Details:
 					 \t  \t Name: ${workspace.workspaceName}
 					 \t  \t Url: ${workspace.workspaceUrl}`,
@@ -50,9 +54,11 @@ export class TryHandler {
                 error.message
 			);
 		}
+        vscode.window.setStatusBarMessage("");
 	}
 
     async startTrySession(workspace: TryWorkspace) {
+        vscode.window.setStatusBarMessage("staring a try session...");
         try {
             // create session
             const trySession = await this.tryService.startTrySession(workspace.workspaceId, workspace.accessCode);
@@ -68,12 +74,14 @@ export class TryHandler {
             await this.createAndDeployTryApplication(trySession.dataSource);
             vscode.window.setStatusBarMessage('application is created.');
 
-            // open tutorial ?
+            // open tutorial
+            this.workspaceExplorer.openGettingStarted();
 
         } catch (error: any) {
             // display error
             vscode.window.showErrorMessage('Error to start try session. Please try later. Error is: ' + error.message);
         }
+        vscode.window.setStatusBarMessage("");
     }
 
     async createAndDeployTryApplication(dataSource: TryDataSource): Promise<void> {
