@@ -93,8 +93,8 @@ Otherwise, start from here.
 
     ```json
     [{
-        "customernumber": 124,
-        "customername": "Mini Gifts Distributors Ltd.",
+        "customerNumber": 124,
+        "customerName": "Mini Gifts Distributors Ltd.",
         "phone": "4155551450",
         "address": {
             "address": "5677 Strong St.",
@@ -103,23 +103,23 @@ Otherwise, start from here.
             "country": "USA"
         },
         "salesRep": {
-            "employeenumber": 1165,
-            "lastname": "Jennings",
-            "firstname": "Leslie",
+            "employeeNumber": 1165,
+            "lastName": "Jennings",
+            "firstName": "Leslie",
             "office": "San Francisco-USA"
         },
         "orders": [{
-            "ordernumber": 10113,
-            "orderdate": "2003-03-26T00:00:00.000Z",
+            "orderNumber": 10113,
+            "orderDate": "2003-03-26T00:00:00.000Z",
             "status": "Shipped",
             "comments": "shipped on time",
             "orderLines": [
                 {
-                    "orderlinenumber": 1,
-                    "productcode": "S32_3522",
-                    "productname": "1996 Peterbilt 379 Stake Bed with Outrigger",
-                    "quantityordered": 23,
-                    "priceeach": 58.82
+                    "orderLineNumber": 1,
+                    "productCode": "S32_3522",
+                    "productName": "1996 Peterbilt 379 Stake Bed with Outrigger",
+                    "quantityOrdered": 23,
+                    "priceEach": 58.82
                 }
             ]
         }]
@@ -208,7 +208,7 @@ Otherwise, start from here.
 
     ```json
     {
-    "productLine": "Classic Cars",
+    "productLine": "Electric Cars",
     "description": "Make your wildest car ownership dreams come true.",
     "products": [{
         "productCode": "S10_1949",
