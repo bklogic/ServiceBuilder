@@ -22,6 +22,8 @@ This tutorial walks you through the general steps of working with Service Builde
 - A BackLogic account, so that you can connect to a BackLogic workspace.
 - A MySql database accesible from BackLogic workspace and pre-loaded with the `classicmodels` database.
 
+If you already signed up a BackLogic account, the BackLogic workspace connection information and the IP address may be found from Service Console.
+
 However, if you are trying without signup, you will be assigned with a guest workspace and a guest database. After you start the try session, the application and module are automatically created for you, and you may jump to the [create query service](#create-query-service) section directly.
 
 Otherwise, start from here.
@@ -506,6 +508,18 @@ The application is deployed in seconds.
 ![Generate Simple CRUD Service](./images/deployment-explorer.gif)
 
 > You must have the [Rest Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) extension installed, in order to run the tests in the `tests.http` file.
+
+## Push Data Access Application Into Your Git Repository
+
+The Service Build automatically initialize a git repositoty for your application. To push the application into your remote repository,
+
+- Create a remote repository with GitHub, GitLab or other.
+- Go to the `Source Control` extension of VSCode.
+- Add your remote repository to the application.
+- Add and commit the changes.
+- Push the application into the remote repository.
+
+Or you may use GIT bash to perform the above actions.
 
 ## What Is Next
 

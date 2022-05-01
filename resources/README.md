@@ -1,17 +1,17 @@
 # Data Access Application
 
-The new way to access relational database in cloud.
+The way to access relational database in cloud.
 
 ## Development  
 
-Now that you have created the application, you want further to  
+Now that you have created the application, you may want to further
 
 - configure the data source for the application
 - create data access module(s)
 - create and test data access service(s), and
-- push the application into a GIT repository for runtime deployment
+- finally push the application into a GIT repository for runtime deployment
 
-You may find how to do the first three steps in the Tutorial. For the last step, we assume that you are familiar with the process to init a local GIT repository within the application folder and to push the application into your remote GIT repository.
+You may find how to do the first three steps in the Getting Started tutorial. For the last step, we assume that you are familiar with GIT and the `Source Control` extension of VSCode and know how to commit the changes and to push the application into your remote GIT repository.
 
 ## DEV Deployment
 
