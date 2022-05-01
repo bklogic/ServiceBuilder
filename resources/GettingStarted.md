@@ -15,7 +15,9 @@
 
 This tutorial walks you through the general steps of working with Service Builder. The sample database used for this tutorial is the `classicmodels` database from `mysqltutorial.org`. The ER diagram is available [here](https://www.mysqltutorial.org/mysql-sample-database.aspx).  
 
-## Prerequite
+> Tip: It may be helpful if you have this tutorial next to your SQL and JSON editors when working through the examples in this tutorial.
+
+## Prerequisite
 
 - A BackLogic account, so that you can connect to a BackLogic workspace.
 - A MySql database accesible from BackLogic workspace and pre-loaded with the `classicmodels` database.
