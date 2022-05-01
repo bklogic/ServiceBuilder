@@ -41,13 +41,13 @@ export class WorkspaceHandler {
 							await this.context.secrets.store('servicebuilder.workspace', workspace);
 
 							// show workspace
-							this.workspace();
+							vscode.window.showInformationMessage("Success. Connected to workspace: " + workspace + ".");
 						} else {
-							vscode.window.showErrorMessage("no token entered.");
+							vscode.window.setStatusBarMessage("no token entered.");
 						}
 					});
 				} else {
-					vscode.window.showErrorMessage("no url entered.");
+					vscode.window.setStatusBarMessage("no url entered.");
 				}
 			});		
 	}

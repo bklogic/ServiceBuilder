@@ -27,6 +27,11 @@ export class BuilderService {
 		return result;
 	}
 
+	async deployDataSource(request: DeployDataSourceRequest): Promise<DeployResult> {
+		const url = '/deploy/deployDataSource';
+		const result = await this.http.builderPost(url, request);
+		return result;
+	}
 
 	/**
 	 * Test
@@ -147,6 +152,16 @@ export interface DataSource {
     database: string
     username: string;
     password: string;
+}
+
+export interface DeployDataSourceRequest {
+	applicationUri: string;
+	dbType: string;
+	host: string;
+	port: number;
+	database: string;
+	username: string;
+	password: string;
 }
 
 export interface TestDataSourceRequest {

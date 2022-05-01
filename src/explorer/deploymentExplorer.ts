@@ -3,7 +3,7 @@ import * as util from '../core/util';
 import { DeployService } from '../core/deployService';
 import { DeploymentDataProvider } from './deploymentDataProvider';
 import { Item } from './deploymentModel';
-import { DeploymentService } from './DeploymentService';
+import { DeploymentService } from './deploymentService';
 
 export class DeploymentExplorer {
 

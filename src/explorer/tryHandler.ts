@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as util from '../core/util';
 import {TryService} from "./tryService";
 import { TryWorkspace, TrySession, TryDataSource } from './tryModel';
+import { DataSource } from '../model/dataSource';
 import {ApplicationExplorer} from "./applicationExplorer";
 
 export class TryHandler {
@@ -89,8 +90,15 @@ export class TryHandler {
         // add try data source
         const dataSourceUri = vscode.Uri.joinPath(app.uri, 'src', 'datasource.json');
         await util.storePassword(this.context, dataSourceUri.path, dataSource.password);
-        dataSource.password = util.passwordMask;
-        await util.writeJsonFile(dataSourceUri, dataSource);
+        const dsConfig: DataSource = {
+            dbType: dataSource.dbType,
+            host: dataSource.host,
+            port: +dataSource.port,
+            database: dataSource.dbName,
+            username: dataSource.username,
+            password:  util.passwordMask
+        };
+        await util.writeJsonFile(dataSourceUri, dsConfig);
 
         // create try module
         await this.appExplorer.createModule(app, 'myMod');

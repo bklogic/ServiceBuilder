@@ -315,8 +315,8 @@ export class ApplicationService {
 		let children: ValidFile[] = await Promise.all(
 			files.map( async ([name, fileType]) => { 
 				switch (fileType) {
-					case vscode.FileType.File:
-						return {name, fileType, valid: name === 'Welcome.md'};
+					// case vscode.FileType.File:
+					// 	return {name, fileType, valid: name === 'Welcome.md'};
 					case vscode.FileType.Directory:
 						const isApplication = await util.isApplication(vscode.Uri.joinPath(entry.uri, name));
 						return {name, fileType, valid: isApplication};

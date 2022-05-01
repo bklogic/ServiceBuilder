@@ -61,7 +61,7 @@ export class TestEditor {
                 this.outputChannel.append(JSON.stringify(output, null, 4));
                 this.outputChannel.show(true);
 
-            } catch (error) {
+            } catch (error: any) {
                 console.error('Error in testing service', error);
                 vscode.window.showErrorMessage(error.message);
             }

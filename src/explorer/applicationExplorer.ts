@@ -1,6 +1,4 @@
 import * as vscode from 'vscode';
-import * as path from 'path';
-import * as URL from 'url';
 import * as util from '../core/util';
 import {ApplicationDataProvider} from './applicationDataProvider';
 import {ApplicationService} from "./applicationService";
@@ -23,9 +21,8 @@ import {
 	NameConvention,
 	Table,
 	WhereClauseType,
-	Versions,
 	DataSource,
-	TestDataSourceRequest
+	DeployDataSourceRequest
 } from '../core/builderService';
 import { Application, Module, Service } from '../core/deployService';
 import { ViewColumn } from 'vscode';
@@ -48,7 +45,6 @@ export class ApplicationExplorer {
 		context.subscriptions.push(this.treeView);
 		vscode.commands.registerCommand('servicebuilderExplorer.openResource', (resource) => this.openResource(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.openWithJsonViewer', (resource) => this.openWithJsonViewer(resource));
-		vscode.commands.registerCommand('servicebuilderExplorer.openWelcome', () => this.openWelcome());
 		vscode.commands.registerCommand('servicebuilderExplorer.refresh', () => this.refresh());
 		vscode.commands.registerCommand('servicebuilderExplorer.rename', (resource) => this.onRename(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.delete', (resource) => this.delete(resource));
@@ -79,16 +75,12 @@ export class ApplicationExplorer {
 	}
 
 	openWithJsonViewer(resource: Entry): void {
-		vscode.commands.executeCommand('vscode.openWith', resource.uri, 'jsonGridViewer.json', ViewColumn.Beside);
+		vscode.commands.executeCommand('vscode.openWith', resource.uri, 'jsonGridViewer.json', 
+			{viewColumn: ViewColumn.Beside, preserveFocus: true});
 	}
 
 	refresh(): void {
 		this.dataProvider.refresh();
-	}
-
-	openWelcome(): void {
-		const uri = vscode.Uri.file(path.join(__filename, '..', '..', '..', 'resources', 'Welcome.md'));
-		vscode.commands.executeCommand("markdown.showPreview", uri);	
 	}
 
 	onCreateApplication(): void {
@@ -207,11 +199,16 @@ export class ApplicationExplorer {
 			}, async (progress) => {
 				// clear status message
 				vscode.window.setStatusBarMessage('');
+
 				// zip application
 				const appUri = await util.applicationUriForApplication(app.uri.path);
 				const archive = await util.getApplicationArchive(app.uri, this.context);
-				// call service
+				// call service to deploy application only
 				await this.builderService.deployApplication(appUri, archive);
+
+				// deploy datasource
+				await this.deployDataSource(app);
+
 				// inform user
 				vscode.window.setStatusBarMessage('application is deployed.');
 			});		
@@ -444,7 +441,7 @@ export class ApplicationExplorer {
 	private onRename(entry: Entry): void {
 		this.treeView.reveal(entry, {select: true});
 		vscode.window.showInputBox({
-			ignoreFocusOut: true, placeHolder: `new ${entry.type} name`, value: entry.name, prompt: "must be an alphanumberic"
+			ignoreFocusOut: true, placeHolder: `new ${entry.type} name`, value: entry.name, prompt: "Enter a new name. Must be an alphanumberic."
 		})
 			.then( name => {
 				if (name) {
@@ -507,7 +504,6 @@ export class ApplicationExplorer {
 				await this.resavePassword(entry, newEntry);
 				await this.undeployApplication(entry);
 				await this.deployApplication(newEntry);
-				await this.testDataSource(newEntry);
 				break;
 			case EntryType.Module:
 				const modUri = vscode.Uri.joinPath(newEntry.uri, 'module.json');
@@ -528,10 +524,10 @@ export class ApplicationExplorer {
 		}
 	}
 
-	private async testDataSource(app: Entry) {
+	private async deployDataSource(app: Entry) {
         const dataSourceUri = vscode.Uri.joinPath(app.uri, 'src', 'datasource.json');
 		const dataSource = await util.readJsonFile(dataSourceUri) as DataSource;
-		const testReq: TestDataSourceRequest =  {
+		const deployReq: DeployDataSourceRequest =  {
 			applicationUri: await util.applicationUriForApplication(app.uri.path),
 			dbType: dataSource.dbType,
 			host: dataSource.host,
@@ -540,7 +536,7 @@ export class ApplicationExplorer {
 			username: dataSource.username,
 			password: await util.retrievePassword(this.context, dataSourceUri.path)
 		 } ;
-		this.builderService.testDataSource(testReq);
+		this.builderService.deployDataSource(deployReq);
 	}
 
 	private async resavePassword(app: Entry, newApp: Entry): Promise<void> {

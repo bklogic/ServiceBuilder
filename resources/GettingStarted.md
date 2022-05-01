@@ -78,7 +78,7 @@ Otherwise, start from here.
    ![New Query Service](./images/generate-query-service.png)
 
 2. Compose input
-    - Copy and paste the following into `input.json` file and save.
+    - Copy and paste the following into `input.json` file, save and review.
 
     ```json
     {
@@ -87,7 +87,7 @@ Otherwise, start from here.
     ```
 
 3. Compose output
-    - Copy and paste the following into `output.json` file and save.
+    - Copy and paste the following into `output.json` file, save and review.
 
     ```json
     [{
@@ -125,7 +125,7 @@ Otherwise, start from here.
     ```
 
 4. Compose query
-    - Copy and paste the following into `query.sql` file and save.
+    - Copy and paste the following into `query.sql` file, save and review.
 
     ```sql
     select c.customerNumber, c.customerName, c.phone, 
@@ -190,7 +190,7 @@ Otherwise, start from here.
    ![New Query Service](./images/generate-sql-service.png)
 
 2. Compose input
-    - Copy and paste the following into `input.json` file and save.
+    - Copy and paste the following into `input.json` file, save and review.
 
     ```json
     {
@@ -200,24 +200,25 @@ Otherwise, start from here.
     ```
 
 3. Compose the optional output
-    - Copy and paste the following into `output.json` file and save.
+    - Copy and paste the following into `output.json` file, save and review.
 
     ```json
     {
-        "productline": "Classic Cars",
-        "description": "Make your wildest car ownership dreams come true.",
-        "products": [{
-            "productcode": "S10_1949",
-            "productname": "1952 Alpine Renault 1300",
-            "productvendor": "Classic Metal Creations",
-            "buyprice": 98.58,
-            "msrp": 214.3
+    "productLine": "Classic Cars",
+    "description": "Make your wildest car ownership dreams come true.",
+    "products": [{
+        "productCode": "S10_1949",
+        "productName": "1952 Alpine Renault 1300",
+        "productDescription": "",
+        "productVendor": "Classic Metal Creations",
+        "buyPrice": 98.58,
+        "msrp": 214.3
         }]
     }
     ```
 
 4. Compose SQLs
-    - Copy and paste the following into `sqls.sql` file and save.
+    - Copy and paste the following into `sqls.sql` file, save and review.
 
     ```sql
     insert into productlines (
@@ -237,7 +238,7 @@ Otherwise, start from here.
     ```
 
 5. Compose the optional query
-    - Copy and paste the following into `query.sql` file and save.
+    - Copy and paste the following into `query.sql` file, save and review.
 
     ```sql
     select pl.productLine, pl.textDescription as description,
@@ -272,7 +273,7 @@ Otherwise, start from here.
    ![New Query Service](./images/generate-crud-service.png)
 
 2. Compose object
-    - Copy and paste the following into `object.json` file and save.
+    - Copy and paste the following into `object.json` file, save and review.
 
     ```json
     {
@@ -297,7 +298,7 @@ Otherwise, start from here.
 For Read,
 
 3. Compose READ input
-    - Copy and paste the following into `input.json` file and save.
+    - Copy and paste the following into `input.json` file, save and review.
 
 ```json
 {
@@ -309,7 +310,7 @@ For Read,
 ```
 
 4. Compose READ query
-    - Copy and paste the following into `query.sql` file and save.
+    - Copy and paste the following into `query.sql` file, save and review.
 
     ```sql
     select ord.orderNumber, ord.orderDate, 

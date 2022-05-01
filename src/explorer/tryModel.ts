@@ -12,7 +12,7 @@ export interface TryDataSource {
     dbType: string;
     host: string;
     port: string;
-    database: string;
+    dbName: string;
     username: string;
     password: string;
 }

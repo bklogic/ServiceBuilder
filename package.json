@@ -18,7 +18,13 @@
 	"categories": [
 		"Other"
 	],
-	"keywords": ["database", "data", "access", "persistence", "service"],
+	"keywords": [
+		"database",
+		"data",
+		"access",
+		"persistence",
+		"service"
+	],
 	"preview": true,
 	"icon": "resources/images/builder-icon-large.png",
 	"galleryBanner": {
@@ -34,9 +40,9 @@
 			"title": "Service Builder",
 			"properties": {
 				"servicebuilder.tryServiceEndpoint": {
-				  "type": "string",
-				  "default": "http://try.backlogic.net",
-				  "description": "Endpoint for TryWithoutSignup service"
+					"type": "string",
+					"default": "http://try.backlogic.net",
+					"description": "Endpoint for TryWithoutSignup service"
 				},
 				"servicebuilder.tryServiceApiToken": {
 					"type": "string",
@@ -89,10 +95,6 @@
 			{
 				"command": "servicebuilderExplorer.openGettingStarted",
 				"title": "GettingStarted"
-			},
-			{
-				"command": "servicebuilderExplorer.openWelcome",
-				"title": "Welcome"
 			},
 			{
 				"command": "servicebuilderExplorer.createApplication",
@@ -278,7 +280,6 @@
 					"dark": "resources/dark/debug-rerun.svg"
 				}
 			},
-
 			{
 				"command": "servicedeploymentExplorer.openResource",
 				"title": "Open File"
@@ -334,13 +335,13 @@
 		],
 		"viewsContainers": {
 			"activitybar": [
-			  {
-				"id": "service-builder",
-				"title": "Service Builder",
-				"icon": "resources/images/builder-icon.svg"
-			  }
+				{
+					"id": "service-builder",
+					"title": "Service Builder",
+					"icon": "resources/images/builder-icon.svg"
+				}
 			]
-		  },
+		},
 		"views": {
 			"service-builder": [
 				{
@@ -359,10 +360,10 @@
 		},
 		"viewsWelcome": [
 			{
-			  "view": "servicebuilderWorkspace",
-			  "contents": "[Try without Signup](command:servicebuilderExplorer.try)\n[Getting Started](command:servicebuilderExplorer.openGettingStarted)"
+				"view": "servicebuilderWorkspace",
+				"contents": "[Try without Signup](command:servicebuilderExplorer.try)\n[Getting Started](command:servicebuilderExplorer.openGettingStarted)"
 			}
-		  ],
+		],
 		"menus": {
 			"view/title": [
 				{
@@ -380,7 +381,6 @@
 					"when": "view == servicebuilderExplorer",
 					"group": "navigation@7"
 				},
-
 				{
 					"command": "servicedeploymentExplorer.refreshAppList",
 					"when": "view == servicedeploymentExplorer",
@@ -393,7 +393,7 @@
 					"when": "view == servicebuilderExplorer && viewItem == application",
 					"group": "inline@2"
 				},
-				{	
+				{
 					"command": "servicebuilderExplorer.createModule",
 					"when": "view == servicebuilderExplorer && viewItem == application",
 					"group": "1-new"
@@ -628,7 +628,6 @@
 					"when": "view == servicebuilderExplorer && viewItem == bindings",
 					"group": "inline@1"
 				},
-				
 				{
 					"command": "servicedeploymentExplorer.refreshApplication",
 					"when": "view == servicedeploymentExplorer && viewItem == application",
@@ -717,21 +716,26 @@
 		}
 	},
 	"scripts": {
-		"vscode:prepublish": "npm run compile",
+		"vscode:prepublish": "npm run esbuild-base -- --minify",
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile && npm run lint",
 		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
+		"test": "node ./out/test/runTest.js",
+		"esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
+		"esbuild": "npm run esbuild-base -- --sourcemap",
+		"esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
+		"test-compile": "tsc -p ./"		
 	},
 	"devDependencies": {
-		"@types/vscode": "^1.51.1",
 		"@types/glob": "^7.1.3",
 		"@types/mocha": "^8.0.4",
 		"@types/node": "^12.11.7",
-		"eslint": "^7.19.0",
+		"@types/vscode": "^1.51.1",
 		"@typescript-eslint/eslint-plugin": "^4.14.1",
 		"@typescript-eslint/parser": "^4.14.1",
+		"esbuild": "^0.14.38",
+		"eslint": "^7.19.0",
 		"glob": "^7.1.6",
 		"mocha": "^8.2.1",
 		"typescript": "^4.1.3",
