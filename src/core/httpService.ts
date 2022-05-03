@@ -24,7 +24,10 @@ export class HttpService {
             this.context.secrets.get('servicebuilder.url'),
             this.context.secrets.get('servicebuilder.token')    
         ]);
-        url = (url) ? url : 'http://localhost:8080';
+
+        if (!url) {
+            throw new Error("Not connected to workspace.");
+        }
 
         // create and return config
         const config: HttpConfig = {
@@ -103,17 +106,19 @@ export class HttpService {
                 form.append(key, data[key]);
             }
             form.append('archive', archive, 'archive.zip');
-            config.headers = form.getHeaders();
+            const headers = form.getHeaders();
+            headers['Authorization'] = config.headers['Authorization'];
+            config.headers = headers;
             // post form
             const response = await axios.post(config.baseURL + url, form, {"headers": config.headers} );
             return response.data;
           } catch (error: any) {
-            console.error('http post archive error: ', error.message || error.response.data.message, '\n',  'url: ', config.baseURL + url);
-            console.info('Data: ');
-            console.info(data);
-            console.error(error);
-            error.message = error.message + ' | ' + error.message || error.response.data.message;
-            throw error;
+                console.error('http post archive error: ', error.message || error.response.data.message, '\n',  'url: ', config.baseURL + url);
+                console.info('Data: ');
+                console.info(data);
+                console.error(error);
+                error.message = error.message + ' | ' + error.message || error.response.data.message;
+                throw error;
           }    
     }
 
