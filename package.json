@@ -9,9 +9,9 @@
 	"publisher": "BackLogic",
 	"repository": {
 		"type": "git",
-		"url": "https://gitlab.com/backlogic/ui/service-builder-vscode.git"
+		"url": "https://github.com/bklogic/ServiceBuilder"
 	},
-	"homepage": "https://backlogic.gitlab.io/web/vesper",
+	"homepage": "http://backlogic.net",
 	"engines": {
 		"vscode": "^1.51.1"
 	},
@@ -46,7 +46,7 @@
 				},
 				"servicebuilder.tryServiceApiToken": {
 					"type": "string",
-					"default": "bncxnzghghhgdhsgfgybbbd",
+					"default": "xvncyn56ghgh66hgdhs63gfgyb78bbd",
 					"description": "API token for TryWithoutSignup service"
 				}
 			}
