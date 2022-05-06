@@ -1,7 +1,7 @@
 # Service Builder
 
 The rapid development tool for data access service. The new way of working with relational database.
->[Visit our site](https://web.backlogic.net) to read more about data access service and BackLogic platform.
+>[Visit our site](https://www.backlogic.net) to read more about data access service and BackLogic platform.
 
 # Features
 
@@ -21,7 +21,7 @@ The rapid development tool for data access service. The new way of working with 
   - Try-without-Signup service
   - Getting Started tutorial
 
-![Service Builder Explorer](./resources/images/service-builder-explorer.png)
+![Service Builder Explorer](https://www.backlogic.net/vscode/service-builder-explorer.png)
 
 # BackLogic Workspace
 
@@ -29,7 +29,7 @@ Service Builder VScode is just the UI. It must connect to a BackLogic workspace 
 
 Inside the workspace are the Service Builder Backend, Service Repository and Service DevTime. The Service Builder Backend does the heavy lifting for Service Builder, and deploys the data access services into the Service Repository. The Service DevTime runs the data access services from the Service Repository for development purpose. Both the Service Builder and Service DevTime connects to your DEV database, for DB meta data and DB data, respectively.
 
-![BackLogic Workspace](./resources/images/backlogic-workspace.png)
+![BackLogic Workspace](https://www.backlogic.net/vscode/backlogic-workspace.png)
 
 # Usage
 
