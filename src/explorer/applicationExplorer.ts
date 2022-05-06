@@ -672,7 +672,7 @@ export class ApplicationExplorer {
 			await util.writeJsonFile(inputUri, result.input);
 			await util.writeJsonFile(outputUri, result.output);
 			vscode.window.showTextDocument(inputUri, {preview: false});
-			vscode.window.showTextDocument(outputUri, {preview: false});
+			// vscode.window.showTextDocument(outputUri, {preview: false});
 			// inform user
 			vscode.window.setStatusBarMessage('input and output are generated');
 		} catch (error: any) {
@@ -705,8 +705,8 @@ export class ApplicationExplorer {
 				const outputBidningsUri = vscode.Uri.joinPath(service.uri, 'output-bindings.json');
 				await util.writeJsonFile(inputBidningsUri, result.inputBindings);
 				await util.writeJsonFile(outputBidningsUri, result.outputBindings);
-				vscode.window.showTextDocument(inputBidningsUri, {preview: false});
-				vscode.window.showTextDocument(outputBidningsUri, {preview: false});
+				vscode.window.showTextDocument(inputBidningsUri, {preview: true});
+				// vscode.window.showTextDocument(outputBidningsUri, {preview: true});
 				// inform user
 				vscode.window.setStatusBarMessage('input and output bindings are generated');
 			} catch (error: any) {
@@ -736,8 +736,8 @@ export class ApplicationExplorer {
 			const outputUri = vscode.Uri.joinPath(service.uri, 'output.json');
 			await util.writeJsonFile(inputUri, result.input);
 			await util.writeJsonFile(outputUri, result.output);
-			vscode.window.showTextDocument(inputUri, {preview: false});
-			vscode.window.showTextDocument(outputUri, {preview: false});
+			vscode.window.showTextDocument(inputUri, {preview: true});
+			// vscode.window.showTextDocument(outputUri, {preview: true});
 			// inform user
 			vscode.window.setStatusBarMessage('input and output are generated');
 		} catch (error: any) {
@@ -766,8 +766,8 @@ export class ApplicationExplorer {
 			const outputBidningsUri = vscode.Uri.joinPath(service.uri, 'output-bindings.json');
 			await util.writeJsonFile(inputBidningsUri, result.inputBindings);
 			await util.writeJsonFile(outputBidningsUri, result.outputBindings);
-			vscode.window.showTextDocument(inputBidningsUri, {preview: false});
-			vscode.window.showTextDocument(outputBidningsUri, {preview: false});
+			// vscode.window.showTextDocument(inputBidningsUri, {preview: true});
+			vscode.window.showTextDocument(outputBidningsUri, {preview: true});
 			// inform user
 			vscode.window.setStatusBarMessage('input and output bindings are generated');
 		} catch (error: any) {
@@ -793,7 +793,7 @@ export class ApplicationExplorer {
 			await util.writeJsonFile(objectUri, result.object);
 			await util.writeJsonFile(inputUri, result.input);
 			vscode.window.showTextDocument(objectUri, {preview: false});
-			vscode.window.showTextDocument(inputUri, {preview: false});
+			// vscode.window.showTextDocument(inputUri, {preview: false});
 			// inform user
 			vscode.window.setStatusBarMessage('object is generated');
 		} catch (error: any) {
@@ -826,7 +826,7 @@ export class ApplicationExplorer {
 			await util.writeJsonFile(inputBidningsUri, result.inputBindings);
 			await util.writeJsonFile(outputBidningsUri, result.outputBindings);
 			vscode.window.showTextDocument(inputBidningsUri, {preview: false});
-			vscode.window.showTextDocument(outputBidningsUri, {preview: false});
+			// vscode.window.showTextDocument(outputBidningsUri, {preview: false});
 			// inform user
 			vscode.window.setStatusBarMessage('input and output bindings are generated');
 		} catch (error: any) {
@@ -945,7 +945,7 @@ export class ApplicationExplorer {
 			}
 			this.dataProvider.fire(testFile.parent);
 			this.treeView.reveal(testFile, {focus: true, select: false});
-			vscode.window.showTextDocument(testFile.uri, {preview: false});
+			vscode.window.showTextDocument(testFile.uri, {preview: true});
 		} catch(error: any){
 			vscode.window.setStatusBarMessage('Failed to duplicate test: ' + error.message);
 		}

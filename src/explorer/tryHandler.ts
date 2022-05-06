@@ -74,9 +74,6 @@ export class TryHandler {
             await this.createAndDeployTryApplication(trySession.dataSource);
             vscode.window.setStatusBarMessage('application is created.');
 
-            // open tutorial
-            this.workspaceExplorer.openGettingStarted();
-
         } catch (error: any) {
             // display error
             vscode.window.showErrorMessage('Error to start try session. Please try later. Error is: ' + error.message);
