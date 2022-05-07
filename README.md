@@ -39,15 +39,15 @@ Inside the workspace are the Service Builder Backend, Service Repository and Ser
 
 # Install
 
-Press F1, type ext install then search for service-builder.
+Click `Extensions` on `Activity Bar`, and then search for `service builder`.
 
 # Get Started
 
-Once you have Service Builder installed, open the Getting Started tutorial from the Workspace Explorer, and follow the instructions to create your first data access application.
+Once you have `Service Builder` installed, open the `Getting Started` tutorial from the `Workspace Explorer`, and follow the instructions to create your first data access application.
 
 If you have aleady signed up with BackLogic, you may get your workspace url and access token from the Service Console for workspace connection. You also need a DEV database of your own, with the [`ClassicModels`](https://www.mysqltutorial.org/mysql-sample-database.aspx) sample database pre-installed.
 
-However, if you are trying without signup, Service Builder will assign you a guest workspace with a guest database. It will also create the application and module for you, so that you can jump to creating query, SQL and CRUD services directly. Try without Signup is a quick way to get your first-hand experience with data access services.
+However, if you are trying without signup, `Service Builder` will assign you a guest workspace with a guest database. It will also create the application and module for you, so that you can jump to creating query, SQL and CRUD services directly. `Try without Signup` is a quick way to get your first-hand experience with data access services.
 
 # Recommeded VSCode Extensions
 

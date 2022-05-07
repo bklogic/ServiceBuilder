@@ -41,7 +41,7 @@
 			"properties": {
 				"servicebuilder.tryServiceEndpoint": {
 					"type": "string",
-					"default": "http://try.backlogic.net",
+					"default": "https://try.backlogic.net",
 					"description": "Endpoint for TryWithoutSignup service"
 				},
 				"servicebuilder.tryServiceApiToken": {

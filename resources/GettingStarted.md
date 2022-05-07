@@ -20,13 +20,13 @@ This tutorial walks you through the general steps of working with Service Builde
 ## Prerequisite
 
 - A BackLogic account, so that you can connect to a BackLogic workspace.
-- A MySql database accesible from BackLogic workspace and pre-loaded with the `classicmodels` database.
+- A MySQL database accesible from BackLogic workspace and pre-loaded with the `classicmodels` database.
 
-> You may also want to have the two recommended extensions installed for the full experience of working with Service Builder:
+> You may also want to have the two recommended extensions installed for a full experience of working with `Service Builder`:
 > - JSON Grid Viewer, and  
 > - REST Client
 
-If you already signed up a BackLogic account, the BackLogic workspace connection information and the IP address may be found from Service Console.
+If you have already signed up a BackLogic account, the BackLogic workspace connection information and the IP address may be found from Service Console.
 
 However, if you are trying without signup, you will be assigned with a guest workspace and a guest database. After you start the try session, the application and module are automatically created for you, and you may jump to the [create query service](#create-query-service) section directly.
 
