@@ -1,4 +1,4 @@
-import {HttpService} from './httpService';
+import {HttpService} from '../core/httpService';
 
 export class DeployService {
 

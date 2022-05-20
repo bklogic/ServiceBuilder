@@ -2,11 +2,11 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as util from './core/util';
-import { BuilderService } from './core/builderService';
+import { BuilderService } from './services/builderService';
 import { ApplicationExplorer } from './explorer/applicationExplorer';
 import { DataSourceEditor } from './editor/dataSourceEditor';
 import { TestEditor } from './editor/testEditor';
-import { DeployService } from './core/deployService';
+import { DeployService } from './services/deployService';
 import { DeploymentExplorer } from './explorer/deploymentExplorer';
 import { HttpService } from './core/httpService';
 import { TryService } from './explorer/tryService';
@@ -28,7 +28,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// register viewVersion command
 	let disposable = vscode.commands.registerCommand('servicebuilder.versions', () => {
-		const versions = builderService.getBuilderVersions()
+		builderService.getBuilderVersions()
 			.then( versions => {
 				const msg = `Engine: ${versions.engine} | Deployer: ${versions.deployer} | Builder: ${versions.builder}.`;
 				vscode.window.showInformationMessage(msg);

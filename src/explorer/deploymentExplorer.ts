@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as util from '../core/util';
-import { DeployService } from '../core/deployService';
+import { DeployService } from '../services/deployService';
 import { DeploymentDataProvider } from './deploymentDataProvider';
 import { Item } from './deploymentModel';
 import { DeploymentService } from './deploymentService';

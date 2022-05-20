@@ -4,12 +4,14 @@ import {ApplicationDataProvider} from './applicationDataProvider';
 import {ApplicationService} from "./applicationService";
 import {Entry, EntryType} from './applicationModel';
 import {
+    BuilderService
+} from '../services/builderService';
+import {
 	BindCrudQueryRequest,
 	BindCrudTableRequest,
 	BindQueryRequest,
 	BindQueryResult,
 	BindSqlsRequest,
-    BuilderService,
 	GenerateCrudOptions,
 	GenerateCrudRequest,
 	GenerateCrudResult,
@@ -23,8 +25,8 @@ import {
 	WhereClauseType,
 	DataSource,
 	DeployDataSourceRequest
-} from '../core/builderService';
-import { Application, Module, Service } from '../core/deployService';
+} from '../model/builder';
+import { Application, Module, Service } from '../services/deployService';
 import { ViewColumn } from 'vscode';
 
 

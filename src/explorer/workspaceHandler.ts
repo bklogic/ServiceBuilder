@@ -1,10 +1,8 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import * as URL from 'url';
 import * as util from '../core/util';
-import {
-    BuilderService, Versions
-} from '../core/builderService';
+import { BuilderService } from '../services/builderService';
+import { Workspace, WorkspaceAuthentication } from '../model/workspace';
 
 
 export class WorkspaceHandler {
@@ -25,29 +23,42 @@ export class WorkspaceHandler {
 	}
 
 	async connect(): Promise<void> {
-		const url = await this.context.secrets.get('servicebuilder.url');
-		vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "Workspace URL", value: url, prompt: "from Service Console"})
-			.then( url => {
-				if (url) {
+		const name = await this.context.secrets.get('servicebuilder.workspace');
+		vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "Workspace Name", value: name, prompt: "from Service Console"})
+			.then( name => {
+				if (name) {
 					vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "Access Token", prompt: "from Service Console"}).then( async (token) => {
 						if (token) {
-							// parse url for workspace
-							const host = new URL.URL(url).host;
-							const workspace = (host.match('localhost')) ? 'default' : host.substr(0, host.indexOf("."));
+							// get builder url
+							let builderUrl = await vscode.workspace.getConfiguration('servicebuilder').get('builderServiceEndpoint') as string;
+
+							// authenticate workspce
+							let auth: WorkspaceAuthentication = {} as WorkspaceAuthentication;
+							if ( builderUrl.startsWith('http://localhost') ) {
+								auth =  {
+									workspaceName: name, jwtAccessToken: token
+								};
+							} else {
+								try {
+									auth = await this.builderService.authenticateWorkspace(name, token);
+								} catch(err: any) {
+									vscode.window.showErrorMessage("Invalid workspace name or access token: " + err.message);
+									return;
+								}
+							}
 
 							// save connection
-							await this.context.secrets.store('servicebuilder.url', url);
-							await this.context.secrets.store('servicebuilder.token', token);
-							await this.context.secrets.store('servicebuilder.workspace', workspace);
+							await this.context.secrets.store('servicebuilder.workspace', auth.workspaceName);
+							await this.context.secrets.store('servicebuilder.token', auth.jwtAccessToken);
 
 							// show workspace
-							vscode.window.showInformationMessage("Success. Connected to workspace: " + workspace + ".");
+							vscode.window.showInformationMessage("Success. Connected to workspace: " + auth.workspaceName + ".");
 						} else {
 							vscode.window.setStatusBarMessage("no token entered.");
 						}
 					});
 				} else {
-					vscode.window.setStatusBarMessage("no url entered.");
+					vscode.window.setStatusBarMessage("no name entered.");
 				}
 			});		
 	}
@@ -56,14 +67,13 @@ export class WorkspaceHandler {
 		// get current workspace setting
 		const workspace: Workspace = {
 			name: await this.context.secrets.get("servicebuilder.workspace"),
-			url: await this.context.secrets.get("servicebuilder.url"),
 			accessToken: await this.context.secrets.get("servicebuilder.token"),
 			versions: undefined,
 			connectionIssue: undefined
 		};		
 
 		// check workspace setting not undefined
-		if (!workspace.url) {
+		if (!workspace.name) {
 			this.showNotConnectedMessageForUnspecifiedWorkspace();
 			return;
 		}
@@ -87,7 +97,6 @@ export class WorkspaceHandler {
 				`Connected. \n
 				 Workspace Details:
 				 \t  \t Name: ${workspace.name}
-				 \t  \t Url: ${workspace.url}
 				 \t  \t Version: 
 				 \t     \t Engine:  ${workspace.versions?.engine}
 				 \t     \t Deployer:  ${workspace.versions?.deployer}
@@ -105,7 +114,7 @@ export class WorkspaceHandler {
 	showNotConnectedMessageForUnspecifiedWorkspace() {
 		vscode.window.showInformationMessage(
 			`Not connected. \n
-			To connect, you need the workspace url and access token. 
+			To connect, you need the workspace name and access token. 
 			They are available from Service Console.`,
 			 { modal: true },
 			 'Connect'
@@ -120,7 +129,7 @@ export class WorkspaceHandler {
 		vscode.window.showInformationMessage(
 		   `Not connected. Connection issue. \n
 			Please review the connection information:
-			\t   \t Workspace url: ${workspace.url}
+			\t   \t Workspace name: ${workspace.name}
 			\t   \t Issue: ${workspace.connectionIssue}`,
 		{ modal: true },
 			 'Reconnect','View Access Token'
@@ -135,10 +144,3 @@ export class WorkspaceHandler {
 	}
 }
 
-export interface Workspace {
-	name: string | undefined,
-	url: string | undefined,
-	accessToken: string | undefined,
-	versions: Versions | undefined,
-	connectionIssue: string | null | undefined
-}

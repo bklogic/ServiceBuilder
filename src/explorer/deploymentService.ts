@@ -3,7 +3,7 @@ import * as util from '../core/util';
 import {Item, ItemType} from './deploymentModel';
 import {
     DeployService, Application, ApplicationAggregate, Module, Service, Test
-} from '../core/deployService';
+} from '../services/deployService';
 
 
 export class DeploymentService {
@@ -88,7 +88,7 @@ export class DeploymentService {
 
     async reloadTests(service: Item): Promise<void> {
         // get builder url
-        const builderUrl = await this.context.secrets.get('servicebuilder.url');
+        let builderUrl = await vscode.workspace.getConfiguration('servicebuilder').get('builderServiceEndpoint') as string;
         const token = await this.context.secrets.get('servicebuilder.token');
         if (!builderUrl) {
             throw new Error('Not connected to workspace');

@@ -1,9 +1,11 @@
 import * as vscode from 'vscode';
 import * as util from '../core/util';
 import {
-    BuilderService, 
+    BuilderService
+} from '../services/builderService';
+import {
     TestServiceRequest, TestServiceResult
-} from '../core/builderService';
+} from '../model/builder';
 
 export class TestEditor {
     private builderService: BuilderService; 

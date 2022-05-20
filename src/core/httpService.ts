@@ -12,22 +12,11 @@ export class HttpService {
 
     constructor(context: vscode.ExtensionContext) {
         this.context = context;
-        // if (process.env.IGNORE_SSL) {
-        //     this.rejectUnauthorized = false;
-        //     process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-        // }
     }
 
     async builderHttpConfig(timeout?: number): Promise<HttpConfig> {
-        // get connection data
-        let [url, token] = await Promise.all([
-            this.context.secrets.get('servicebuilder.url'),
-            this.context.secrets.get('servicebuilder.token')    
-        ]);
-
-        if (!url) {
-            throw new Error("Not connected to workspace.");
-        }
+        let url = await vscode.workspace.getConfiguration('servicebuilder').get('builderServiceEndpoint') as string;
+        let token = await this.context.secrets.get('servicebuilder.token');
 
         // create and return config
         const config: HttpConfig = {

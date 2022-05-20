@@ -2,10 +2,12 @@
 import * as vscode from 'vscode';
 import * as util from '../core/util';
 import {
-    BuilderService, 
+    BuilderService
+} from '../services/builderService';
+import {
     DataSource,
     TestDataSourceRequest,
-} from '../core/builderService';
+} from '../model/builder';
 
 export class DataSourceEditor {
 
