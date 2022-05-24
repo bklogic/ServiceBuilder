@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as URL from 'url';
 import * as util from '../core/util';
 import { BuilderService } from '../services/builderService';
 import { Workspace, WorkspaceAuthentication } from '../model/workspace';
@@ -23,24 +24,25 @@ export class WorkspaceHandler {
 	}
 
 	async connect(): Promise<void> {
-		const name = await this.context.secrets.get('servicebuilder.workspace');
-		vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "Workspace Name", value: name, prompt: "from Service Console"})
-			.then( name => {
-				if (name) {
+		const url = await this.context.secrets.get('servicebuilder.url');
+		vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "Workspace URL", value: url, prompt: "from Service Console"})
+			.then( url => {
+				if (url) {
 					vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "Access Token", prompt: "from Service Console"}).then( async (token) => {
 						if (token) {
-							// get builder url
-							let builderUrl = await vscode.workspace.getConfiguration('servicebuilder').get('builderServiceEndpoint') as string;
+							// check whether localhost url for workspace
+							const host = new URL.URL(url).host;
+							const workspace = (host.match('localhost')) ? 'default' : host.substring(0, host.indexOf("."));
 
 							// authenticate workspce
 							let auth: WorkspaceAuthentication = {} as WorkspaceAuthentication;
-							if ( builderUrl.startsWith('http://localhost') ) {
+							if ( workspace === 'default' ) { // bypass auth if local default workspace
 								auth =  {
-									workspaceName: name, jwtAccessToken: token
+									workspaceUrl: url, workspaceName: workspace, jwtAccessToken: token
 								};
 							} else {
 								try {
-									auth = await this.builderService.authenticateWorkspace(name, token);
+									auth = await this.builderService.authenticateWorkspace(url, token);
 								} catch(err: any) {
 									vscode.window.showErrorMessage("Invalid workspace name or access token: " + err.message);
 									return;
@@ -48,6 +50,7 @@ export class WorkspaceHandler {
 							}
 
 							// save connection
+							await this.context.secrets.store('servicebuilder.url', url);
 							await this.context.secrets.store('servicebuilder.workspace', auth.workspaceName);
 							await this.context.secrets.store('servicebuilder.token', auth.jwtAccessToken);
 
@@ -58,7 +61,7 @@ export class WorkspaceHandler {
 						}
 					});
 				} else {
-					vscode.window.setStatusBarMessage("no name entered.");
+					vscode.window.setStatusBarMessage("no url entered.");
 				}
 			});		
 	}
@@ -67,13 +70,14 @@ export class WorkspaceHandler {
 		// get current workspace setting
 		const workspace: Workspace = {
 			name: await this.context.secrets.get("servicebuilder.workspace"),
+			url: await this.context.secrets.get("servicebuilder.url"),
 			accessToken: await this.context.secrets.get("servicebuilder.token"),
 			versions: undefined,
 			connectionIssue: undefined
 		};		
 
 		// check workspace setting not undefined
-		if (!workspace.name) {
+		if (!workspace.url) {
 			this.showNotConnectedMessageForUnspecifiedWorkspace();
 			return;
 		}
@@ -97,6 +101,7 @@ export class WorkspaceHandler {
 				`Connected. \n
 				 Workspace Details:
 				 \t  \t Name: ${workspace.name}
+				 \t  \t Url: ${workspace.url}
 				 \t  \t Version: 
 				 \t     \t Engine:  ${workspace.versions?.engine}
 				 \t     \t Deployer:  ${workspace.versions?.deployer}
@@ -114,7 +119,7 @@ export class WorkspaceHandler {
 	showNotConnectedMessageForUnspecifiedWorkspace() {
 		vscode.window.showInformationMessage(
 			`Not connected. \n
-			To connect, you need the workspace name and access token. 
+			To connect, you need the workspace url and access token. 
 			They are available from Service Console.`,
 			 { modal: true },
 			 'Connect'
@@ -129,6 +134,7 @@ export class WorkspaceHandler {
 		vscode.window.showInformationMessage(
 		   `Not connected. Connection issue. \n
 			Please review the connection information:
+			\t   \t Workspace url: ${workspace.url}
 			\t   \t Workspace name: ${workspace.name}
 			\t   \t Issue: ${workspace.connectionIssue}`,
 		{ modal: true },

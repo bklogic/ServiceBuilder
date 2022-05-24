@@ -88,7 +88,7 @@ export class DeploymentService {
 
     async reloadTests(service: Item): Promise<void> {
         // get builder url
-        let builderUrl = await vscode.workspace.getConfiguration('servicebuilder').get('builderServiceEndpoint') as string;
+        const builderUrl = await this.context.secrets.get('servicebuilder.url');
         const token = await this.context.secrets.get('servicebuilder.token');
         if (!builderUrl) {
             throw new Error('Not connected to workspace');

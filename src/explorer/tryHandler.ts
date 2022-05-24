@@ -31,9 +31,10 @@ export class TryHandler {
                 workspace.durationInMinutes = (!workspace.durationInMinutes) ? 90 : workspace.durationInMinutes;
                 vscode.window.showInformationMessage(
                     `A quest workspace is assigned to you. You have 90 min to finish the try session. Please follow the instructions in the Getting Started Tutorial for creating query, SQL and CRUD services.\n
-					 Workspace Details:
-					 \t  \t Name: ${workspace.workspaceName}`,
-					{ modal: true },
+                    Workspace Details:
+                    \t  \t Name: ${workspace.workspaceName}
+                    \t  \t Url: ${workspace.workspaceUrl}`,
+                   { modal: true },
                     'Proceed'
                 ).then( btn => {
                     if ( btn === 'Proceed') {
@@ -64,6 +65,7 @@ export class TryHandler {
             vscode.window.setStatusBarMessage('session is created.');
 
             // save connection
+            await this.context.secrets.store('servicebuilder.url', trySession.workspaceUrl);
             await this.context.secrets.store('servicebuilder.token', trySession.accessToken);
             await this.context.secrets.store('servicebuilder.workspace', trySession.workspaceName);
             vscode.window.setStatusBarMessage('workspace is ready.');

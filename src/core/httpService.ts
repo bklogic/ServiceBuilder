@@ -15,8 +15,15 @@ export class HttpService {
     }
 
     async builderHttpConfig(timeout?: number): Promise<HttpConfig> {
-        let url = await vscode.workspace.getConfiguration('servicebuilder').get('builderServiceEndpoint') as string;
-        let token = await this.context.secrets.get('servicebuilder.token');
+        // get connection data
+        let [url, token] = await Promise.all([
+            this.context.secrets.get('servicebuilder.url'),
+            this.context.secrets.get('servicebuilder.token')    
+        ]);
+
+        if (!url) {
+            throw new Error("Not connected to workspace.");
+        }
 
         // create and return config
         const config: HttpConfig = {
