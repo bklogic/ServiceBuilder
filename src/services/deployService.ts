@@ -43,6 +43,12 @@ export class DeployService {
 		return service;
 	}
 
+	async cleanWorkspace(workspace: string): Promise<void> {
+		const url = '/deploy/cleanWorkspace/' + workspace;
+		const result = await this.http.builderPost(url, {});
+		return result;
+	}
+
 }
 
 export interface Application {

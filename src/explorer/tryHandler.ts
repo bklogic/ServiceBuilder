@@ -4,19 +4,19 @@ import {TryService} from "./tryService";
 import { TryWorkspace, TrySession, TryDataSource } from './tryModel';
 import { DataSource } from '../model/dataSource';
 import {ApplicationExplorer} from "./applicationExplorer";
-import { WorkspaceHandler } from './workspaceHandler';
+import { DeployService } from '../services/deployService';
 
 export class TryHandler {
 	private context: vscode.ExtensionContext;
     private tryService: TryService;
     private appExplorer: ApplicationExplorer;
-    private workspaceExplorer: WorkspaceHandler;
+    private deployService: DeployService;
 
-	constructor(context: vscode.ExtensionContext, tryService: TryService, appExplorer: ApplicationExplorer, workspaceExplorer: WorkspaceHandler) {
+	constructor(context: vscode.ExtensionContext, tryService: TryService, appExplorer: ApplicationExplorer, deployService: DeployService) {
         this.context = context;
         this.tryService = tryService;
         this.appExplorer = appExplorer;
-        this.workspaceExplorer = workspaceExplorer;
+        this.deployService = deployService;
 		vscode.commands.registerCommand('servicebuilderExplorer.try', () => this.try());
     }
 
@@ -69,6 +69,9 @@ export class TryHandler {
             await this.context.secrets.store('servicebuilder.token', trySession.accessToken);
             await this.context.secrets.store('servicebuilder.workspace', trySession.workspaceName);
             vscode.window.setStatusBarMessage('workspace is ready.');
+
+            // clean workspace
+            await this.deployService.cleanWorkspace(workspace.workspaceName);
 
             // create application
             await this.createAndDeployTryApplication(trySession.dataSource);
