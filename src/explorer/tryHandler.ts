@@ -68,10 +68,11 @@ export class TryHandler {
             await this.context.secrets.store('servicebuilder.url', trySession.workspaceUrl);
             await this.context.secrets.store('servicebuilder.token', trySession.accessToken);
             await this.context.secrets.store('servicebuilder.workspace', trySession.workspaceName);
-            vscode.window.setStatusBarMessage('workspace is ready.');
+            vscode.window.setStatusBarMessage('connection saved.');
 
             // clean workspace
             await this.deployService.cleanWorkspace(workspace.workspaceName);
+            vscode.window.setStatusBarMessage('workspace is ready.');
 
             // create application
             await this.createAndDeployTryApplication(trySession.dataSource);
@@ -85,7 +86,7 @@ export class TryHandler {
     }
 
     async createAndDeployTryApplication(dataSource: TryDataSource): Promise<void> {
-        // delete try application is exists
+        // delete try application if exists
 
         // create try application
         const app = await this.appExplorer.createApplication('myApp', 'mysql');
