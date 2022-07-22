@@ -115,6 +115,7 @@ export interface Table {
 	columns: Column[];
 	rootTable: boolean;
 	mainTable: boolean;
+	operationIndicator: string;
 }
 
 export interface Column {

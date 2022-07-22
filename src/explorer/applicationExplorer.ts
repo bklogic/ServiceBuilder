@@ -1004,6 +1004,7 @@ export class ApplicationExplorer {
 				"object": table.object,
 				"rootTable": table.rootTable,
 				"mainTable": table.mainTable,
+				"operationIndicator": table.operationIndicator,
 				"columns": `./${table.table}.columns.json`
 			});
 			// columns
