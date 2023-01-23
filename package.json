@@ -65,8 +65,24 @@
 				}
 			},
 			{
+				"command": "servicebuilderExplorer.request",
+				"title": "Request workspace",
+				"icon": {
+					"light": "resources/light/plug.svg",
+					"dark": "resources/dark/plug.svg"
+				}
+			},
+			{
 				"command": "servicebuilderExplorer.connect",
-				"title": "Connect",
+				"title": "Connect workspace",
+				"icon": {
+					"light": "resources/light/plug.svg",
+					"dark": "resources/dark/plug.svg"
+				}
+			},
+			{
+				"command": "servicebuilderExplorer.switch",
+				"title": "Switch workspace",
 				"icon": {
 					"light": "resources/light/plug.svg",
 					"dark": "resources/dark/plug.svg"
@@ -74,7 +90,7 @@
 			},
 			{
 				"command": "servicebuilderExplorer.workspace",
-				"title": "Connection...",
+				"title": "Show workspace",
 				"icon": {
 					"light": "resources/light/plug.svg",
 					"dark": "resources/dark/plug.svg"
@@ -367,11 +383,6 @@
 		"menus": {
 			"view/title": [
 				{
-					"command": "servicebuilderExplorer.workspace",
-					"when": "view == servicebuilderWorkspace",
-					"group": "navigation@7"
-				},
-				{
 					"command": "servicebuilderExplorer.createApplication",
 					"when": "view == servicebuilderExplorer",
 					"group": "navigation@5"
@@ -385,6 +396,21 @@
 					"command": "servicedeploymentExplorer.refreshAppList",
 					"when": "view == servicedeploymentExplorer",
 					"group": "navigation@7"
+				},
+				{
+					"command": "servicebuilderExplorer.request",
+					"when": "view == servicebuilderExplorer",
+					"group": "more@1"
+				},
+				{
+					"command": "servicebuilderExplorer.connect",
+					"when": "view == servicebuilderExplorer",
+					"group": "more@2"
+				},
+				{
+					"command": "servicebuilderExplorer.workspace",
+					"when": "view == servicebuilderExplorer",
+					"group": "more@5"
 				}
 			],
 			"view/item/context": [

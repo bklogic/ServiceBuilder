@@ -18,7 +18,48 @@ export class TryHandler {
         this.appExplorer = appExplorer;
         this.deployService = deployService;
 		vscode.commands.registerCommand('servicebuilderExplorer.try', () => this.try());
+		vscode.commands.registerCommand('servicebuilderExplorer.request', () => this.request());
     }
+
+	async request(): Promise<void> {
+        // collect email
+        const userEmail = await vscode.window.showInputBox({
+            placeHolder: 'Email',
+            prompt: "email to receive workspace info"
+        });	
+
+        // validate email
+        const emailRegex = '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$';
+        if (!userEmail) {
+            vscode.window.setStatusBarMessage("No email entered.");
+            return;
+        }
+        else if (!userEmail.match(emailRegex)) {
+            vscode.window.setStatusBarMessage("Invalid email string.");
+            return;
+        }
+
+        // collect mailing list selection
+        const items = ['Yes', 'No'];
+        const options = {ignoreFocusOut: true, placeHolder: "Mailinglist", value: "Yes", prompt: "join mailing list for product updates", canPickMany: false};
+        let addToMailinglist = await vscode.window.showQuickPick(items, options);
+        addToMailinglist = (addToMailinglist === 'Yes') ? 'Y' : 'N';
+
+        // request
+        try {
+            // send request
+            const result = await this.tryService.requestWorkspace(userEmail, addToMailinglist);
+            // inform user
+            let message = "Workspace is reserved and connection info is sent to your email box.";
+            if (result === null) {
+                message = "Workspace cannot be reserved at this time. Please try later.";
+            } 
+            vscode.window.showInformationMessage(message);
+        } catch (error: any) {
+            console.error('Error in requesting workspace.', error);
+            vscode.window.showErrorMessage(error.message);
+        }
+	}
 
 	async try(): Promise<void> {
 		// request workspace

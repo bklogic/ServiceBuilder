@@ -9,6 +9,11 @@ export class TryService {
 		this.http = http;
 	}
 
+	async requestWorkspace(userEmail: string, addToMailingList: string): Promise<void> {
+		const url = '/try/requestWorkspace';
+		return await this.http.tryPost(url, {userEmail, addToMailingList}, 15000);
+	}
+
 	async requestTryWorkspace(email: string | null): Promise<TryWorkspace | null> {
 		const url = '/try/requestWorkspace';
 		return await this.http.tryPost(url, {email}, 15000);
