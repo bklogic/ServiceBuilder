@@ -22,35 +22,48 @@ export class TryHandler {
     }
 
 	async request(): Promise<void> {
+        let result: string;
+
         // collect email
-        const userEmail = await vscode.window.showInputBox({
+        const email = await vscode.window.showInputBox({
             placeHolder: 'Email',
             prompt: "email to receive workspace info"
         });	
 
-        // validate email
+        // validate email string
         const emailRegex = '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$';
-        if (!userEmail) {
+        if (!email) {
             vscode.window.setStatusBarMessage("No email entered.");
             return;
         }
-        else if (!userEmail.match(emailRegex)) {
+        else if (!email.match(emailRegex)) {
             vscode.window.setStatusBarMessage("Invalid email string.");
             return;
         }
 
+        // collect request type
+        let items = ['Workspace only', 'Workspace and database for tutorial'];
+        let options = {ignoreFocusOut: true, placeHolder: "Workspace type", value: "Yes", canPickMany: false};
+        let reqType = await vscode.window.showQuickPick(items, options);
+        if (!reqType) {
+            vscode.window.setStatusBarMessage("No workspace type selected.");
+            return;
+        }
+        reqType = reqType.includes('database') ? 'starter' : 'basic';
+
         // collect mailing list selection
-        const items = ['Yes', 'No'];
-        const options = {ignoreFocusOut: true, placeHolder: "Mailinglist", value: "Yes", prompt: "join mailing list for product updates", canPickMany: false};
+        items = ['Yes', 'No'];
+        options = {ignoreFocusOut: true, placeHolder: "Join mailing list for product news", value: "Yes", canPickMany: false};
         let addToMailinglist = await vscode.window.showQuickPick(items, options);
         addToMailinglist = (addToMailinglist === 'Yes') ? 'Y' : 'N';
 
         // request
         try {
+            vscode.window.setStatusBarMessage("processing request ...");
             // send request
-            const result = await this.tryService.requestWorkspace(userEmail, addToMailinglist);
+            const result = await this.tryService.requestWorkspace(email, reqType, addToMailinglist);
             // inform user
-            let message = "Workspace is reserved and connection info is sent to your email box.";
+            let message = `Workspace is reserved and connection info is sent to ${email}.`;
             if (result === null) {
                 message = "Workspace cannot be reserved at this time. Please try later.";
             } 
@@ -58,6 +71,8 @@ export class TryHandler {
         } catch (error: any) {
             console.error('Error in requesting workspace.', error);
             vscode.window.showErrorMessage(error.message);
+        } finally {
+            vscode.window.setStatusBarMessage("");
         }
 	}
 

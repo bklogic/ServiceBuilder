@@ -24,7 +24,13 @@ export class WorkspaceHandler {
 	}
 
 	async connect(): Promise<void> {
-		const url = await this.context.secrets.get('servicebuilder.url');
+		let url;
+		try {
+			url = await this.context.secrets.get('servicebuilder.url');
+		} catch (error: any) {
+			console.error("Error to read context secrete.", error);
+			url = undefined;
+		} 
 		vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "Workspace URL", value: url, prompt: "from Service Console"})
 			.then( url => {
 				if (url) {

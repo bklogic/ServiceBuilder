@@ -26,8 +26,14 @@ export async function storePassword(context: vscode.ExtensionContext, dataSource
 }
 
 export async function retrievePassword(context: vscode.ExtensionContext, dataSourcePath: string): Promise<string> {
-    const secretName = await passwordSecretName(context, dataSourcePath);
-    const password = await context.secrets.get(secretName);
+    let secretName;
+    let password;
+    try {
+        secretName = await passwordSecretName(context, dataSourcePath);
+        password = await context.secrets.get(secretName)
+    } catch (error: any) {
+        password = undefined;
+    }
     return password || '';
 }
 
