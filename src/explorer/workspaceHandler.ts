@@ -4,15 +4,18 @@ import * as URL from 'url';
 import * as util from '../core/util';
 import { BuilderService } from '../services/builderService';
 import { Workspace, WorkspaceAuthentication } from '../model/workspace';
+import { TryService } from './tryService';
 
 
 export class WorkspaceHandler {
 	private context: vscode.ExtensionContext;
 	private builderService: BuilderService;
+	private tryService: TryService;
 
-	constructor(context: vscode.ExtensionContext, builderService: BuilderService) {
+	constructor(context: vscode.ExtensionContext, builderService: BuilderService, tryService: TryService) {
         this.context = context;
 		this.builderService = builderService;
+		this.tryService = tryService;
 		vscode.commands.registerCommand('servicebuilderExplorer.connect', () => this.connect());
 		vscode.commands.registerCommand('servicebuilderExplorer.workspace', () => this.workspace());
 		vscode.commands.registerCommand('servicebuilderExplorer.openGettingStarted', () => this.openGettingStarted());
@@ -24,6 +27,7 @@ export class WorkspaceHandler {
 	}
 
 	async connect(): Promise<void> {
+		// get url from store
 		let url;
 		try {
 			url = await this.context.secrets.get('servicebuilder.url');
@@ -31,45 +35,48 @@ export class WorkspaceHandler {
 			console.error("Error to read context secrete.", error);
 			url = undefined;
 		} 
-		vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "Workspace URL", value: url, prompt: "from Service Console"})
-			.then( url => {
-				if (url) {
-					vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "Access Token", prompt: "from Service Console"}).then( async (token) => {
-						if (token) {
-							// check whether localhost url for workspace
-							const host = new URL.URL(url).host;
-							const workspace = (host.match('localhost')) ? 'default' : host.substring(0, host.indexOf("."));
+		// collect url from user
+		url = await vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "Workspace URL", value: url});
+		if (!url) {
+            vscode.window.setStatusBarMessage("No url entered.");
+            return;
+		}
 
-							// authenticate workspce
-							let auth: WorkspaceAuthentication = {} as WorkspaceAuthentication;
-							if ( workspace === 'default' ) { // bypass auth if local default workspace
-								auth =  {
-									workspaceUrl: url, workspaceName: workspace, jwtAccessToken: token
-								};
-							} else {
-								try {
-									auth = await this.builderService.authenticateWorkspace(url, token);
-								} catch(err: any) {
-									vscode.window.showErrorMessage("Invalid workspace name or access token: " + err.message);
-									return;
-								}
-							}
+		// collect access key from user
+		const accessKey = await vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "Access Key"});
+		if (!accessKey) {
+            vscode.window.setStatusBarMessage("No access key entered.");
+            return;
+		}
 
-							// save connection
-							await this.context.secrets.store('servicebuilder.url', url);
-							await this.context.secrets.store('servicebuilder.workspace', auth.workspaceName);
-							await this.context.secrets.store('servicebuilder.token', auth.jwtAccessToken);
+		// check whether localhost url
+		const host = new URL.URL(url).host;
+		const workspace = (host.match('localhost')) ? 'default' : host.substring(0, host.indexOf("."));
 
-							// show workspace
-							vscode.window.showInformationMessage("Success. Connected to workspace: " + auth.workspaceName + ".");
-						} else {
-							vscode.window.setStatusBarMessage("no token entered.");
-						}
-					});
-				} else {
-					vscode.window.setStatusBarMessage("no url entered.");
-				}
-			});		
+		// request access token
+		let accessToken = 'default+token';
+		if ( workspace !== 'default' )  {
+			try {
+				accessToken = await this.tryService.requestAccessToken(url, accessKey);
+			} catch(err: any) {
+				vscode.window.showErrorMessage("Failed to get access token: " + err.message);
+				return;
+			}
+		}
+
+		// save connection
+		await this.context.secrets.store('servicebuilder.workspace', workspace);
+		await this.context.secrets.store('servicebuilder.url', url);
+		await this.context.secrets.store('servicebuilder.accessKey', accessKey);
+		await this.context.secrets.store('servicebuilder.accessToken', accessToken);
+
+		// test connection
+		try {
+			const versions = await this.builderService.getBuilderVersions();
+			vscode.window.showInformationMessage("Success. Connected to workspace: " + workspace + ".");
+		} catch (error: any) {
+			vscode.window.showErrorMessage("Failed to connect to workspace: " + workspace + " for: " + error.message);
+		}
 	}
 
 	async workspace(): Promise<void> {

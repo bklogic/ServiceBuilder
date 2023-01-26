@@ -39,7 +39,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// explorer
 	const appExplorer = new ApplicationExplorer(context, appService, builderService);
 	new DeploymentExplorer(context, deployService);
-	const wkspExplorer = new WorkspaceHandler(context, builderService);
+	const wkspExplorer = new WorkspaceHandler(context, builderService, tryService);
 	new TryHandler(context, tryService, appExplorer, deployService);
 
 	// editors

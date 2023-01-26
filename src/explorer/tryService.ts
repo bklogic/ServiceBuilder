@@ -1,4 +1,5 @@
 import {HttpService} from '../core/httpService';
+import { WorkspaceAuthentication } from '../model/workspace';
 import {TryWorkspace, TrySession} from './tryModel';
 
 export class TryService {
@@ -14,7 +15,7 @@ export class TryService {
 		return await this.http.tryPost(url, {userEmail, reqType, addToMailingList}, 15000);
 	}
 
-	async requestAccessToken(workspaceUrl: string, accessKey: string): Promise<void> {
+	async requestAccessToken(workspaceUrl: string, accessKey: string): Promise<string> {
 		const url = '/try/requestAccessToken';
 		return await this.http.tryPost(url, {workspaceUrl, accessKey});
 	}
