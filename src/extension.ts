@@ -13,6 +13,7 @@ import { TryService } from './explorer/tryService';
 import { WorkspaceHandler } from './explorer/workspaceHandler';
 import { TryHandler } from './explorer/tryHandler';
 import { ApplicationService } from './explorer/applicationService';
+import { DataSourceExplorer } from './explorer/dataSourceExplorer';
 
 // this method is called when your extension is activated
 export function activate(context: vscode.ExtensionContext) {
@@ -37,10 +38,11 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable);
 
 	// explorer
-	const appExplorer = new ApplicationExplorer(context, appService, builderService);
+	new ApplicationExplorer(context, appService, builderService);
 	new DeploymentExplorer(context, deployService);
-	const wkspExplorer = new WorkspaceHandler(context, builderService, tryService);
-	new TryHandler(context, tryService, appExplorer, deployService);
+	new DataSourceExplorer(context, builderService);
+	new WorkspaceHandler(context, builderService, tryService);
+	new TryHandler(tryService);
 
 	// editors
 	new DataSourceEditor(context, builderService);

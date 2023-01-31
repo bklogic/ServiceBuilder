@@ -36,10 +36,10 @@ export class ApplicationService {
 		// source folder
 		await vscode.workspace.fs.createDirectory(vscode.Uri.joinPath(app.uri, 'src'));
 		// application file
-		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(app.uri, 'src', 'application.json'), cs.applicationFile(name, dbType, versions));
+		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(app.uri, 'src', 'application.json'), cs.applicationFile(name, dbType));
 
-		// datasource file
-		await vscode.workspace.fs.writeFile(vscode.Uri.joinPath(app.uri, 'src', 'datasource.json'), cs.dataSourceFile(dbType));
+		// version file
+		await util.writeJsonFile(vscode.Uri.joinPath(app.uri, 'src', '.versions.json'), versions);
 
 		// README file
 		const templatePath = path.join(__filename, '..', '..', '..', 'resources', 'README.md');

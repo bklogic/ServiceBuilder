@@ -1,36 +1,17 @@
 
 import * as util from '../core/util';
 
-export function applicationFile(applicationName: string, dbType: string, versions: any): Uint8Array {		
+export function applicationFile(applicationName: string, dbType: string): Uint8Array {		
 	const content = {
 		"name": applicationName,
-		"description": "application. Don't modify this file!",
+		"description": "application. Specify data source and optionally schema name.",
 		"dbType": dbType,
-		"versions": versions
+		"dataSource": "",
+		"schema": ""
 	};
 	return util.toUint8Array(content);
 }
 
-export function dataSourceFile(dbType: string): Uint8Array {		
-	let port;
-	switch(dbType) {
-		case 'mysql':
-			port = 3306;
-			break;
-		default:
-			port = 0;
-	}
-	const content = {
-		"dbType": dbType,
-		"host": "",
-		"port": port,
-		"database": "",
-		"username": "",
-		"password": "",
-		"comments": "Complete host, port, database, username and password. Test data source using the TEST editor button."
-	};
-	return util.toUint8Array(content);
-}
 
 export function moduleFile(moduleName: string): Uint8Array {		
 	const content = {

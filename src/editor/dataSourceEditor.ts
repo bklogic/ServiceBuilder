@@ -37,7 +37,6 @@ export class DataSourceEditor {
 
             // make request
             const testRequest: TestDataSourceRequest = {
-                applicationUri: await util.applicationUriForDataSource(path),
                 dbType: dataSource.dbType,
                 host: dataSource.host,
                 port: dataSource.port,

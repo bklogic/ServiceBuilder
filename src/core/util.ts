@@ -1,5 +1,6 @@
 import { TextDecoder } from 'util';
 import * as vscode from 'vscode';
+import * as constants from './constants';
 
 var ZIP = require("adm-zip");
 
@@ -20,37 +21,44 @@ export function createGetWorkspaceUtil(context: vscode.ExtensionContext): void {
  */
 export const passwordMask = '*********';
 
-export async function storePassword(context: vscode.ExtensionContext, dataSourcePath: string, password: string): Promise<void> {
-    const secretName = await passwordSecretName(context, dataSourcePath);
+export async function storePassword(context: vscode.ExtensionContext, dataSourceName: string, password: string): Promise<void> {
+    const secretName = await passwordSecretName(context, dataSourceName);
     context.secrets.store(secretName, password);
 }
 
-export async function retrievePassword(context: vscode.ExtensionContext, dataSourcePath: string): Promise<string> {
+export async function retrievePassword(context: vscode.ExtensionContext, dataSourceName: string): Promise<string> {
     let secretName;
     let password;
     try {
-        secretName = await passwordSecretName(context, dataSourcePath);
-        password = await context.secrets.get(secretName)
+        secretName = await passwordSecretName(context, dataSourceName);
+        password = await context.secrets.get(secretName);
     } catch (error: any) {
         password = undefined;
     }
     return password || '';
 }
 
-export async function passwordSecretName(context: vscode.ExtensionContext, dataSourcePath: string): Promise<string> {
-    const appUri = await applicationUriForDataSource(dataSourcePath);
-    return `servicebuilder.${appUri.replace('/', '.')}`;
+export async function passwordSecretName(context: vscode.ExtensionContext, dataSourceName: string): Promise<string> {
+    const dsUri = await dataSourceUriForName(dataSourceName);
+    return `servicebuilder.${dsUri.replace('/', '.')}`;
 }
 
-export function getWorkFolder(): vscode.WorkspaceFolder | undefined {
-		// if no workspace folders
-		if (!vscode.workspace.workspaceFolders) {
-			return;
-		}
-		// otherwise, set element to workspace folder if element is passed in
-		return vscode.workspace.workspaceFolders.filter(folder => folder.uri.scheme === 'file')[0];
-}
+export function getWorkFolder(): vscode.WorkspaceFolder {
+        // let workspaceFolder = vscode.workspace.workspaceFolders.filter(folder => folder.uri.scheme === 'file')[0];;
+		// if (!workspaceFolder) {
+        //     workspaceFolder = vscode.workspace.workspaceFolders.filter(folder => folder.uri.scheme === 'file')[0];
+		// }
+        if (vscode.workspace.workspaceFolders) {
+            return vscode.workspace.workspaceFolders.filter(folder => folder.uri.scheme === 'file')[0];
+        } else {
+            throw Error('No workspace folder!');            
+        }
+    }
 
+export function dataSourceUriForName(dataSourceName: string): Promise<string> {
+    return dataSourceUri(fromDataSourceName(dataSourceName));
+}
+    
 export function applicationUriForDataSource(dataSourcePath: string): Promise<string> {
     return applicationUri(fromDataSource(dataSourcePath));
 }
@@ -86,6 +94,16 @@ export function servicePathForTest(testPath: string) {
     splits.pop();
     return splits.join('/');
 }
+
+/*
+* Note: data source path format: ~/workspace/application/src/datasource.json
+*/
+export function fromDataSourceName(name: string): Resource {
+    return {
+        dataSource: name
+    } as Resource;
+}
+
 
 /*
 * Note: data source path format: ~/workspace/application/src/datasource.json
@@ -157,6 +175,11 @@ export function fromTest(path: string): Resource {
  * Functions below produce URIs for builder and devtime.
  * Builder workspace is different from local workfolder.
  */
+export async function dataSourceUri(resource: Resource): Promise<string> {
+    const builderWorkspace = await getWorkspace();
+    return `${builderWorkspace}/${resource.dataSource}`;
+}
+
 export async function applicationUri(resource: Resource): Promise<string> {
     const builderWorkspace = await getWorkspace();
     return `${builderWorkspace}/${resource.application}`;
@@ -167,17 +190,33 @@ export async function moduleUri(resource: Resource): Promise<string> {
     return `${builderWorkspace}/${resource.application}/${resource.module}`;
 }
 
-export async function serviceUri(resource: Resource) {
+export async function serviceUri(resource: Resource): Promise<string> {
     const builderWorkspace = await getWorkspace();
     return `${builderWorkspace}/${resource.application}/${resource.module}/${resource.service}`;
 }
 
 export interface Resource {
     workspace: string;
+    dataSource: string;
     application: string;
     module: string;
     service: string;
 }
+
+
+/**
+ * Data Source Files
+ */
+export function dataSourceFolderUri(): vscode.Uri {
+    const workfolder = getWorkFolder();
+    return vscode.Uri.joinPath(workfolder.uri, constants.dataSourceFolderName);
+}
+
+
+export function dataSourceFileUri(dataSourceName: string) {
+    return vscode.Uri.joinPath(dataSourceFolderUri(), `${dataSourceName}.json`);
+}
+
 
 /**
  * File
@@ -284,25 +323,10 @@ export function getArchive(fsPath: string): Buffer {
     return buffer;	
 }
 
-export async function getApplicationArchive(uri: vscode.Uri, context: vscode.ExtensionContext): Promise<Buffer> {
-    // restore password
-    let dataSource: any;
-    const dataSourceUri = vscode.Uri.joinPath(uri, 'src', 'datasource.json');
-    const password = await retrievePassword(context, dataSourceUri.path);
-    if (!password) {
-        dataSource = await readJsonFile(dataSourceUri);
-        dataSource.password = password;
-    }
-
+//TODO: skip .git
+export async function getApplicationArchive(uri: vscode.Uri): Promise<Buffer> {
     // get archive
     const buffer = getArchive(uri.fsPath);
-
-    // remask password
-    if (!password) {
-        dataSource.password = passwordMask;
-        writeJsonFile(dataSourceUri, dataSource);
-    }
-
     // return
     return buffer;	
 }

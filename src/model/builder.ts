@@ -10,7 +10,7 @@ export interface DataSource {
 }
 
 export interface DeployDataSourceRequest {
-	applicationUri: string;
+	uri: string;
 	dbType: string;
 	host: string;
 	port: number;
@@ -20,7 +20,6 @@ export interface DeployDataSourceRequest {
 }
 
 export interface TestDataSourceRequest {
-	applicationUri: string;
 	dbType: string;
 	host: string;
 	port: number;

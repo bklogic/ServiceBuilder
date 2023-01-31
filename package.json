@@ -81,14 +81,6 @@
 				}
 			},
 			{
-				"command": "servicebuilderExplorer.switch",
-				"title": "Switch workspace",
-				"icon": {
-					"light": "resources/light/plug.svg",
-					"dark": "resources/dark/plug.svg"
-				}
-			},
-			{
 				"command": "servicebuilderExplorer.workspace",
 				"title": "Show workspace",
 				"icon": {
@@ -97,20 +89,12 @@
 				}
 			},
 			{
-				"command": "servicebuilderExplorer.try",
-				"title": "Try Without Signup"
-			},
-			{
 				"command": "servicebuilderExplorer.refresh",
 				"title": "Refresh Explorer",
 				"icon": {
 					"light": "resources/light/refresh.svg",
 					"dark": "resources/dark/refresh.svg"
 				}
-			},
-			{
-				"command": "servicebuilderExplorer.openGettingStarted",
-				"title": "GettingStarted"
 			},
 			{
 				"command": "servicebuilderExplorer.createApplication",
@@ -124,8 +108,8 @@
 				"command": "servicebuilderExplorer.deployApplication",
 				"title": "Deploy Application",
 				"icon": {
-					"light": "resources/light/sync.svg",
-					"dark": "resources/dark/sync.svg"
+					"light": "resources/light/deploy.svg",
+					"dark": "resources/dark/deploy.svg"
 				}
 			},
 			{
@@ -347,6 +331,46 @@
 					"light": "resources/light/book.svg",
 					"dark": "resources/dark/book.svg"
 				}
+			},
+			{
+				"command": "servicebuilderDataSourceExplorer.refresh",
+				"title": "Refresh explorer",
+				"icon": {
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
+			},
+			{
+				"command": "servicebuilderDataSourceExplorer.addDataSource",
+				"title": "Add data source",
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				}
+			},
+			{
+				"command": "servicebuilderDataSourceExplorer.deleteDataSource",
+				"title": "Delete"
+			},
+			{
+				"command": "servicebuilderDataSourceExplorer.renameDataSource",
+				"title": "Rename"
+			},
+			{
+				"command": "servicebuilderDataSourceExplorer.testDataSource",
+				"title": "Test data source",
+				"icon": {
+					"light": "resources/light/play.svg",
+					"dark": "resources/dark/play.svg"
+				}
+			},
+			{
+				"command": "servicebuilderDataSourceExplorer.deployDataSource",
+				"title": "Deploy data source",
+				"icon": {
+					"light": "resources/light/deploy.svg",
+					"dark": "resources/dark/deploy.svg"
+				}
 			}
 		],
 		"viewsContainers": {
@@ -369,16 +393,12 @@
 					"name": "Deployments"
 				},
 				{
-					"id": "servicebuilderWorkspace",
-					"name": "Workspace"
+					"id": "servicebuilderDataSourceExplorer",
+					"name": "Data Sources"
 				}
 			]
 		},
 		"viewsWelcome": [
-			{
-				"view": "servicebuilderWorkspace",
-				"contents": "[Try without Signup](command:servicebuilderExplorer.try)\n[Getting Started](command:servicebuilderExplorer.openGettingStarted)"
-			}
 		],
 		"menus": {
 			"view/title": [
@@ -411,6 +431,16 @@
 					"command": "servicebuilderExplorer.workspace",
 					"when": "view == servicebuilderExplorer",
 					"group": "more@5"
+				},
+				{
+					"command": "servicebuilderDataSourceExplorer.refresh",
+					"when": "view == servicebuilderDataSourceExplorer",
+					"group": "navigation@5"
+				},
+				{
+					"command": "servicebuilderDataSourceExplorer.addDataSource",
+					"when": "view == servicebuilderDataSourceExplorer",
+					"group": "navigation@1"
 				}
 			],
 			"view/item/context": [
@@ -418,6 +448,11 @@
 					"command": "servicebuilderExplorer.createModule",
 					"when": "view == servicebuilderExplorer && viewItem == application",
 					"group": "inline@2"
+				},
+				{
+					"command": "servicebuilderExplorer.deployApplication",
+					"when": "view == servicebuilderExplorer && viewItem == application",
+					"group": "inline@4"
 				},
 				{
 					"command": "servicebuilderExplorer.createModule",
@@ -703,6 +738,31 @@
 					"command": "servicedeploymentExplorer.loadTest",
 					"when": "view == servicedeploymentExplorer && viewItem == crudservice",
 					"group": "ctx@1"
+				},
+				{
+					"command": "servicebuilderDataSourceExplorer.testDataSource",
+					"when": "view == servicebuilderDataSourceExplorer && viewItem == datasource",
+					"group": "inline@1"
+				},
+				{
+					"command": "servicebuilderDataSourceExplorer.deployDataSource",
+					"when": "view == servicebuilderDataSourceExplorer && viewItem == datasource",
+					"group": "inline@2"
+				},
+				{
+					"command": "servicebuilderDataSourceExplorer.deployDataSource",
+					"when": "view == servicebuilderDataSourceExplorer && viewItem == datasource",
+					"group": "1-ctx@1"
+				},
+				{
+					"command": "servicebuilderDataSourceExplorer.renameDataSource",
+					"when": "view == servicebuilderDataSourceExplorer && viewItem == datasource",
+					"group": "2-ctx@1"
+				},
+				{
+					"command": "servicebuilderDataSourceExplorer.deleteDataSource",
+					"when": "view == servicebuilderDataSourceExplorer && viewItem == datasource",
+					"group": "2-ctx@2"
 				}
 			],
 			"editor/title": [
@@ -710,6 +770,11 @@
 					"command": "servicebuilderEditor.testDataSource",
 					"when": "resourceFilename == datasource.json",
 					"group": "navigation@1"
+				},
+				{
+					"command": "servicebuilderEditor.testDataSource",
+					"when": "resourcePath =~ /^*\\/trydb.json$/",
+					"group": "navigation@2"
 				},
 				{
 					"command": "servicebuilderEditor.runTest",

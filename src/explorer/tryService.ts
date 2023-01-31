@@ -20,11 +20,6 @@ export class TryService {
 		return await this.http.tryPost(url, {workspaceUrl, accessKey});
 	}
 
-	async requestTryWorkspace(email: string | null): Promise<TryWorkspace | null> {
-		const url = '/try/requestWorkspace';
-		return await this.http.tryPost(url, {email}, 15000);
-	}
-
 	async startTrySession(workspaceId: number, accessCode: string): Promise<TrySession> {
 		const url = '/try/startSession';
 		const data = {workspaceId, accessCode};

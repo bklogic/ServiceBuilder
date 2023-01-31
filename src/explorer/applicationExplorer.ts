@@ -120,45 +120,6 @@ export class ApplicationExplorer {
 			});
 	}
 
-	// async createApplication(appName: string, dbType: string): Promise<Entry|void> {
-	// 	try {
-	// 		vscode.window.withProgress({
-	// 			location: vscode.ProgressLocation.Window,
-	// 			cancellable: false,
-	// 			title: 'Creating application'
-	// 		}, async (progress) => {
-	// 			// clear status message
-	// 			vscode.window.setStatusBarMessage('');
-
-	// 			// create application
-	// 			const versions = await this.builderService.getBuilderVersions();
-	// 			const app = await this.appService.createApplication(this.dataProvider.workfolder, appName, dbType, versions);
-
-	// 			// reveal
-	// 			this.refresh();
-	// 			this.treeView.reveal(app, {expand: 2, focus: true, select: true});
-
-	// 			// deploy application
-	// 			await this.deployApplication(app); 
-
-	// 			// inform user
-	// 			vscode.window.setStatusBarMessage('application is created.');
-
-	// 			return app;
-	// 		});		
-	// } catch (error: any) {
-	// 		let message: string;
-	// 		switch (error.code) {
-	// 			case 'FileExists':
-	// 				message = 'Application name exists.';
-	// 				break;
-	// 			default:
-	// 				message = error.message;
-	// 		}
-	// 		vscode.window.showErrorMessage(message);
-	// 	}
-	// }
-
 	async createApplication(appName: string, dbType: string): Promise<Entry|void> {
 		try {
 			// clear status message
@@ -171,9 +132,6 @@ export class ApplicationExplorer {
 			// reveal
 			this.refresh();
 			this.treeView.reveal(app, {expand: 2, focus: true, select: true});
-
-			// deploy application
-			await this.deployApplication(app); 
 
 			// inform user
 			vscode.window.setStatusBarMessage('application is created.');
@@ -204,12 +162,9 @@ export class ApplicationExplorer {
 
 				// zip application
 				const appUri = await util.applicationUriForApplication(app.uri.path);
-				const archive = await util.getApplicationArchive(app.uri, this.context);
+				const archive = await util.getApplicationArchive(app.uri);
 				// call service to deploy application only
 				await this.builderService.deployApplication(appUri, archive);
-
-				// deploy datasource
-				await this.deployDataSource(app);
 
 				// inform user
 				vscode.window.setStatusBarMessage('application is deployed.');
@@ -242,39 +197,7 @@ export class ApplicationExplorer {
 		}
 	}
 
-
-	// async createModule(app: Entry, modName: string): Promise<void> {
-	// 	vscode.window.withProgress({
-	// 		location: vscode.ProgressLocation.Window,
-	// 		cancellable: false,
-	// 		title: 'Creating module'
-	// 	}, async (progress) => {
-	// 		try {
-	// 			// clear status message
-	// 			vscode.window.setStatusBarMessage('');
-	// 			// create module
-	// 			const mod = await this.appService.createModule(app, modName);
-	// 			// reveal
-	// 			this.dataProvider.fire(app);
-	// 			this.treeView.reveal(mod, {expand: 2, focus: true, select: true});	
-	// 			// deploy module
-	// 			this.deployModule(mod);
-	// 			// inform user
-	// 			vscode.window.setStatusBarMessage('Module is created.');
-	// 		} catch (error: any) {
-	// 			let message: string;
-	// 			switch (error.code) {
-	// 				case 'FileExists':
-	// 					message = 'Module name exists.';
-	// 					break;
-	// 				default:
-	// 					message = error.message;
-	// 			}
-	// 			vscode.window.showErrorMessage(message);
-	// 		}
-	// 	});		
-	// }
-
+	
 	async createModule(app: Entry, modName: string): Promise<void> {
 		try {
 			// clear status message
@@ -524,21 +447,6 @@ export class ApplicationExplorer {
 				await this.deployService(newEntry);
 				break;
 		}
-	}
-
-	private async deployDataSource(app: Entry) {
-        const dataSourceUri = vscode.Uri.joinPath(app.uri, 'src', 'datasource.json');
-		const dataSource = await util.readJsonFile(dataSourceUri) as DataSource;
-		const deployReq: DeployDataSourceRequest =  {
-			applicationUri: await util.applicationUriForApplication(app.uri.path),
-			dbType: dataSource.dbType,
-			host: dataSource.host,
-			port: dataSource.port,
-			database: dataSource.database,
-			username: dataSource.username,
-			password: await util.retrievePassword(this.context, dataSourceUri.path)
-		 } ;
-		this.builderService.deployDataSource(deployReq);
 	}
 
 	private async resavePassword(app: Entry, newApp: Entry): Promise<void> {

@@ -113,8 +113,10 @@ export class HttpService {
                 console.info('Data: ');
                 console.info(data);
                 console.error(error);
-                error.message = error.message + ' | ' + error.message || error.response.data.message;
+                // error.message = error.message || error.response.data.message;
+                error.message = error.response.data.message;
                 throw error;
+                // throw new Error(error.message + ' | ' + error.message || error.response.data.message);
           }    
     }
 
