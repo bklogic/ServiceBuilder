@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
 import * as util from './core/util';
 import { BuilderService } from './services/builderService';
 import { ApplicationExplorer } from './explorer/applicationExplorer';
-import { TestEditor } from './editor/testEditor';
+import { TestEditor } from './editors/testEditor';
 import { DeployService } from './services/deployService';
 import { DeploymentExplorer } from './explorer/deploymentExplorer';
 import { HttpService } from './core/httpService';

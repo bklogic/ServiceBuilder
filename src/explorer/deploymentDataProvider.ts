@@ -1,18 +1,17 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { TreeDataProvider } from "vscode";
-import {DeploymentService} from "./DeploymentService";
+import {DeploymentDataService} from "./DeploymentDataService";
 import {Item, ItemType} from './deploymentModel';
-import { crudServiceFile } from './contentService';
 
 
 export class DeploymentDataProvider implements TreeDataProvider<Item> {
 	private _onDidChangeTreeData: vscode.EventEmitter<Item | undefined | void> = new vscode.EventEmitter<Item | undefined | void>();
 	readonly onDidChangeTreeData: vscode.Event<Item | undefined | void> = this._onDidChangeTreeData.event;
-	private deploymentService: DeploymentService;
+	private deploymentDataService: DeploymentDataService;
 
-	constructor(deploymentService: DeploymentService) {
-		this.deploymentService = deploymentService;
+	constructor() {
+		this.deploymentDataService = new DeploymentDataService();
 	}
 
 	getTreeItem(element: Item): vscode.TreeItem | Thenable<vscode.TreeItem> {
@@ -69,7 +68,7 @@ export class DeploymentDataProvider implements TreeDataProvider<Item> {
 	}
 
 	getChildren(element?: Item): Promise<Item[]> {
-		return this.deploymentService.getChildren(element);
+		return this.deploymentDataService.getChildren(element);
 	}
 
 	getParent?(element: Item): vscode.ProviderResult<Item> {
