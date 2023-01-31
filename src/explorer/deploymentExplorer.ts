@@ -3,7 +3,7 @@ import * as util from '../core/util';
 import { DeployService } from '../services/deployService';
 import { DeploymentDataProvider } from './deploymentDataProvider';
 import { Item } from './deploymentModel';
-import { DeploymentService } from './deploymentService';
+import { DeploymentService } from './deploymentExplorerService';
 
 export class DeploymentExplorer {
 
@@ -16,7 +16,7 @@ export class DeploymentExplorer {
     constructor(context: vscode.ExtensionContext, deployService: DeployService) {
         this.context = context;
         this.deploymentService = new DeploymentService(context, deployService);
-        this.dataProvider = new DeploymentDataProvider(this.deploymentService);
+        this.dataProvider = new DeploymentDataProvider();
         this.treeView = vscode.window.createTreeView('servicedeploymentExplorer', { treeDataProvider: this.dataProvider, showCollapseAll: true });
         context.subscriptions.push(this.treeView);
 		vscode.commands.registerCommand('servicedeploymentExplorer.openResource', (resource) => this.openResource(resource));
