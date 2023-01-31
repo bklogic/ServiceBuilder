@@ -26,8 +26,8 @@ export class DeployService {
 		return tests;
 	}
 
-	async getDataSource(appUri: string): Promise<DataSource> {
-		const url = '/deploy/getDataSource/' + appUri;
+	async getDataSourceForApplication(appUri: string): Promise<DataSource> {
+		const url = '/deploy/getDataSourceForApplication/' + appUri;
 		const dataSource = await this.http.builderGet(url);
 		return dataSource;
 	}

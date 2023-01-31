@@ -4,7 +4,6 @@ import * as vscode from 'vscode';
 import * as util from './core/util';
 import { BuilderService } from './services/builderService';
 import { ApplicationExplorer } from './explorer/applicationExplorer';
-import { DataSourceEditor } from './editor/dataSourceEditor';
 import { TestEditor } from './editor/testEditor';
 import { DeployService } from './services/deployService';
 import { DeploymentExplorer } from './explorer/deploymentExplorer';
@@ -45,7 +44,6 @@ export function activate(context: vscode.ExtensionContext) {
 	new TryHandler(tryService);
 
 	// editors
-	new DataSourceEditor(context, builderService);
 	new TestEditor(context, builderService);
 
 }

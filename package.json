@@ -241,14 +241,6 @@
 				"title": "Generate CRUD from Table"
 			},
 			{
-				"command": "servicebuilderEditor.testDataSource",
-				"title": "Test and Deploy Data Source Configuration",
-				"icon": {
-					"light": "resources/light/play.svg",
-					"dark": "resources/dark/play.svg"
-				}
-			},
-			{
 				"command": "servicebuilderExplorer.addTest",
 				"title": "Add test",
 				"icon": {
@@ -767,16 +759,6 @@
 			],
 			"editor/title": [
 				{
-					"command": "servicebuilderEditor.testDataSource",
-					"when": "resourceFilename == datasource.json",
-					"group": "navigation@1"
-				},
-				{
-					"command": "servicebuilderEditor.testDataSource",
-					"when": "resourcePath =~ /^*\\/trydb.json$/",
-					"group": "navigation@2"
-				},
-				{
 					"command": "servicebuilderEditor.runTest",
 					"when": "resourceFilename =~ /^test\\w+\\.json$/",
 					"group": "navigation@1"
@@ -788,11 +770,6 @@
 				}
 			],
 			"editor/context": [
-				{
-					"command": "servicebuilderEditor.testDataSource",
-					"when": "resourceFilename == datasource.json",
-					"group": "a_datasource@1"
-				},
 				{
 					"command": "servicebuilderEditor.runTest",
 					"when": "resourceFilename =~ /^test\\w+\\.json$/",

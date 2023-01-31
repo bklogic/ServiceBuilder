@@ -282,7 +282,7 @@ export class DeploymentService {
 
     async loadDataSource(app: Item): Promise<vscode.Uri> {
         // get data source
-        const datasource = await this.deployService.getDataSource(app.uri);
+        const datasource = await this.deployService.getDataSourceForApplication(app.uri);
         // write data source
         const docUri = vscode.Uri.joinPath(app.fileUri, '.datasource');
         await util.writeJsonFile(docUri, datasource);
