@@ -12,6 +12,7 @@ import {
 	BindSqlsResult,
 	DeployDataSourceRequest,
 	DeployResult,
+	DeployServiceResult,
 	GenerateCrudRequest,
 	GenerateCrudResult,
 	GenerateInputOutputRequest,
@@ -141,7 +142,7 @@ export class BuilderService {
 		return result;
 	}
 
-	async deployService(appUri: string, modName: string, serviceName: string, archive: Buffer): Promise<DeployResult> {
+	async deployService(appUri: string, modName: string, serviceName: string, archive: Buffer): Promise<DeployServiceResult> {
 		const url = '/deploy/deployService';
 		const result = await this.http.postArchive(url, {appUri, modName, serviceName}, archive, 10000);
 		return result;

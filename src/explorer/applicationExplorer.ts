@@ -311,9 +311,9 @@ export class ApplicationExplorer {
 				const modName = service.parent?.name || 'modName';  // service.parent never be null
 				const archive = await util.getArchive(service.uri.fsPath);
 				// call service
-				await this.builderService.deployService(appUri, modName, service.name, archive);
+				const result = await this.builderService.deployService(appUri, modName, service.name, archive);
 				// inform user
-				vscode.window.setStatusBarMessage('service is deployed.');
+				vscode.window.setStatusBarMessage( result.valid ? 'service is deployed.' : result.reason);
 			});		
 		} catch (error: any) {
 			console.error('Error in deploying service', error);

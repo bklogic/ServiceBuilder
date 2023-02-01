@@ -528,11 +528,6 @@
 					"group": "inline@3"
 				},
 				{
-					"command": "servicebuilderExplorer.deployModule",
-					"when": "view == servicebuilderExplorer && viewItem == module",
-					"group": "inline@4"
-				},
-				{
 					"command": "servicebuilderExplorer.createQueryService",
 					"when": "view == servicebuilderExplorer && viewItem == module",
 					"group": "1_new@1"

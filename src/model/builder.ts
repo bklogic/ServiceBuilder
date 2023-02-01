@@ -207,3 +207,8 @@ export interface DeployRequest {
 export interface DeployResult {
 	succeed: boolean
 }
+
+export interface DeployServiceResult {
+	valid: boolean,
+	reason: string
+}
