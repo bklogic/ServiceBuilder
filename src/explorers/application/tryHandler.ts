@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
-import * as util from '../core/util';
+import * as util from '../../core/util';
 import {TryService} from "./tryService";
 import { TryWorkspace, TrySession, TryDataSource } from './tryModel';
-import { DataSource } from '../model/dataSource';
+import { DataSource } from '../../model/dataSource';
 import {ApplicationExplorer} from "./applicationExplorer";
-import { DeployService } from '../services/deployService';
+import { DeployService } from '../../services/deployService';
 
 export class TryHandler {
     private tryService: TryService;

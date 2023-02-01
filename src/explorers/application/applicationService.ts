@@ -1,7 +1,7 @@
 import { TextDecoder } from 'util';
 import * as vscode from 'vscode';
 import * as path from 'path';
-import * as util from '../core/util';
+import * as util from '../../core/util';
 import * as cs from './contentService';
 import {Entry, EntryType} from './applicationModel';
 import {GitExtension} from './git.d';

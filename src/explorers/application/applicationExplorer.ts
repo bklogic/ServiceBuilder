@@ -1,11 +1,11 @@
 import * as vscode from 'vscode';
-import * as util from '../core/util';
+import * as util from '../../core/util';
 import {ApplicationDataProvider} from './applicationDataProvider';
 import {ApplicationService} from "./applicationService";
 import {Entry, EntryType} from './applicationModel';
 import {
     BuilderService
-} from '../services/builderService';
+} from '../../services/builderService';
 import {
 	BindCrudQueryRequest,
 	BindCrudTableRequest,
@@ -25,8 +25,8 @@ import {
 	WhereClauseType,
 	DataSource,
 	DeployDataSourceRequest
-} from '../model/builder';
-import { Application, Module, Service } from '../services/deployService';
+} from '../../model/builder';
+import { Application, Module, Service } from '../../services/deployService';
 import { ViewColumn } from 'vscode';
 
 

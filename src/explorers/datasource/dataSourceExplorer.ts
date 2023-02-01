@@ -1,6 +1,6 @@
 
 import * as vscode from 'vscode';
-import { BuilderService } from '../services/builderService';
+import { BuilderService } from '../../services/builderService';
 import { DataSourceItem } from './dataSourceDataModel';
 import {DataSourceDataProvider} from './datasourceDataProvider';
 import {DataSourceExplorerService} from './dataSourceExplorerService';

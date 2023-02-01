@@ -3,16 +3,16 @@
 import * as vscode from 'vscode';
 import * as util from './core/util';
 import { BuilderService } from './services/builderService';
-import { ApplicationExplorer } from './explorer/applicationExplorer';
+import { ApplicationExplorer } from './explorers/application/applicationExplorer';
 import { TestEditor } from './editors/testEditor';
 import { DeployService } from './services/deployService';
-import { DeploymentExplorer } from './explorer/deploymentExplorer';
+import { DeploymentExplorer } from './explorers/deployment/deploymentExplorer';
 import { HttpService } from './core/httpService';
-import { TryService } from './explorer/tryService';
-import { WorkspaceHandler } from './explorer/workspaceHandler';
-import { TryHandler } from './explorer/tryHandler';
-import { ApplicationService } from './explorer/applicationService';
-import { DataSourceExplorer } from './explorer/dataSourceExplorer';
+import { TryService } from './explorers/application/tryService';
+import { WorkspaceHandler } from './explorers/application/workspaceHandler';
+import { TryHandler } from './explorers/application/tryHandler';
+import { ApplicationService } from './explorers/application/applicationService';
+import { DataSourceExplorer } from './explorers/datasource/dataSourceExplorer';
 import { TestService } from './services/testService';
 
 // this method is called when your extension is activated

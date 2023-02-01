@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import * as util from '../core/util';
+import * as util from '../../core/util';
 import {DataSourceItem} from './dataSourceDataModel';
 
 export class DataSourceDataService {

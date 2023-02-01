@@ -1,5 +1,5 @@
 
-import * as util from '../core/util';
+import * as util from '../../core/util';
 
 export function applicationFile(applicationName: string, dbType: string): Uint8Array {		
 	const content = {

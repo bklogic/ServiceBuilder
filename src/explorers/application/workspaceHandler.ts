@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as URL from 'url';
-import * as util from '../core/util';
-import { BuilderService } from '../services/builderService';
-import { Workspace, WorkspaceAuthentication } from '../model/workspace';
+import * as util from '../../core/util';
+import { BuilderService } from '../../services/builderService';
+import { Workspace, WorkspaceAuthentication } from '../../model/workspace';
 import { TryService } from './tryService';
 
 

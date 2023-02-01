@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
-import * as util from '../core/util';
-import { DeployService } from '../services/deployService';
+import * as util from '../../core/util';
+import { DeployService } from '../../services/deployService';
 import { DeploymentDataProvider } from './deploymentDataProvider';
 import { Item } from './deploymentModel';
 import { DeploymentExplorerService } from './deploymentExplorerService';
-import { TestService } from '../services/testService';
+import { TestService } from '../../services/testService';
 
 export class DeploymentExplorer {
 

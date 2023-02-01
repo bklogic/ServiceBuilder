@@ -1,5 +1,5 @@
-import {HttpService} from '../core/httpService';
-import { WorkspaceAuthentication } from '../model/workspace';
+import {HttpService} from '../../core/httpService';
+import { WorkspaceAuthentication } from '../../model/workspace';
 import {TryWorkspace, TrySession} from './tryModel';
 
 export class TryService {
