@@ -13,6 +13,12 @@ export interface Item {
 
 export enum ItemType {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
+	DataSources = 'datasources', 
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	DataSource = 'datasource', 
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	Applications = 'applications', 
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	Application = 'application', 
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	Module = 'module', 

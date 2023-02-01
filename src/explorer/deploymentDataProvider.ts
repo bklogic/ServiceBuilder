@@ -23,6 +23,27 @@ export class DeploymentDataProvider implements TreeDataProvider<Item> {
 			treeItem.command = { command: 'servicedeploymentExplorer.openResource', title: "Open File", arguments: [element] };
 		}
 		switch (element.type) {
+			case ItemType.DataSources:
+				treeItem.iconPath = {
+					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'server2.svg'), 
+					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'server2.svg')
+				};
+				treeItem.tooltip = '';
+				break;
+				case ItemType.DataSource:
+					treeItem.iconPath = {
+						dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'database.svg'), 
+						light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'database.svg')
+					};
+					treeItem.tooltip = 'data source';
+					break;
+				case ItemType.Applications:
+				treeItem.iconPath = {
+					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'server.svg'), 
+					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'server.svg')
+				};
+				treeItem.tooltip = '';
+				break;
 			case ItemType.Application:
 				treeItem.iconPath = {
 					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'app-folder.svg'), 

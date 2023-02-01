@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as util from '../core/util';
 import {Item, ItemType} from './deploymentModel';
-import {Application, Module, Service} from '../services/deployService';
+import {DataSource, Application, Module, Service} from '../services/deployService';
 
 
 export class DeploymentDataService {
@@ -10,8 +10,14 @@ export class DeploymentDataService {
 
     async getChildren(item?: Item): Promise<Item[]> {
         if (!item) {
-            return this.getApplicationItems();
+            return this.getTopItems();
         } 
+        else if (item.type === ItemType.DataSources) {
+            return this.getDataSourceItems(item);
+        }
+        else if (item.type === ItemType.Applications) {
+            return this.getApplicationItems(item);
+        }
         else if (item.type === ItemType.Application) {
             return this.getModuleItems(item);
         }
@@ -22,40 +28,93 @@ export class DeploymentDataService {
             return this.getTestItems(item);
         }
         else {
-            throw new Error('Never happen.');
-        }
+            return [];
+        } 
     }
 
-    async getApplicationItems(): Promise<Item[]> {
+
+    async getTopItems(): Promise<Item[]> {
         // get workfolder
         const workfolder = util.getWorkFolder();
         if (!workfolder) {
             return [];
         }
+        // data sources item
+        const datasources = {
+            uri: 'datasources',
+            type: ItemType.DataSources,
+            name: 'Data Sources',
+            fileType: vscode.FileType.Directory,
+            fileUri: vscode.Uri.joinPath(workfolder.uri, '.devtime', 'datasources'),
+            parent: null,
+            seqNo: 1
+        } as Item;
+        // applications item
+        const applications = {
+            uri: 'applications',
+            type: ItemType.Applications,
+            name: 'Applications',
+            fileType: vscode.FileType.Directory,
+            fileUri: vscode.Uri.joinPath(workfolder.uri, '.devtime', 'applications'),
+            parent: null,
+            seqNo: 2
+        } as Item;
 
-        // check deployment folder
-        const deployFolder = vscode.Uri.joinPath(workfolder.uri, '.devtime');
-        const exists = await util.fileExists(deployFolder);
+        return [datasources, applications];
+    }
+
+    async getDataSourceItems(item: Item): Promise<Item[]> {
+        // check data sources folder
+        const exists = await util.fileExists(item.fileUri);
+        if (!exists) {
+            return [];
+        }
+
+        // get data sources
+        const children = await vscode.workspace.fs.readDirectory(item.fileUri);
+        const items = await Promise.all( 
+            children.filter(async ([name, fileType]) => {
+                return (fileType === vscode.FileType.File);
+            }).map(async ([name, fileType]) => {
+                let ds: DataSource = await util.readJsonFile(vscode.Uri.joinPath(item.fileUri, name));
+                return {
+                    uri: ds.uri,
+                    type: ItemType.DataSource,
+                    name: name,
+                    fileType: vscode.FileType.File,
+                    fileUri: vscode.Uri.joinPath(item.fileUri, name),
+                    parent: item
+                } as Item;
+            })
+        );
+
+        // return
+        return items;
+    }    
+
+    async getApplicationItems(item: Item): Promise<Item[]> {
+        // check applications folder
+        const exists = await util.fileExists(item.fileUri);
         if (!exists) {
             return [];
         }
 
         // get applications
-        const children = await vscode.workspace.fs.readDirectory(deployFolder);
+        const children = await vscode.workspace.fs.readDirectory(item.fileUri);
 
         const items = await Promise.all( 
             children.filter(async ([name, fileType]) => {
                 return (fileType === vscode.FileType.Directory)
-                    && await util.fileExists(vscode.Uri.joinPath(deployFolder , name, 'application'));
+                    && await util.fileExists(vscode.Uri.joinPath(item.fileUri , name, 'application'));
             }).map(async ([name, fileType]) => {
-                let app: Application = await util.readJsonFile(vscode.Uri.joinPath(deployFolder, name, 'application'));
+                let app: Application = await util.readJsonFile(vscode.Uri.joinPath(item.fileUri, name, 'application'));
                 return {
                     uri: app.uri,
                     type: ItemType.Application,
                     name: name,
                     fileType: vscode.FileType.Directory,
-                    fileUri: vscode.Uri.joinPath(deployFolder, name),
-                    parent: null
+                    fileUri: vscode.Uri.joinPath(item.fileUri, name),
+                    parent: item
                 } as Item;
             })
         );
@@ -159,4 +218,3 @@ export class DeploymentDataService {
 	}
 
 }
-

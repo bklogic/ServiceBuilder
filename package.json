@@ -124,8 +124,8 @@
 				"command": "servicebuilderExplorer.deployModule",
 				"title": "Deploy Module",
 				"icon": {
-					"light": "resources/light/sync.svg",
-					"dark": "resources/dark/sync.svg"
+					"light": "resources/light/deploy.svg",
+					"dark": "resources/dark/deploy.svg"
 				}
 			},
 			{
@@ -156,8 +156,8 @@
 				"command": "servicebuilderExplorer.deployService",
 				"title": "Deploy Service",
 				"icon": {
-					"light": "resources/light/sync.svg",
-					"dark": "resources/dark/sync.svg"
+					"light": "resources/light/deploy.svg",
+					"dark": "resources/dark/deploy.svg"
 				}
 			},
 			{
@@ -275,6 +275,42 @@
 			{
 				"command": "servicedeploymentExplorer.openResource",
 				"title": "Open File"
+			},
+			{
+				"command": "servicedeploymentExplorer.refresh",
+				"title": "Refresh Explorer",
+				"icon": {
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
+			},
+			{
+				"command": "servicedeploymentExplorer.refreshDataSourceList",
+				"title": "Refresh Data Source List",
+				"icon": {
+					"light": "resources/light/sync.svg",
+					"dark": "resources/dark/sync.svg"
+				}
+			},
+			{
+				"command": "servicedeploymentExplorer.refreshDataSource",
+				"title": "Refresh Data Source",
+				"icon": {
+					"light": "resources/light/sync.svg",
+					"dark": "resources/dark/sync.svg"
+				}
+			},
+			{
+				"command": "servicedeploymentExplorer.testDataSource",
+				"title": "Test Data Source",
+				"icon": {
+					"light": "resources/light/play.svg",
+					"dark": "resources/dark/play.svg"
+				}
+			},
+			{
+				"command": "servicedeploymentExplorer.cleanDataSource",
+				"title": "Clean Data Source"
 			},
 			{
 				"command": "servicedeploymentExplorer.refreshAppList",
@@ -405,11 +441,6 @@
 					"group": "navigation@7"
 				},
 				{
-					"command": "servicedeploymentExplorer.refreshAppList",
-					"when": "view == servicedeploymentExplorer",
-					"group": "navigation@7"
-				},
-				{
 					"command": "servicebuilderExplorer.request",
 					"when": "view == servicebuilderExplorer",
 					"group": "more@1"
@@ -423,6 +454,11 @@
 					"command": "servicebuilderExplorer.workspace",
 					"when": "view == servicebuilderExplorer",
 					"group": "more@5"
+				},
+				{
+					"command": "servicedeploymentExplorer.refresh",
+					"when": "view == servicedeploymentExplorer",
+					"group": "navigation@7"
 				},
 				{
 					"command": "servicebuilderDataSourceExplorer.refresh",
@@ -492,6 +528,11 @@
 					"group": "inline@3"
 				},
 				{
+					"command": "servicebuilderExplorer.deployModule",
+					"when": "view == servicebuilderExplorer && viewItem == module",
+					"group": "inline@4"
+				},
+				{
 					"command": "servicebuilderExplorer.createQueryService",
 					"when": "view == servicebuilderExplorer && viewItem == module",
 					"group": "1_new@1"
@@ -542,6 +583,11 @@
 					"group": "inline@2"
 				},
 				{
+					"command": "servicebuilderExplorer.deployService",
+					"when": "view == servicebuilderExplorer && viewItem == queryservice",
+					"group": "inline@4"
+				},
+				{
 					"command": "servicebuilderExplorer.genQueryInputOutput",
 					"when": "view == servicebuilderExplorer && viewItem == queryservice",
 					"group": "1_action@1"
@@ -580,6 +626,11 @@
 					"command": "servicebuilderExplorer.genSqlInputOutputBindings",
 					"when": "view == servicebuilderExplorer && viewItem == sqlservice",
 					"group": "inline@2"
+				},
+				{
+					"command": "servicebuilderExplorer.deployService",
+					"when": "view == servicebuilderExplorer && viewItem == sqlservice",
+					"group": "inline@4"
 				},
 				{
 					"command": "servicebuilderExplorer.genSqlInputOutput",
@@ -625,6 +676,11 @@
 					"command": "servicebuilderExplorer.genCrudTableBindings",
 					"when": "view == servicebuilderExplorer && viewItem == write",
 					"group": "inline@3"
+				},
+				{
+					"command": "servicebuilderExplorer.deployService",
+					"when": "view == servicebuilderExplorer && viewItem == crudservice",
+					"group": "inline@4"
 				},
 				{
 					"command": "servicebuilderExplorer.genCrudObject",
@@ -679,6 +735,31 @@
 				{
 					"command": "servicebuilderExplorer.openWithJsonViewer",
 					"when": "view == servicebuilderExplorer && viewItem == bindings",
+					"group": "inline@1"
+				},
+				{
+					"command": "servicedeploymentExplorer.refreshDataSourceList",
+					"when": "view == servicedeploymentExplorer && viewItem == datasources",
+					"group": "inline@7"
+				},
+				{
+					"command": "servicedeploymentExplorer.refreshDataSource",
+					"when": "view == servicedeploymentExplorer && viewItem == datasource",
+					"group": "inline@7"
+				},
+				{
+					"command": "servicedeploymentExplorer.testDataSource",
+					"when": "view == servicedeploymentExplorer && viewItem == datasource",
+					"group": "inline@1"
+				},
+				{
+					"command": "servicedeploymentExplorer.cleanDataSource",
+					"when": "view == servicedeploymentExplorer && viewItem == datasource",
+					"group": "more@1"
+				},
+				{
+					"command": "servicedeploymentExplorer.refreshAppList",
+					"when": "view == servicedeploymentExplorer && viewItem == applications",
 					"group": "inline@1"
 				},
 				{

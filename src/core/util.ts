@@ -87,6 +87,11 @@ export function serviceUriForService(servicePath: string) {
     return serviceUri(fromService(servicePath));
 }
 
+export function dataSourceNameFromUri(uri: string) {
+    const splits =  uri.split('/');
+    return splits[splits.length-1];
+}
+
 export function servicePathForTest(testPath: string) {
     const splits = testPath.split('/');
     const l = splits.length;

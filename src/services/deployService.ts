@@ -8,6 +8,18 @@ export class DeployService {
 		this.http = http;
 	}
 
+	async getDataSources(workspace: string): Promise<DataSource[]> {
+		const url = '/deploy/getDataSources/' + workspace;
+		const apps = await this.http.builderGet(url);
+		return apps;
+	}
+
+	async getDataSource(dataSourceUri: string): Promise<DataSource> {
+		const url = '/deploy/getDataSource/' + dataSourceUri;
+		const apps = await this.http.builderGet(url);
+		return apps;
+	}
+
 	async getApplications(workspace: string): Promise<Application[]> {
 		const url = '/deploy/getApplications/' + workspace;
 		const apps = await this.http.builderGet(url);
@@ -30,6 +42,11 @@ export class DeployService {
 		const url = '/deploy/getDataSourceForApplication/' + appUri;
 		const dataSource = await this.http.builderGet(url);
 		return dataSource;
+	}
+
+	async cleanDataSource(dataSourceUri: string): Promise<void> {
+		const url = '/deploy/cleanDataSource/' + dataSourceUri;
+		this.http.builderPost(url, {});
 	}
 
 	async cleanApplication(appUri: string): Promise<void> {
@@ -70,6 +87,7 @@ export interface Service {
 }
 
 export interface DataSource {
+	uri: string;
     dbType: string;
     host: string;
 	port: number;

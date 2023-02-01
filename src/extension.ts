@@ -13,6 +13,7 @@ import { WorkspaceHandler } from './explorer/workspaceHandler';
 import { TryHandler } from './explorer/tryHandler';
 import { ApplicationService } from './explorer/applicationService';
 import { DataSourceExplorer } from './explorer/dataSourceExplorer';
+import { TestService } from './services/testService';
 
 // this method is called when your extension is activated
 export function activate(context: vscode.ExtensionContext) {
@@ -23,6 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const httpService = new HttpService(context);
 	const builderService = new BuilderService(httpService);
 	const deployService = new DeployService(httpService);
+	const testService = new TestService(httpService);
 	const tryService = new TryService(httpService);
 	const appService = new ApplicationService();
 
@@ -38,7 +40,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// explorer
 	new ApplicationExplorer(context, appService, builderService);
-	new DeploymentExplorer(context, deployService);
+	new DeploymentExplorer(context, deployService, testService);
 	new DataSourceExplorer(context, builderService);
 	new WorkspaceHandler(context, builderService, tryService);
 	new TryHandler(tryService);

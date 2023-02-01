@@ -3,24 +3,28 @@ import * as util from '../core/util';
 import { DeployService } from '../services/deployService';
 import { DeploymentDataProvider } from './deploymentDataProvider';
 import { Item } from './deploymentModel';
-import { DeploymentService } from './deploymentExplorerService';
+import { DeploymentExplorerService } from './deploymentExplorerService';
+import { TestService } from '../services/testService';
 
 export class DeploymentExplorer {
 
-    private context: vscode.ExtensionContext;
     private dataProvider: DeploymentDataProvider;
     private treeView: vscode.TreeView<Item>;
-    private deploymentService: DeploymentService;
+    private explorerService: DeploymentExplorerService;
 	private doubleClick = new util.DoubleClick();
 
-    constructor(context: vscode.ExtensionContext, deployService: DeployService) {
-        this.context = context;
-        this.deploymentService = new DeploymentService(context, deployService);
+    constructor(context: vscode.ExtensionContext, deployService: DeployService, testService: TestService) {
+        this.explorerService = new DeploymentExplorerService(context, deployService, testService);
         this.dataProvider = new DeploymentDataProvider();
         this.treeView = vscode.window.createTreeView('servicedeploymentExplorer', { treeDataProvider: this.dataProvider, showCollapseAll: true });
         context.subscriptions.push(this.treeView);
 		vscode.commands.registerCommand('servicedeploymentExplorer.openResource', (resource) => this.openResource(resource));
-		vscode.commands.registerCommand('servicedeploymentExplorer.refreshAppList', () => this.refreshAppList());
+		vscode.commands.registerCommand('servicedeploymentExplorer.refresh', () => this.refresh());
+		vscode.commands.registerCommand('servicedeploymentExplorer.refreshDataSourceList', (resource) => this.refreshDataSourceList(resource));
+		vscode.commands.registerCommand('servicedeploymentExplorer.refreshDataSource', (resource) => this.refreshDataSource(resource));
+		vscode.commands.registerCommand('servicedeploymentExplorer.testDataSource', (resource) => this.testDataSource(resource));
+		vscode.commands.registerCommand('servicedeploymentExplorer.cleanDataSource', (resource) => this.cleanDataSource(resource));
+		vscode.commands.registerCommand('servicedeploymentExplorer.refreshAppList', (resource) => this.refreshAppList(resource));
 		vscode.commands.registerCommand('servicedeploymentExplorer.refreshApplication', (resource) => this.refreshApplication(resource));
 		vscode.commands.registerCommand('servicedeploymentExplorer.loadTest', (resource) => this.loadTest(resource));
 		vscode.commands.registerCommand('servicedeploymentExplorer.viewDataSource', (resource) => this.viewDataSource(resource));
@@ -36,11 +40,57 @@ export class DeploymentExplorer {
 		this.dataProvider.refresh();
 	}
 
-	async refreshAppList(): Promise<void> {
+	async refreshDataSourceList(item: Item): Promise<void> {
         try {
-            await this.deploymentService.refreshAppList();
+            await this.explorerService.refreshDataSourceList(item);
             await util.sleep(200);
             this.refresh();
+            this.treeView.reveal(item, {expand: 2, focus: true, select: true});
+            vscode.window.setStatusBarMessage('Data source list refreshed.');
+        } catch (error: any) {
+            vscode.window.showErrorMessage(error.message);
+        }
+	}
+
+	async refreshDataSource(item: Item): Promise<void> {
+        try {
+            await this.explorerService.refreshDataSource(item);
+            vscode.window.setStatusBarMessage('Data source refreshed.');
+        } catch (error: any) {
+            vscode.window.showErrorMessage(error.message);
+        }
+	}
+
+	async cleanDataSource(item: Item): Promise<void> {
+        try {
+            await this.explorerService.cleanDataSource(item);
+            vscode.window.setStatusBarMessage('Data source cleaned.');
+        } catch (error: any) {
+            vscode.window.showErrorMessage(error.message);
+        }
+	}
+
+    async testDataSource(item: Item): Promise<void> {
+        vscode.window.setStatusBarMessage('Data source test in progress ...');
+        //
+        try {
+            const message = await this.explorerService.testDataSource(item);
+            if (message) {
+                vscode.window.setStatusBarMessage(`Failed: ${message}`);
+            } else {
+                vscode.window.setStatusBarMessage('Succeeded');
+            }
+        } catch (err: any) {
+            vscode.window.showErrorMessage(`Test data source error: ${err.message}`);    
+        }
+    }
+
+    async refreshAppList(apps: Item): Promise<void> {
+        try {
+            await this.explorerService.refreshAppList();
+            await util.sleep(200);
+            this.refresh();
+            this.treeView.reveal(apps, {expand: 2, focus: true, select: true});
             vscode.window.setStatusBarMessage('Application list refreshed.');
         } catch (error: any) {
             vscode.window.showErrorMessage(error.message);
@@ -49,7 +99,7 @@ export class DeploymentExplorer {
 
 	async refreshApplication(app: Item): Promise<void> {
         try {
-            await this.deploymentService.refreshApp(app);
+            await this.explorerService.refreshApp(app);
             this.dataProvider.refresh();
             this.treeView.reveal(app, {expand: 2, focus: true, select: true});
             vscode.window.setStatusBarMessage('Application refreshed.');
@@ -60,7 +110,7 @@ export class DeploymentExplorer {
 
     async loadTest(service: Item): Promise<void> {
         try {
-            await this.deploymentService.reloadTests(service);
+            await this.explorerService.reloadTests(service);
             await util.sleep(100);
             this.dataProvider.fire(service);
             this.treeView.reveal(service, {expand: 2, focus: true, select: true});
@@ -73,7 +123,7 @@ export class DeploymentExplorer {
 
     async viewDataSource(app: Item): Promise<void> {
         try {
-            const docUri = await this.deploymentService.loadDataSource(app);
+            const docUri = await this.explorerService.loadDataSource(app);
             vscode.window.showTextDocument(docUri);
             vscode.window.setStatusBarMessage('Data source loaded.');
         } catch (error: any) {
@@ -83,7 +133,7 @@ export class DeploymentExplorer {
 
     async cleanApplication(app: Item): Promise<void> {
         try {
-            await this.deploymentService.cleanApplication(app);
+            await this.explorerService.cleanApplication(app);
             util.sleep(200);
             this.dataProvider.refresh();
             vscode.window.setStatusBarMessage('Application cleaned');
@@ -94,7 +144,7 @@ export class DeploymentExplorer {
 
     async viewService(service: Item): Promise<void> {
         try {
-            const docUri = await this.deploymentService.loadService(service);
+            const docUri = await this.explorerService.loadService(service);
             vscode.window.showTextDocument(docUri);
             vscode.window.setStatusBarMessage('Service loaded.');
         } catch (error: any) {

@@ -2,23 +2,26 @@ import * as vscode from 'vscode';
 import * as util from '../core/util';
 import {Item, ItemType} from './deploymentModel';
 import {
-    DeployService, Application, ApplicationAggregate, Module, Service, Test
+    DeployService, Application, ApplicationAggregate, Module, Service, Test, DataSource
 } from '../services/deployService';
+import { TestService } from '../services/testService';
 
 
-export class DeploymentService {
+export class DeploymentExplorerService {
 
     private context: vscode.ExtensionContext;
     private deployService: DeployService;
+    private testService: TestService;
 
-    constructor(context: vscode.ExtensionContext, deployService: DeployService) {
+    constructor(context: vscode.ExtensionContext, deployService: DeployService, testService: TestService) {
         this.context = context;
         this.deployService = deployService;
+        this.testService = testService;
     }
 
-    async refreshAppList(): Promise<void> {
+    async refreshDataSourceList(item: Item): Promise<void> {
         // get local workfolder
-        const workfolder: vscode.WorkspaceFolder | undefined = util.getWorkFolder();
+        const workfolder = util.getWorkFolder();
         if (!workfolder) {
             return;
         }
@@ -28,13 +31,53 @@ export class DeploymentService {
             vscode.window.setStatusBarMessage('Not connected to workspace.');
             return;
         }
+        // get data source list
+        const dataSources = await this.deployService.getDataSources(workspace);
         // fresh deployment folder
-        const deployFolder = vscode.Uri.joinPath(workfolder.uri, '.devtime');
-        await this.refreshDeployFolder(deployFolder);
+        const dataSourcesFolder = vscode.Uri.joinPath(workfolder.uri, '.devtime', 'datasources');
+        await this.refreshDeployFolder(dataSourcesFolder);
+        // write app list
+        await this.writeDataSourceList(dataSourcesFolder, dataSources);
+    }
+
+    async refreshDataSource(item: Item): Promise<void> {
+        // get data source
+        const dataSource = await this.deployService.getDataSource(item.uri);
+        // write data source
+        await util.writeJsonFile(item.fileUri, dataSource);
+    }
+
+    async cleanDataSource(item: Item): Promise<void> {
+        // clean deployed data source
+        await this.deployService.cleanDataSource(item.uri);
+        // clean local copy
+        await vscode.workspace.fs.delete(item.fileUri);
+    }
+
+    async testDataSource(item: Item): Promise<string|null> {
+        const result = await this.testService.testDeployedDataSource(item.uri);
+        return (result.succeed) ? null : result.message;
+    }
+
+    async refreshAppList(): Promise<void> {
+        // get local workfolder
+        const workfolder = util.getWorkFolder();
+        if (!workfolder) {
+            return;
+        }
+        // get remote workspace
+        const workspace = await this.context.secrets.get('servicebuilder.workspace');
+        if (!workspace) {
+            vscode.window.setStatusBarMessage('Not connected to workspace.');
+            return;
+        }
         // get applicationas
         const apps = await this.deployService.getApplications(workspace);
         // write app list
-        await this.writeAppList(deployFolder, apps);
+        // refresh deployment folder
+        const appsFolder = vscode.Uri.joinPath(workfolder.uri, '.devtime', 'applications');
+        await this.refreshDeployFolder(appsFolder);
+        await this.writeAppList(appsFolder, apps);
     }
 
     async refreshDeployFolder(deployFolder: vscode.Uri): Promise<void> {
@@ -48,6 +91,13 @@ export class DeploymentService {
         for (let app of apps) {
             vscode.workspace.fs.createDirectory(vscode.Uri.joinPath(deployFolder, app.name));
             util.writeJsonFile(vscode.Uri.joinPath(deployFolder, app.name, 'application'), app);
+        }
+    }
+
+    async writeDataSourceList(deployFolder: vscode.Uri, dataSources: DataSource[]): Promise<void> {
+        for (let datasource of dataSources) {
+            const name = util.dataSourceNameFromUri(datasource.uri);
+            util.writeJsonFile(vscode.Uri.joinPath(deployFolder, name), datasource);
         }
     }
 
