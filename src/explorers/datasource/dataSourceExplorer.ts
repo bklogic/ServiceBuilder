@@ -1,6 +1,6 @@
 
 import * as vscode from 'vscode';
-import { BuilderService } from '../../backend/builderService';
+import { BuilderClient } from '../../backend/builderClient';
 import { DataSourceItem } from './dataSourceDataModel';
 import {DataSourceDataProvider} from './datasourceDataProvider';
 import {DataSourceExplorerService} from './dataSourceExplorerService';
@@ -10,14 +10,14 @@ export class DataSourceExplorer {
     private treeView: vscode.TreeView<DataSourceItem>;
     private explorerService: DataSourceExplorerService;
 
-    constructor(context: vscode.ExtensionContext, builderService: BuilderService) {
+    constructor(context: vscode.ExtensionContext, builderClient: BuilderClient) {
         // set up tree view
         this.dataProvider = new DataSourceDataProvider();
         this.treeView = vscode.window.createTreeView('servicebuilderDataSourceExplorer', { treeDataProvider: this.dataProvider, showCollapseAll: true });
         context.subscriptions.push(this.treeView);
 
         // instantiate explorer service
-        this.explorerService = new DataSourceExplorerService(context, builderService);
+        this.explorerService = new DataSourceExplorerService(context, builderClient.builderService);
 
         // register commands
 		vscode.commands.registerCommand('servicebuilderDataSourceExplorer.refresh', (resource) => this.refresh());        
@@ -78,6 +78,7 @@ export class DataSourceExplorer {
             }
         } catch (err: any) {
             vscode.window.showErrorMessage(`Test data source error: ${err.message}`);    
+            vscode.window.setStatusBarMessage('');
         }
     }
 

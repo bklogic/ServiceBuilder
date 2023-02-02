@@ -4,6 +4,9 @@ import {
     BuilderService
 } from '../backend/builderService';
 import {
+    BuilderClient
+} from '../backend/builderClient';
+import {
     TestServiceRequest, TestServiceResult
 } from '../backend/builderModel';
 
@@ -11,8 +14,8 @@ export class TestEditor {
     private builderService: BuilderService; 
     private outputChannel;
 
-    constructor(context: vscode.ExtensionContext, buildService: BuilderService) {
-        this.builderService = buildService;
+    constructor(context: vscode.ExtensionContext, builderClient: BuilderClient) {
+        this.builderService = builderClient.builderService;
         this.outputChannel = vscode.window.createOutputChannel('Service Builder Test');
 		vscode.commands.registerCommand('servicebuilderEditor.runTest', (resource) => this.runTest(resource.path, 'true'));
 		vscode.commands.registerCommand('servicebuilderEditor.runTestWithoutCommit', (resource) => this.runTest(resource.path, 'false'));

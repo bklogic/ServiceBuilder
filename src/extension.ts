@@ -2,45 +2,31 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as util from './core/util';
-import { BuilderService } from './backend/builderService';
 import { ApplicationExplorer } from './explorers/application/applicationExplorer';
 import { TestEditor } from './editors/testEditor';
-import { DeployService } from './backend/deployService';
 import { DeploymentExplorer } from './explorers/deployment/deploymentExplorer';
 import { HttpService } from './core/httpService';
-import { TryService } from './backend/tryService';
 import { DataSourceExplorer } from './explorers/datasource/dataSourceExplorer';
-import { TestService } from './backend/testService';
+import { BuilderClient } from './backend/builderClient';
+import { TryClient } from './backend/tryClient';
 
 // this method is called when your extension is activated
 export function activate(context: vscode.ExtensionContext) {
 	// initiate util
 	util.createGetWorkspaceUtil(context);
 
-	// construct builder service
+	// construct client services
 	const httpService = new HttpService(context);
-	const builderService = new BuilderService(httpService);
-	const deployService = new DeployService(httpService);
-	const testService = new TestService(httpService);
-	const tryService = new TryService(httpService);
-
-	// register viewVersion command
-	let disposable = vscode.commands.registerCommand('servicebuilder.versions', () => {
-		builderService.getBuilderVersions()
-			.then( versions => {
-				const msg = `Engine: ${versions.engine} | Deployer: ${versions.deployer} | Builder: ${versions.builder}.`;
-				vscode.window.showInformationMessage(msg);
-			});
-	});	
-	context.subscriptions.push(disposable);
+	const builderClient = new BuilderClient(httpService);
+	const tryClient = new TryClient(httpService);
 
 	// explorer
-	new ApplicationExplorer(context, builderService, tryService);
-	new DeploymentExplorer(context, deployService, testService);
-	new DataSourceExplorer(context, builderService);
+	new ApplicationExplorer(context, builderClient, tryClient);
+	new DeploymentExplorer(context, builderClient);
+	new DataSourceExplorer(context, builderClient);
 
 	// editors
-	new TestEditor(context, builderService);
+	new TestEditor(context, builderClient);
 
 }
 

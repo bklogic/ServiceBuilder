@@ -1,4 +1,5 @@
 import {HttpService} from '../core/httpService';
+import { AccessTokenRequest, WorkspaceRequest } from './tryModel';
 
 export class TryService {
 
@@ -10,12 +11,14 @@ export class TryService {
 
 	async requestWorkspace(userEmail: string, reqType: string, addToMailingList: string): Promise<boolean> {
 		const url = '/try/requestWorkspace';
-		return await this.http.tryPost(url, {userEmail, reqType, addToMailingList}, 15000);
+		const req: WorkspaceRequest = {userEmail, reqType, addToMailingList};
+		return await this.http.tryPost(url, req, 15000);
 	}
 
 	async requestAccessToken(workspaceUrl: string, accessKey: string): Promise<string> {
 		const url = '/try/requestAccessToken';
-		return await this.http.tryPost(url, {workspaceUrl, accessKey});
+		const req: AccessTokenRequest = {workspaceUrl, accessKey};
+		return await this.http.tryPost(url, req);
 	}
 
 }

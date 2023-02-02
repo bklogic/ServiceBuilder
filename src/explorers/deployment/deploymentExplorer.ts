@@ -1,10 +1,9 @@
 import * as vscode from 'vscode';
 import * as util from '../../core/util';
-import { DeployService } from '../../backend/deployService';
 import { DeploymentDataProvider } from './deploymentDataProvider';
 import { Item } from './deploymentModel';
 import { DeploymentExplorerService } from './deploymentExplorerService';
-import { TestService } from '../../backend/testService';
+import { BuilderClient } from '../../backend/builderClient';
 
 export class DeploymentExplorer {
 
@@ -13,8 +12,8 @@ export class DeploymentExplorer {
     private explorerService: DeploymentExplorerService;
 	private doubleClick = new util.DoubleClick();
 
-    constructor(context: vscode.ExtensionContext, deployService: DeployService, testService: TestService) {
-        this.explorerService = new DeploymentExplorerService(context, deployService, testService);
+    constructor(context: vscode.ExtensionContext, builderClient: BuilderClient) {
+        this.explorerService = new DeploymentExplorerService(context, builderClient.deployService, builderClient.testService);
         this.dataProvider = new DeploymentDataProvider();
         this.treeView = vscode.window.createTreeView('servicedeploymentExplorer', { treeDataProvider: this.dataProvider, showCollapseAll: true });
         context.subscriptions.push(this.treeView);

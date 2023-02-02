@@ -4,9 +4,6 @@ import {ApplicationDataProvider} from './applicationDataProvider';
 import {ApplicationExplorerService} from "./applicationExplorerService";
 import {Entry, EntryType} from './applicationModel';
 import {
-    BuilderService
-} from '../../backend/builderService';
-import {
 	BindCrudQueryRequest,
 	BindCrudTableRequest,
 	BindQueryRequest,
@@ -27,7 +24,9 @@ import {
 import { Application, Module, Service } from '../../backend/deployService';
 import { ViewColumn } from 'vscode';
 import { WorkspaceHandler } from './workspaceHandler';
-import { TryService } from '../../backend/tryService';
+import { TryClient } from '../../backend/tryClient';
+import { BuilderClient } from '../../backend/builderClient';
+import { BuilderService } from '../../backend/builderService';
 
 
 export class ApplicationExplorer {
@@ -38,11 +37,11 @@ export class ApplicationExplorer {
 	private builderService: BuilderService;
 	private doubleClick = new util.DoubleClick();
 
-	constructor(context: vscode.ExtensionContext, builderService: BuilderService, tryService: TryService) {
+	constructor(context: vscode.ExtensionContext, builderClient: BuilderClient, tryClient: TryClient) {
 		this.context = context;
 		this.explorerService = new ApplicationExplorerService();
-		this.builderService = builderService;
-		new WorkspaceHandler(context, builderService, tryService);
+		this.builderService = builderClient.builderService;
+		new WorkspaceHandler(context, builderClient.builderService, tryClient.tryService);
 		this.dataProvider = new ApplicationDataProvider();
 		this.treeView = vscode.window.createTreeView('servicebuilderExplorer', { treeDataProvider: this.dataProvider, showCollapseAll: true });
 		context.subscriptions.push(this.treeView);
