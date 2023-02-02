@@ -5,7 +5,7 @@ import {
 } from '../backend/builderService';
 import {
     TestServiceRequest, TestServiceResult
-} from '../backend/builder';
+} from '../backend/builderModel';
 
 export class TestEditor {
     private builderService: BuilderService; 

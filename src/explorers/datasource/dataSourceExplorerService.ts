@@ -4,7 +4,7 @@ import * as util from '../../core/util';
 import { BuilderService } from '../../backend/builderService';
 import { DataSourceContentService } from './dataSourceContentService';
 import {DataSourceItem, DataSource} from './dataSourceDataModel';
-import {DeployDataSourceRequest, TestDataSourceRequest} from '../../backend/builder';
+import {DeployDataSourceRequest, TestDataSourceRequest} from '../../backend/builderModel';
 
 
 export class DataSourceExplorerService {

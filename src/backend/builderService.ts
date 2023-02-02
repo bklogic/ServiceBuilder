@@ -23,7 +23,7 @@ import {
 	Table,
 	TestDataSourceRequest, TestDataSourceResult, TestServiceRequest, TestServiceResult,
 
-} from './builder';
+} from './builderModel';
 
 export class BuilderService {
 

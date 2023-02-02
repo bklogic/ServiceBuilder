@@ -23,7 +23,7 @@ import {
 	NameConvention,
 	Table,
 	WhereClauseType,
-} from '../../backend/builder';
+} from '../../backend/builderModel';
 import { Application, Module, Service } from '../../backend/deployService';
 import { ViewColumn } from 'vscode';
 import { WorkspaceHandler } from './workspaceHandler';

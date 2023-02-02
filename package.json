@@ -89,6 +89,10 @@
 				}
 			},
 			{
+				"command": "servicebuilderExplorer.about",
+				"title": "About"
+			},
+			{
 				"command": "servicebuilderExplorer.refresh",
 				"title": "Refresh Explorer",
 				"icon": {
@@ -452,6 +456,11 @@
 				},
 				{
 					"command": "servicebuilderExplorer.workspace",
+					"when": "view == servicebuilderExplorer",
+					"group": "more@3"
+				},
+				{
+					"command": "servicebuilderExplorer.about",
 					"when": "view == servicebuilderExplorer",
 					"group": "more@5"
 				},

@@ -33,10 +33,8 @@ export class DeploymentExplorerService {
         }
         // get data source list
         const dataSources = await this.deployService.getDataSources(workspace);
-        // fresh deployment folder
-        const dataSourcesFolder = vscode.Uri.joinPath(workfolder.uri, '.devtime', 'datasources');
-        await this.refreshDeployFolder(dataSourcesFolder);
         // write app list
+        const dataSourcesFolder = vscode.Uri.joinPath(workfolder.uri, '.devtime', 'datasources');
         await this.writeDataSourceList(dataSourcesFolder, dataSources);
     }
 
@@ -74,9 +72,7 @@ export class DeploymentExplorerService {
         // get applicationas
         const apps = await this.deployService.getApplications(workspace);
         // write app list
-        // refresh deployment folder
         const appsFolder = vscode.Uri.joinPath(workfolder.uri, '.devtime', 'applications');
-        await this.refreshDeployFolder(appsFolder);
         await this.writeAppList(appsFolder, apps);
     }
 
@@ -87,17 +83,22 @@ export class DeploymentExplorerService {
         await vscode.workspace.fs.createDirectory(deployFolder);
     }
 
-    async writeAppList(deployFolder: vscode.Uri, apps: Application[]): Promise<void> {
+    async writeAppList(appsFolder: vscode.Uri, apps: Application[]): Promise<void> {
+        // refresh applications folder
+        await this.refreshDeployFolder(appsFolder);
+        // write applications
         for (let app of apps) {
-            vscode.workspace.fs.createDirectory(vscode.Uri.joinPath(deployFolder, app.name));
-            util.writeJsonFile(vscode.Uri.joinPath(deployFolder, app.name, 'application'), app);
+            util.writeJsonFile(vscode.Uri.joinPath(appsFolder, app.name, 'application'), app);
         }
     }
 
-    async writeDataSourceList(deployFolder: vscode.Uri, dataSources: DataSource[]): Promise<void> {
+    async writeDataSourceList(dataSourcesFolder: vscode.Uri, dataSources: DataSource[]): Promise<void> {
+        // fresh deployment folder
+        await this.refreshDeployFolder(dataSourcesFolder);
+        // write data sources
         for (let datasource of dataSources) {
             const name = util.dataSourceNameFromUri(datasource.uri);
-            util.writeJsonFile(vscode.Uri.joinPath(deployFolder, name), datasource);
+            util.writeJsonFile(vscode.Uri.joinPath(dataSourcesFolder, name), datasource);
         }
     }
 

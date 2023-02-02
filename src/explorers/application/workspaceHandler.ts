@@ -1,9 +1,7 @@
 import * as vscode from 'vscode';
-import * as path from 'path';
 import * as URL from 'url';
-import * as util from '../../core/util';
 import { BuilderService } from '../../backend/builderService';
-import { Workspace } from '../../backend/workspace';
+import { Workspace, Versions} from './workspaceModel';
 import { TryService } from '../../backend/tryService';
 
 
@@ -19,7 +17,9 @@ export class WorkspaceHandler {
 		this.tryService = tryService;
 		vscode.commands.registerCommand('servicebuilderExplorer.request', () => this.request());
 		vscode.commands.registerCommand('servicebuilderExplorer.connect', () => this.connect());
-		vscode.commands.registerCommand('servicebuilderExplorer.workspace', () => this.workspace());    }
+		vscode.commands.registerCommand('servicebuilderExplorer.workspace', () => this.workspace());    
+		vscode.commands.registerCommand('servicebuilderExplorer.about', () => this.about());    
+	}
 
 		async request(): Promise<void> {
 			let result: string;
@@ -132,13 +132,10 @@ export class WorkspaceHandler {
 
 	async workspace(): Promise<void> {
 		// get current workspace setting
-		const workspace: Workspace = {
+		const workspace = {
 			name: await this.context.secrets.get("servicebuilder.workspace"),
-			url: await this.context.secrets.get("servicebuilder.url"),
-			accessToken: await this.context.secrets.get("servicebuilder.token"),
-			versions: undefined,
-			connectionIssue: undefined
-		};		
+			url: await this.context.secrets.get("servicebuilder.url")
+		} as Workspace;		
 
 		// check workspace setting not undefined
 		if (!workspace.url) {
@@ -160,16 +157,21 @@ export class WorkspaceHandler {
 		}
 	}
 
-	showConnectedMessage(workspace: Workspace) {
+	async about(): Promise<void> {
+		const versions = await this.builderService.getBuilderVersions();
+		if (versions) {
+			this.showVersions(versions);
+		} else {
+			vscode.window.showWarningMessage("No workspace connection.");
+		}
+	}
+
+	showConnectedMessage(workspace: Workspace): void {
 			vscode.window.showInformationMessage(
-				`Connected. \n
-				 Workspace Details:
-				 \t  \t Name: ${workspace.name}
-				 \t  \t Url: ${workspace.url}
-				 \t  \t Version: 
-				 \t     \t Engine:  ${workspace.versions?.engine}
-				 \t     \t Deployer:  ${workspace.versions?.deployer}
-				 \t     \t Builder:  ${workspace.versions?.builder}`,
+				`Workspace:
+				 \t   \t Name: \t ${workspace.name}
+				 \t   \t Url: \t ${workspace.url}
+				 \t   \t Status: \t Connected `,
 				 { modal: true },
 				 'Switch Workspace'
 			).then( btn => {
@@ -180,7 +182,7 @@ export class WorkspaceHandler {
 	}
 
 
-	showNotConnectedMessageForUnspecifiedWorkspace() {
+	showNotConnectedMessageForUnspecifiedWorkspace(): void {
 		vscode.window.showInformationMessage(
 			`Not connected. \n
 			To connect, you need the workspace url and access token. 
@@ -194,7 +196,7 @@ export class WorkspaceHandler {
 		});
 	}
 
-	showNotConnectedMessageForConnectionIssue(workspace: Workspace) {
+	showNotConnectedMessageForConnectionIssue(workspace: Workspace): void {
 		vscode.window.showInformationMessage(
 		   `Not connected. Connection issue. \n
 			Please review the connection information:
@@ -212,5 +214,16 @@ export class WorkspaceHandler {
 			}
 		});
 	}
+
+	private showVersions(versions: Versions): void {
+		vscode.window.showInformationMessage(
+			`Service Builder Versions:
+			 \t     \t Engine:  ${versions.engine}
+			 \t     \t Deployer:  ${versions.deployer}
+			 \t     \t Builder:  ${versions.builder}`,
+			 { modal: true }
+		);
+	}
+
 }
 
