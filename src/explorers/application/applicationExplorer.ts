@@ -20,13 +20,13 @@ import {
 	NameConvention,
 	Table,
 	WhereClauseType,
-} from '../../backend/builderModel';
-import { Application, Module, Service } from '../../backend/deployService';
+} from '../../backend/builder/builderModel';
+import { Application, Module, Service } from '../../backend/builder/deployService';
 import { ViewColumn } from 'vscode';
 import { WorkspaceHandler } from './workspaceHandler';
-import { TryClient } from '../../backend/tryClient';
-import { BuilderClient } from '../../backend/builderClient';
-import { BuilderService } from '../../backend/builderService';
+import { TryClient } from '../../backend/try/tryClient';
+import { BuilderClient } from '../../backend/builder/builderClient';
+import { BuilderService } from '../../backend/builder/builderService';
 
 
 export class ApplicationExplorer {

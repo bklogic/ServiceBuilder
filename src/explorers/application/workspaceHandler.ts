@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 import * as URL from 'url';
-import { BuilderService } from '../../backend/builderService';
+import { BuilderService } from '../../backend/builder/builderService';
 import { Workspace, Versions} from './workspaceModel';
-import { TryService } from '../../backend/tryService';
+import { TryService } from '../../backend/try/tryService';
 
 
 export class WorkspaceHandler {

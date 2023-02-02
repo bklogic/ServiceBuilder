@@ -1,4 +1,4 @@
-import { HttpService } from "../core/httpService";
+import { HttpService } from "../../core/httpService";
 import { BuilderService } from "./builderService";
 import { DeployService } from "./deployService";
 import { TestService } from "./testService";

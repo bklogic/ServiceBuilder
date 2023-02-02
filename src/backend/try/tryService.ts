@@ -1,4 +1,4 @@
-import {HttpService} from '../core/httpService';
+import {HttpService} from '../../core/httpService';
 import { AccessTokenRequest, WorkspaceRequest } from './tryModel';
 
 export class TryService {

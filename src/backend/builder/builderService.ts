@@ -1,7 +1,7 @@
 
-import {HttpService} from '../core/httpService';
+import {HttpService} from '../../core/httpService';
 
-import {Versions, WorkspaceAuthentication} from '../explorers/application/workspaceModel';
+import {Versions, WorkspaceAuthentication} from '../../explorers/application/workspaceModel';
 import { 
 	BindCrudQueryRequest,
 	BindCrudQueryResult,

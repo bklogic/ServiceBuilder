@@ -1,4 +1,4 @@
-import { HttpService } from "../core/httpService";
+import { HttpService } from "../../core/httpService";
 import { TryService } from "./tryService"
 
 export class TryClient {

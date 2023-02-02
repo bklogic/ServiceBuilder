@@ -3,7 +3,7 @@ import * as util from '../../core/util';
 import { DeploymentDataProvider } from './deploymentDataProvider';
 import { Item } from './deploymentModel';
 import { DeploymentExplorerService } from './deploymentExplorerService';
-import { BuilderClient } from '../../backend/builderClient';
+import { BuilderClient } from '../../backend/builder/builderClient';
 
 export class DeploymentExplorer {
 

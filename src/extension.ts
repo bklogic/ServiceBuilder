@@ -7,8 +7,8 @@ import { TestEditor } from './editors/testEditor';
 import { DeploymentExplorer } from './explorers/deployment/deploymentExplorer';
 import { HttpService } from './core/httpService';
 import { DataSourceExplorer } from './explorers/datasource/dataSourceExplorer';
-import { BuilderClient } from './backend/builderClient';
-import { TryClient } from './backend/tryClient';
+import { BuilderClient } from './backend/builder/builderClient';
+import { TryClient } from './backend/try/tryClient';
 
 // this method is called when your extension is activated
 export function activate(context: vscode.ExtensionContext) {

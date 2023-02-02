@@ -2,13 +2,13 @@ import * as vscode from 'vscode';
 import * as util from '../core/util';
 import {
     BuilderService
-} from '../backend/builderService';
+} from '../backend/builder/builderService';
 import {
     BuilderClient
-} from '../backend/builderClient';
+} from '../backend/builder/builderClient';
 import {
     TestServiceRequest, TestServiceResult
-} from '../backend/builderModel';
+} from '../backend/builder/builderModel';
 
 export class TestEditor {
     private builderService: BuilderService; 

@@ -3,8 +3,8 @@ import * as util from '../../core/util';
 import {Item, ItemType} from './deploymentModel';
 import {
     DeployService, Application, ApplicationAggregate, Module, Service, Test, DataSource
-} from '../../backend/deployService';
-import { TestService } from '../../backend/testService';
+} from '../../backend/builder/deployService';
+import { TestService } from '../../backend/builder/testService';
 
 
 export class DeploymentExplorerService {
