@@ -17,13 +17,11 @@ export class WorkspaceHandler {
 		this.tryService = tryService;
 		vscode.commands.registerCommand('servicebuilderExplorer.request', () => this.request());
 		vscode.commands.registerCommand('servicebuilderExplorer.connect', () => this.connect());
-		vscode.commands.registerCommand('servicebuilderExplorer.workspace', () => this.workspace());    
+		vscode.commands.registerCommand('servicebuilderExplorer.workspace', () => this.showWorkspace());    
 		vscode.commands.registerCommand('servicebuilderExplorer.about', () => this.about());    
 	}
 
 		async request(): Promise<void> {
-			let result: string;
-	
 			// collect email
 			const email = await vscode.window.showInputBox({
 				placeHolder: 'Email',
@@ -63,11 +61,10 @@ export class WorkspaceHandler {
 				// send request
 				const result = await this.tryService.requestWorkspace(email, reqType, addToMailinglist);
 				// inform user
-				let message = `Workspace is reserved and connection info is sent to ${email}.`;
-				if (result === null) {
-					message = "Workspace cannot be reserved at this time. Please try later.";
-				} 
-				vscode.window.showInformationMessage(message);
+				const message = result 
+					? `A workspace is assigned to you and connection info is sent to ${email}.`
+					: "A workspace/database cannot be reserved at this time. Please try later.";
+				vscode.window.showInformationMessage(message, {modal: true});
 			} catch (error: any) {
 				console.error('Error in requesting workspace.', error);
 				vscode.window.showErrorMessage(error.message);
@@ -83,7 +80,7 @@ export class WorkspaceHandler {
 		try {
 			url = await this.context.secrets.get('servicebuilder.url');
 		} catch (error: any) {
-			console.error("Error to read context secrete.", error);
+			// set to undefined if problem to retrive secret
 			url = undefined;
 		} 
 		// collect url from user
@@ -100,60 +97,78 @@ export class WorkspaceHandler {
             return;
 		}
 
-		// check whether localhost url
+		// extract workspace name. For localhost, set name to "default".
 		const host = new URL.URL(url).host;
-		const workspace = (host.match('localhost')) ? 'default' : host.substring(0, host.indexOf("."));
+		const workspaceName = (host.match('localhost')) ? 'default' : host.substring(0, host.indexOf("."));
 
 		// request access token
 		let accessToken = 'default+token';
-		if ( workspace !== 'default' )  {
+		if ( workspaceName !== 'default' )  {
 			try {
 				accessToken = await this.tryService.requestAccessToken(url, accessKey);
 			} catch(err: any) {
-				vscode.window.showErrorMessage("Failed to get access token: " + err.message);
+				this.showConnectIssue(url, accessKey, err.message);
 				return;
 			}
 		}
 
 		// save connection
-		await this.context.secrets.store('servicebuilder.workspace', workspace);
+		await this.context.secrets.store('servicebuilder.workspace', workspaceName);
 		await this.context.secrets.store('servicebuilder.url', url);
 		await this.context.secrets.store('servicebuilder.accessKey', accessKey);
 		await this.context.secrets.store('servicebuilder.accessToken', accessToken);
 
 		// test connection
 		try {
-			const versions = await this.builderService.getBuilderVersions();
-			vscode.window.showInformationMessage("Success. Connected to workspace: " + workspace + ".");
-		} catch (error: any) {
-			vscode.window.showErrorMessage("Failed to connect to workspace: " + workspace + " for: " + error.message);
+			await this.builderService.getBuilderVersions();
+			vscode.window.showInformationMessage(`Connected. Workspace name: ${workspaceName}.`, {modal: true});
+		} catch (err: any) {
+			this.showConnectionFailure(workspaceName, url, err.message);
 		}
 	}
 
-	async workspace(): Promise<void> {
-		// get current workspace setting
-		const workspace = {
-			name: await this.context.secrets.get("servicebuilder.workspace"),
-			url: await this.context.secrets.get("servicebuilder.url")
-		} as Workspace;		
+	/*
+	* Get and test a new access token
+	*/
+	async reconnect(): Promise<void> {
+		// get new access token
+		const workspaceName = await this.context.secrets.get("servicebuilder.workspace") || '';
+		const workspaceUrl = await this.context.secrets.get("servicebuilder.url") || '';
+		const accessKey = await this.context.secrets.get("servicebuilder.accessKey") || '';
+		try {
+			const accessToken = await this.tryService.requestAccessToken(workspaceUrl, accessKey);
+			this.context.secrets.store("servicebuilder.accessToken", accessToken);
+		} catch (err: any) {
+			this.showConnectIssue(workspaceUrl, accessKey, err.message);
+		}
+		
+		// test builder connection
+		try {
+			await this.builderService.getBuilderVersions();
+			this.showConnectedMessage(workspaceName, workspaceUrl);
+		} catch (err: any) {
+			vscode.window.showWarningMessage(`Reconnect failed: ${err.message}. Please try later.`, {modal:true});
+		}
+	}
 
-		// check workspace setting not undefined
-		if (!workspace.url) {
-			this.showNotConnectedMessageForUnspecifiedWorkspace();
-			return;
+	async showWorkspace(): Promise<void> {
+		// check accessToken
+		const accessToken = await this.context.secrets.get("servicebuilder.accessToken");
+		if (!accessToken) {
+			this.showNotConnectedMessage();
+			return;			
 		}
 
-		// otherwise, test connection by getting builder versions
-		try {
-			// test connection
-			workspace.versions = await this.builderService.getBuilderVersions();
-			
-			// show
-			this.showConnectedMessage(workspace);
+		// get current workspace setting
+		const workspaceName = await this.context.secrets.get("servicebuilder.workspace") || '';
+		const workspaceUrl = await this.context.secrets.get("servicebuilder.url") || '';
 
-		 } catch(error: any) {
-			workspace.connectionIssue = error.message;
-			this.showNotConnectedMessageForConnectionIssue(workspace);
+		// test connection
+		try {
+			await this.builderService.getBuilderVersions();
+			this.showConnectedMessage(workspaceName, workspaceUrl);
+		} catch(err: any) {
+			this.showConnectionFailure(workspaceName, workspaceUrl, err.message);
 		}
 	}
 
@@ -166,11 +181,33 @@ export class WorkspaceHandler {
 		}
 	}
 
-	showConnectedMessage(workspace: Workspace): void {
+	/*
+	* Show issues for "Connect Workspace"
+	*/
+	showConnectIssue(workspaceUrl: string, accessKey: string, issue: string): void {
+		vscode.window.showWarningMessage(
+			`Failed to connect. Please retry with correct url and access key. \n
+			You have entered:
+		    \t   \t Workspace url: ${workspaceUrl}
+		    \t   \t Access key: ${accessKey} \n
+			Issue: ${issue}`,
+		{ modal: true },
+			 'Retry'
+		).then( btn => {
+			if (btn === 'Retry') {
+				this.connect();
+			}
+		});
+	}
+
+	/*
+	* Show connected workspace for "Show Workspace"
+	*/
+	showConnectedMessage(workspaceName: string, workspaceUrl: string): void {
 			vscode.window.showInformationMessage(
 				`Workspace:
-				 \t   \t Name: \t ${workspace.name}
-				 \t   \t Url: \t ${workspace.url}
+				 \t   \t Name: \t ${workspaceName}
+				 \t   \t Url: \t ${workspaceUrl}
 				 \t   \t Status: \t Connected `,
 				 { modal: true },
 				 'Switch Workspace'
@@ -181,12 +218,14 @@ export class WorkspaceHandler {
 			});
 	}
 
-
-	showNotConnectedMessageForUnspecifiedWorkspace(): void {
+	/*
+	* Show not connected workspace for "Show Workspace"
+	*/
+	showNotConnectedMessage(): void {
 		vscode.window.showInformationMessage(
-			`Not connected. \n
-			To connect, you need the workspace url and access token. 
-			They are available from Service Console.`,
+			`No workspace is connected. \n
+			To connect, you need the workspace url and access key, which
+			are available upon request.`,
 			 { modal: true },
 			 'Connect'
 		).then( btn => {
@@ -196,25 +235,28 @@ export class WorkspaceHandler {
 		});
 	}
 
-	showNotConnectedMessageForConnectionIssue(workspace: Workspace): void {
-		vscode.window.showInformationMessage(
-		   `Not connected. Connection issue. \n
-			Please review the connection information:
-			\t   \t Workspace url: ${workspace.url}
-			\t   \t Workspace name: ${workspace.name}
-			\t   \t Issue: ${workspace.connectionIssue}`,
+	/*
+	* Show test connection failure for "Show Workspace"
+	*/
+	showConnectionFailure (workspaceName: string, workspaceUrl: string, issue: string): void {
+		vscode.window.showWarningMessage(
+			`Connection issue found. \n
+			Workspace:
+			\t   \t Workspace name: ${workspaceName}
+			\t   \t Workspace url: ${workspaceUrl} \n
+			Issue: ${issue}`,
 		{ modal: true },
-			 'Reconnect','View Access Token'
+			 'Reconnect'
 		).then( btn => {
 			if ( btn === 'Reconnect') {
-				this.connect();
-			}
-			else if ( btn === 'View Access Token' ) {
-				vscode.window.showInformationMessage(workspace.accessToken || 'No token available.');
+				this.reconnect();
 			}
 		});
 	}
 
+	/*
+	* Show builder versions for "About"
+	*/
 	private showVersions(versions: Versions): void {
 		vscode.window.showInformationMessage(
 			`Service Builder Versions:

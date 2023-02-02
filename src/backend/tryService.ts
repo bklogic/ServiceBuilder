@@ -8,7 +8,7 @@ export class TryService {
 		this.http = http;
 	}
 
-	async requestWorkspace(userEmail: string, reqType: string, addToMailingList: string): Promise<void> {
+	async requestWorkspace(userEmail: string, reqType: string, addToMailingList: string): Promise<boolean> {
 		const url = '/try/requestWorkspace';
 		return await this.http.tryPost(url, {userEmail, reqType, addToMailingList}, 15000);
 	}

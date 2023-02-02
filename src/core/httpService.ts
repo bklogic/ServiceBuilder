@@ -14,49 +14,6 @@ export class HttpService {
         this.context = context;
     }
 
-    async builderHttpConfig(timeout?: number): Promise<HttpConfig> {
-        // get connection data
-        let [url, token] = await Promise.all([
-            this.context.secrets.get('servicebuilder.url'),
-            this.context.secrets.get('servicebuilder.token')    
-        ]);
-
-        if (!url) {
-            throw new Error("Not connected to workspace.");
-        }
-
-        // create and return config
-        const config: HttpConfig = {
-            baseURL: url,
-            timeout: (timeout) ? timeout : 5000,
-            headers: {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                'Content-Type': 'application/json',
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                'Authorization': 'Bearer ' + token
-            },
-            httpsAgent: new https.Agent({ keepAlive: true, rejectUnauthorized: this.rejectUnauthorized })
-        };  
-        return config; 
-    }
-
-    async tryHttpConfig(timeout?: number): Promise<HttpConfig> {
-        // get url
-        const url = vscode.workspace.getConfiguration('servicebuilder').get('tryServiceEndpoint') as string;
-        // create and return config
-        const config: HttpConfig = {
-            baseURL: url,
-            timeout: (timeout) ? timeout : 5000,
-            headers: {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                'Content-Type': 'application/json'
-            },
-            httpsAgent: new https.Agent({ keepAlive: true, rejectUnauthorized: this.rejectUnauthorized })
-        };  
-        return config; 
-    }
-
-
     async get(url: string, config: HttpConfig): Promise<any> {
         try {           
             const response = await axios.get(url, config);
@@ -68,7 +25,7 @@ export class HttpService {
                 throw error;    
             } else {
                 console.error('http get error: ', error.response?.data?.message, '\n',  'url: ', config.baseURL + url, '\n', error);
-                error.message = error.message + ' | ' + error.response?.data?.message;
+                error.message = error.response?.data?.message || error.message;
                 throw error;    
             }
         }    
@@ -87,7 +44,7 @@ export class HttpService {
                 console.info('Data: ');
                 console.info(data);
                 console.error(error);
-                error.message = error.response.data.message;
+                error.message = error.response?.data?.message || error.message;
                 throw error;
             }
           }    
@@ -134,6 +91,49 @@ export class HttpService {
     async tryPost(url: string, data: any, timeout?: number): Promise<any> {
         const config = await this.tryHttpConfig(timeout);
         return this.post(url, data, config);
+    }
+
+
+    async builderHttpConfig(timeout?: number): Promise<HttpConfig> {
+        // get connection data
+        let [url, token] = await Promise.all([
+            this.context.secrets.get('servicebuilder.url'),
+            this.context.secrets.get('servicebuilder.token')    
+        ]);
+
+        if (!url) {
+            throw new Error("Not connected to workspace.");
+        }
+
+        // create and return config
+        const config: HttpConfig = {
+            baseURL: url,
+            timeout: (timeout) ? timeout : 5000,
+            headers: {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                'Content-Type': 'application/json',
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                'Authorization': 'Bearer ' + token
+            },
+            httpsAgent: new https.Agent({ keepAlive: true, rejectUnauthorized: this.rejectUnauthorized })
+        };  
+        return config; 
+    }
+
+    async tryHttpConfig(timeout?: number): Promise<HttpConfig> {
+        // get url
+        const url = vscode.workspace.getConfiguration('servicebuilder').get('tryServiceEndpoint') as string;
+        // create and return config
+        const config: HttpConfig = {
+            baseURL: url,
+            timeout: (timeout) ? timeout : 5000,
+            headers: {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                'Content-Type': 'application/json'
+            },
+            httpsAgent: new https.Agent({ keepAlive: true, rejectUnauthorized: this.rejectUnauthorized })
+        };  
+        return config; 
     }
 
 }
