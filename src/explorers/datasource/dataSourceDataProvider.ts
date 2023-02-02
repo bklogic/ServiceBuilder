@@ -18,8 +18,8 @@ export class DataSourceDataProvider implements TreeDataProvider<DataSourceItem> 
 		treeItem.contextValue = 'datasource';
         treeItem.tooltip = 'data source';
         treeItem.iconPath = {
-            dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'database.svg'), 
-            light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'database.svg')
+            dark: path.join(__filename, '..', '..', '..', '..', 'resources','dark', 'database.svg'), 
+            light: path.join(__filename, '..', '..', '..', '..', 'resources','light', 'database.svg')
         };
 
         return treeItem;

@@ -1,6 +1,4 @@
-import {HttpService} from '../../core/httpService';
-import { WorkspaceAuthentication } from '../../model/workspace';
-import {TryWorkspace, TrySession} from './tryModel';
+import {HttpService} from '../core/httpService';
 
 export class TryService {
 
@@ -18,13 +16,6 @@ export class TryService {
 	async requestAccessToken(workspaceUrl: string, accessKey: string): Promise<string> {
 		const url = '/try/requestAccessToken';
 		return await this.http.tryPost(url, {workspaceUrl, accessKey});
-	}
-
-	async startTrySession(workspaceId: number, accessCode: string): Promise<TrySession> {
-		const url = '/try/startSession';
-		const data = {workspaceId, accessCode};
-		const session = await this.http.tryPost(url, data);
-		return session;
 	}
 
 }

@@ -1,18 +1,18 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { TreeDataProvider } from "vscode";
-import {ApplicationService} from "./applicationService";
+import {ApplicationDataService} from "./applicationDataService";
 import {Entry, EntryType} from './applicationModel';
 
 
 export class ApplicationDataProvider implements TreeDataProvider<Entry> {
 	private _onDidChangeTreeData: vscode.EventEmitter<Entry | undefined | void> = new vscode.EventEmitter<Entry | undefined | void>();
 	readonly onDidChangeTreeData: vscode.Event<Entry | undefined | void> = this._onDidChangeTreeData.event;
-	private appService: ApplicationService;
+	private appDataService: ApplicationDataService;
 	workfolder: Entry;
 
-	constructor(appService: ApplicationService) {
-		this.appService = appService;
+	constructor() {
+		this.appDataService = new ApplicationDataService();
 		this.workfolder = this.getWorkfolderEntry();
 	}
 
@@ -27,57 +27,57 @@ export class ApplicationDataProvider implements TreeDataProvider<Entry> {
 		switch (element.type) {
 			case EntryType.Application:
 				treeItem.iconPath = {
-					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'app-folder.svg'), 
-					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'app-folder.svg')
+					dark: path.join(__filename, '..', '..', '..', '..', 'resources','dark', 'app-folder.svg'), 
+					light: path.join(__filename, '..', '..', '..', '..', 'resources','light', 'app-folder.svg')
 				};
 				treeItem.tooltip = 'application';
 				break;
 			case EntryType.Module:
 				treeItem.iconPath = {
-					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'mod-folder.svg'), 
-					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'mod-folder.svg')
+					dark: path.join(__filename, '..', '..', '..', '..', 'resources','dark', 'mod-folder.svg'), 
+					light: path.join(__filename, '..', '..', '..', '..', 'resources','light', 'mod-folder.svg')
 				};
 				treeItem.tooltip = 'module';
 				break;
 			case EntryType.QueryService:
 				treeItem.iconPath = {
-					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'query-service.svg'), 
-					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'query-service.svg')
+					dark: path.join(__filename, '..', '..', '..', '..', 'resources','dark', 'query-service.svg'), 
+					light: path.join(__filename, '..', '..', '..', '..', 'resources','light', 'query-service.svg')
 				};
 				treeItem.tooltip = 'query service';
 				break;
 			case EntryType.SqlService:
 				treeItem.iconPath = {
-					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'sql-service.svg'), 
-					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'sql-service.svg')
+					dark: path.join(__filename, '..', '..', '..', '..', 'resources','dark', 'sql-service.svg'), 
+					light: path.join(__filename, '..', '..', '..', '..', 'resources','light', 'sql-service.svg')
 				};
 				treeItem.tooltip = 'sql service';
 				break;			
 			case EntryType.CrudService:
 				treeItem.iconPath = {
-					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'crud-service.svg'), 
-					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'crud-service.svg')
+					dark: path.join(__filename, '..', '..', '..', '..', 'resources','dark', 'crud-service.svg'), 
+					light: path.join(__filename, '..', '..', '..', '..', 'resources','light', 'crud-service.svg')
 				};
 				treeItem.tooltip = 'crud service';
 				break;			
 			case EntryType.Read:
 				treeItem.iconPath = {
-					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'book.svg'), 
-					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'book.svg')
+					dark: path.join(__filename, '..', '..', '..', '..', 'resources','dark', 'book.svg'), 
+					light: path.join(__filename, '..', '..', '..', '..', 'resources','light', 'book.svg')
 				};
 				treeItem.tooltip = 'crud read';
 				break;
 			case EntryType.Write:
 				treeItem.iconPath = {
-					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'edit.svg'), 
-					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'edit.svg')
+					dark: path.join(__filename, '..', '..', '..', '..', 'resources','dark', 'edit.svg'), 
+					light: path.join(__filename, '..', '..', '..', '..', 'resources','light', 'edit.svg')
 				};
 				treeItem.tooltip = 'crud write';
 				break;
 			case EntryType.Tests:
 				treeItem.iconPath = {
-					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'beaker.svg'), 
-					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'beaker.svg')
+					dark: path.join(__filename, '..', '..', '..', '..', 'resources','dark', 'beaker.svg'), 
+					light: path.join(__filename, '..', '..', '..', '..', 'resources','light', 'beaker.svg')
 				};
 				treeItem.tooltip = 'tests';
 				break;
@@ -100,7 +100,7 @@ export class ApplicationDataProvider implements TreeDataProvider<Entry> {
 			element = this.workfolder;
 		}
 		// return chilren of element
-		return this.appService.getChildren(element);
+		return this.appDataService.getChildren(element);
 	}
 
 	getParent?(element: Entry): vscode.ProviderResult<Entry> {

@@ -1,10 +1,10 @@
 
 import * as vscode from 'vscode';
 import * as util from '../../core/util';
-import { BuilderService } from '../../services/builderService';
+import { BuilderService } from '../../backend/builderService';
 import { DataSourceContentService } from './dataSourceContentService';
 import {DataSourceItem, DataSource} from './dataSourceDataModel';
-import {DeployDataSourceRequest, TestDataSourceRequest} from '../../model/builder';
+import {DeployDataSourceRequest, TestDataSourceRequest} from '../../backend/builder';
 
 
 export class DataSourceExplorerService {

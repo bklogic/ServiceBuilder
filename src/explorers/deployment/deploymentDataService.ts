@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as util from '../../core/util';
 import {Item, ItemType} from './deploymentModel';
-import {DataSource, Application, Module, Service} from '../../services/deployService';
+import {DataSource, Application, Module, Service} from '../../backend/deployService';
 
 
 export class DeploymentDataService {

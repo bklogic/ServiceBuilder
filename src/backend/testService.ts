@@ -1,5 +1,5 @@
 import { HttpService } from "../core/httpService";
-import { TestDataSourceResult } from "../model/builder";
+import { TestDataSourceResult } from "./builder";
 
 
 export class TestService {

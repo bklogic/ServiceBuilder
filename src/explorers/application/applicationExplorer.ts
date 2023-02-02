@@ -1,11 +1,11 @@
 import * as vscode from 'vscode';
 import * as util from '../../core/util';
 import {ApplicationDataProvider} from './applicationDataProvider';
-import {ApplicationService} from "./applicationService";
+import {ApplicationExplorerService} from "./applicationExplorerService";
 import {Entry, EntryType} from './applicationModel';
 import {
     BuilderService
-} from '../../services/builderService';
+} from '../../backend/builderService';
 import {
 	BindCrudQueryRequest,
 	BindCrudTableRequest,
@@ -23,26 +23,27 @@ import {
 	NameConvention,
 	Table,
 	WhereClauseType,
-	DataSource,
-	DeployDataSourceRequest
-} from '../../model/builder';
-import { Application, Module, Service } from '../../services/deployService';
+} from '../../backend/builder';
+import { Application, Module, Service } from '../../backend/deployService';
 import { ViewColumn } from 'vscode';
+import { WorkspaceHandler } from './workspaceHandler';
+import { TryService } from '../../backend/tryService';
 
 
 export class ApplicationExplorer {
 	private context: vscode.ExtensionContext;
 	private dataProvider: ApplicationDataProvider;
 	private treeView: vscode.TreeView<Entry>;
-	private appService: ApplicationService;
+	private explorerService: ApplicationExplorerService;
 	private builderService: BuilderService;
 	private doubleClick = new util.DoubleClick();
 
-	constructor(context: vscode.ExtensionContext, appService: ApplicationService, builderService: BuilderService) {
+	constructor(context: vscode.ExtensionContext, builderService: BuilderService, tryService: TryService) {
 		this.context = context;
-		this.appService = appService;
+		this.explorerService = new ApplicationExplorerService();
 		this.builderService = builderService;
-		this.dataProvider = new ApplicationDataProvider(this.appService);
+		new WorkspaceHandler(context, builderService, tryService);
+		this.dataProvider = new ApplicationDataProvider();
 		this.treeView = vscode.window.createTreeView('servicebuilderExplorer', { treeDataProvider: this.dataProvider, showCollapseAll: true });
 		context.subscriptions.push(this.treeView);
 		vscode.commands.registerCommand('servicebuilderExplorer.openResource', (resource) => this.openResource(resource));
@@ -127,7 +128,7 @@ export class ApplicationExplorer {
 
 			// create application
 			const versions = await this.builderService.getBuilderVersions();
-			const app = await this.appService.createApplication(this.dataProvider.workfolder, appName, dbType, versions);
+			const app = await this.explorerService.createApplication(this.dataProvider.workfolder, appName, dbType, versions);
 
 			// reveal
 			this.refresh();
@@ -203,7 +204,7 @@ export class ApplicationExplorer {
 			// clear status message
 			vscode.window.setStatusBarMessage('creating module: ' + modName);
 			// create module
-			const mod = await this.appService.createModule(app, modName);
+			const mod = await this.explorerService.createModule(app, modName);
 			// reveal
 			this.dataProvider.fire(app);
 			this.treeView.reveal(mod, {expand: 2, focus: true, select: true});	
@@ -278,7 +279,7 @@ export class ApplicationExplorer {
 					// clear status message
 					vscode.window.setStatusBarMessage('');
 					// create service
-					const service = await this.appService.createService(mod, name, type);
+					const service = await this.explorerService.createService(mod, name, type);
 					this.dataProvider.fire(mod);
 					this.treeView.reveal(service, {expand: 2, focus: true, select: true});	
 					// inform user
@@ -346,7 +347,7 @@ export class ApplicationExplorer {
 
 	async delete(entry: Entry): Promise<void> {
 		try {
-			await this.appService.delete(entry.uri);
+			await this.explorerService.delete(entry.uri);
 			if (entry.parent) {
 				const parent = (entry.parent.name === 'src') ? entry.parent.parent : entry.parent;
 				if (parent === null) { 
@@ -385,14 +386,14 @@ export class ApplicationExplorer {
 		}
 
 		// check target exists
-		if (await this.appService.fileExists(targetUri)) {
+		if (await this.explorerService.fileExists(targetUri)) {
 			vscode.window.setStatusBarMessage('target name exists');
 			return;
 		}
 
 		// rename
 		try {
-			await this.appService.rename(entry.uri, targetUri);
+			await this.explorerService.rename(entry.uri, targetUri);
 		} catch (error: any) {
 			vscode.window.setStatusBarMessage('Failed to rename item: ' + error.message);
 			return;
@@ -477,21 +478,21 @@ export class ApplicationExplorer {
 		// copy target
 		let targetUri: vscode.Uri;
 		if (source.type === EntryType.Application && target.type === EntryType.Application) {
-			targetUri = await this.appService.getCopyTarget(source.name, this.dataProvider.workfolder.uri);
-			await this.appService.copy(source.uri, targetUri);
+			targetUri = await this.explorerService.getCopyTarget(source.name, this.dataProvider.workfolder.uri);
+			await this.explorerService.copy(source.uri, targetUri);
 			this.dataProvider.refresh();
 		} 
 		else if (source.type === EntryType.Module && target.type === EntryType.Application) {
-			targetUri = await this.appService.getCopyTarget(source.name, vscode.Uri.joinPath(target.uri, 'src'));
-			await this.appService.copy(source.uri, targetUri);
+			targetUri = await this.explorerService.getCopyTarget(source.name, vscode.Uri.joinPath(target.uri, 'src'));
+			await this.explorerService.copy(source.uri, targetUri);
 			this.dataProvider.fire(target);
 		} 
 		else if (( source.type === EntryType.QueryService 
 					|| source.type === EntryType.SqlService 
 					|| source.type === EntryType.CrudService 
 				) && target.type === EntryType.Module ) {
-			targetUri = await this.appService.getCopyTarget(source.name, target.uri);
-			await this.appService.copy(source.uri, targetUri);
+			targetUri = await this.explorerService.getCopyTarget(source.name, target.uri);
+			await this.explorerService.copy(source.uri, targetUri);
 			this.dataProvider.fire(target);
 		} else {
 			vscode.window.setStatusBarMessage('Not right target to paste');
@@ -835,7 +836,7 @@ export class ApplicationExplorer {
 			let testFile;
 			const tests = testTypes.length;
 			for (let testType of testTypes) {
-				testFile = await this.appService.addTest(testFolder, testType);				
+				testFile = await this.explorerService.addTest(testFolder, testType);				
 				this.dataProvider.fire(testFolder);
 				this.treeView.reveal(testFile, {focus: true, select: false});
 				if (tests === 1) {
@@ -849,7 +850,7 @@ export class ApplicationExplorer {
 
 	async duplicateTest(test: Entry): Promise<void> {
 		try {
-			const testFile = await this.appService.duplicateTest(test);
+			const testFile = await this.explorerService.duplicateTest(test);
 			if (!testFile.parent) {
 				return;
 			}
@@ -872,7 +873,7 @@ export class ApplicationExplorer {
 
     async createCrud(mod: Entry, crud: GenerateCrudResult): Promise<Entry> {
 		// create service
-		await this.appService.createService(mod, crud.serviceName, 'crud');
+		await this.explorerService.createService(mod, crud.serviceName, 'crud');
 
 		// add contents
 

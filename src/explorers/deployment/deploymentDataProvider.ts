@@ -25,57 +25,57 @@ export class DeploymentDataProvider implements TreeDataProvider<Item> {
 		switch (element.type) {
 			case ItemType.DataSources:
 				treeItem.iconPath = {
-					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'server2.svg'), 
-					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'server2.svg')
+					dark: path.join(__filename, '..', '..', '..', '..', 'resources','dark', 'server2.svg'), 
+					light: path.join(__filename, '..', '..', '..', '..', 'resources','light', 'server2.svg')
 				};
 				treeItem.tooltip = '';
 				break;
 				case ItemType.DataSource:
 					treeItem.iconPath = {
-						dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'database.svg'), 
-						light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'database.svg')
+						dark: path.join(__filename, '..', '..', '..', '..', 'resources','dark', 'database.svg'), 
+						light: path.join(__filename, '..', '..', '..', '..', 'resources','light', 'database.svg')
 					};
 					treeItem.tooltip = 'data source';
 					break;
 				case ItemType.Applications:
 				treeItem.iconPath = {
-					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'server.svg'), 
-					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'server.svg')
+					dark: path.join(__filename, '..', '..', '..', '..', 'resources','dark', 'server.svg'), 
+					light: path.join(__filename, '..', '..', '..', '..', 'resources','light', 'server.svg')
 				};
 				treeItem.tooltip = '';
 				break;
 			case ItemType.Application:
 				treeItem.iconPath = {
-					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'app-folder.svg'), 
-					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'app-folder.svg')
+					dark: path.join(__filename, '..', '..', '..', '..', 'resources','dark', 'app-folder.svg'), 
+					light: path.join(__filename, '..', '..', '..', '..', 'resources','light', 'app-folder.svg')
 				};
 				treeItem.tooltip = 'application';
 				break;
 			case ItemType.Module:
 				treeItem.iconPath = {
-					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', 'mod-folder.svg'), 
-					light: path.join(__filename, '..', '..', '..', 'resources', 'light', 'mod-folder.svg')
+					dark: path.join(__filename, '..', '..', '..', '..', 'resources','dark', 'mod-folder.svg'), 
+					light: path.join(__filename, '..', '..', '..', '..', 'resources','light', 'mod-folder.svg')
 				};
 				treeItem.tooltip = 'module';
 				break;
 			case ItemType.QueryService:
 				treeItem.iconPath = {
-					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', ((element.state === 'valid') ? 'query-service.svg' : 'invalid-query.svg')), 
-					light: path.join(__filename, '..', '..', '..', 'resources', 'light', ((element.state === 'valid') ? 'query-service.svg' : 'invalid-query.svg'))
+					dark: path.join(__filename, '..', '..', '..', '..', 'resources','dark', ((element.state === 'valid') ? 'query-service.svg' : 'invalid-query.svg')), 
+					light: path.join(__filename, '..', '..', '..', '..', 'resources','light', ((element.state === 'valid') ? 'query-service.svg' : 'invalid-query.svg'))
 				};
 				treeItem.tooltip = 'query service';
 				break;
 			case ItemType.SqlService:
 				treeItem.iconPath = {
-					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', ((element.state === 'valid') ? 'sql-service.svg' : 'invalid-sql.svg')), 
-					light: path.join(__filename, '..', '..', '..', 'resources', 'light', ((element.state === 'valid') ? 'sql-service.svg' : 'invalid-sql.svg'))
+					dark: path.join(__filename, '..', '..', '..', '..', 'resources','dark', ((element.state === 'valid') ? 'sql-service.svg' : 'invalid-sql.svg')), 
+					light: path.join(__filename, '..', '..', '..', '..', 'resources','light', ((element.state === 'valid') ? 'sql-service.svg' : 'invalid-sql.svg'))
 				};
 				treeItem.tooltip = 'sql service';
 				break;			
 			case ItemType.CrudService:
 				treeItem.iconPath = {
-					dark: path.join(__filename, '..', '..', '..', 'resources', 'dark', ((element.state === 'valid') ? 'crud-service.svg' : 'invalid-crud.svg')), 
-					light: path.join(__filename, '..', '..', '..', 'resources', 'light', ((element.state === 'valid') ? 'crud-service.svg' : 'invalid-crud.svg'))
+					dark: path.join(__filename, '..', '..', '..', '..', 'resources','dark', ((element.state === 'valid') ? 'crud-service.svg' : 'invalid-crud.svg')), 
+					light: path.join(__filename, '..', '..', '..', '..', 'resources','light', ((element.state === 'valid') ? 'crud-service.svg' : 'invalid-crud.svg'))
 				};
 				treeItem.tooltip = ((element.state === 'valid') ? '' : 'invalid ') + 'crud service';
 				break;		

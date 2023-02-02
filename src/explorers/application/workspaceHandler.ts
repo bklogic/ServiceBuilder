@@ -2,9 +2,9 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as URL from 'url';
 import * as util from '../../core/util';
-import { BuilderService } from '../../services/builderService';
-import { Workspace, WorkspaceAuthentication } from '../../model/workspace';
-import { TryService } from './tryService';
+import { BuilderService } from '../../backend/builderService';
+import { Workspace } from '../../backend/workspace';
+import { TryService } from '../../backend/tryService';
 
 
 export class WorkspaceHandler {
@@ -12,19 +12,70 @@ export class WorkspaceHandler {
 	private builderService: BuilderService;
 	private tryService: TryService;
 
+
 	constructor(context: vscode.ExtensionContext, builderService: BuilderService, tryService: TryService) {
         this.context = context;
 		this.builderService = builderService;
 		this.tryService = tryService;
+		vscode.commands.registerCommand('servicebuilderExplorer.request', () => this.request());
 		vscode.commands.registerCommand('servicebuilderExplorer.connect', () => this.connect());
-		vscode.commands.registerCommand('servicebuilderExplorer.workspace', () => this.workspace());
-		vscode.commands.registerCommand('servicebuilderExplorer.openGettingStarted', () => this.openGettingStarted());
-    }
+		vscode.commands.registerCommand('servicebuilderExplorer.workspace', () => this.workspace());    }
 
-	openGettingStarted(): void {
-		const uri = vscode.Uri.file(path.join(__filename, '..', '..', '..', 'resources', 'GettingStarted.md'));
-		vscode.commands.executeCommand("markdown.showPreviewToSide", uri);	
-	}
+		async request(): Promise<void> {
+			let result: string;
+	
+			// collect email
+			const email = await vscode.window.showInputBox({
+				placeHolder: 'Email',
+				prompt: "email to receive workspace info"
+			});	
+	
+			// validate email string
+			const emailRegex = '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$';
+			if (!email) {
+				vscode.window.setStatusBarMessage("No email entered.");
+				return;
+			}
+			else if (!email.match(emailRegex)) {
+				vscode.window.setStatusBarMessage("Invalid email string.");
+				return;
+			}
+	
+			// collect request type
+			let items = ['Workspace only', 'Workspace and database for tutorial'];
+			let options = {ignoreFocusOut: true, placeHolder: "Workspace type", value: "Yes", canPickMany: false};
+			let reqType = await vscode.window.showQuickPick(items, options);
+			if (!reqType) {
+				vscode.window.setStatusBarMessage("No workspace type selected.");
+				return;
+			}
+			reqType = reqType.includes('database') ? 'starter' : 'basic';
+	
+			// collect mailing list selection
+			items = ['Yes', 'No'];
+			options = {ignoreFocusOut: true, placeHolder: "Join mailing list for product news", value: "Yes", canPickMany: false};
+			let addToMailinglist = await vscode.window.showQuickPick(items, options);
+			addToMailinglist = (addToMailinglist === 'Yes') ? 'Y' : 'N';
+	
+			// request
+			try {
+				vscode.window.setStatusBarMessage("processing request ...");
+				// send request
+				const result = await this.tryService.requestWorkspace(email, reqType, addToMailinglist);
+				// inform user
+				let message = `Workspace is reserved and connection info is sent to ${email}.`;
+				if (result === null) {
+					message = "Workspace cannot be reserved at this time. Please try later.";
+				} 
+				vscode.window.showInformationMessage(message);
+			} catch (error: any) {
+				console.error('Error in requesting workspace.', error);
+				vscode.window.showErrorMessage(error.message);
+			} finally {
+				vscode.window.setStatusBarMessage("");
+			}
+		}
+	
 
 	async connect(): Promise<void> {
 		// get url from store

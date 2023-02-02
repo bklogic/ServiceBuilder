@@ -1,7 +1,7 @@
 
 import {HttpService} from '../core/httpService';
 
-import {Versions, WorkspaceAuthentication} from '../model/workspace';
+import {Versions, WorkspaceAuthentication} from '../backend/workspace';
 import { 
 	BindCrudQueryRequest,
 	BindCrudQueryResult,
@@ -23,7 +23,7 @@ import {
 	Table,
 	TestDataSourceRequest, TestDataSourceResult, TestServiceRequest, TestServiceResult,
 
-} from '../model/builder';
+} from './builder';
 
 export class BuilderService {
 
