@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { TreeDataProvider } from "vscode";
-import {DeploymentDataService} from "./DeploymentDataService";
+import {DeploymentDataService} from "./deploymentDataService";
 import {Item, ItemType} from './deploymentModel';
 
 

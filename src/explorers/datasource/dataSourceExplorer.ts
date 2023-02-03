@@ -2,7 +2,7 @@
 import * as vscode from 'vscode';
 import { BuilderClient } from '../../backend/builder/builderClient';
 import { DataSourceItem } from './dataSourceDataModel';
-import {DataSourceDataProvider} from './datasourceDataProvider';
+import {DataSourceDataProvider} from './dataSourceDataProvider';
 import {DataSourceExplorerService} from './dataSourceExplorerService';
 
 export class DataSourceExplorer {
