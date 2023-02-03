@@ -13,5 +13,4 @@ export class BuilderClient {
         this.deployService = new DeployService(httpService);
         this.testService = new TestService(httpService);
     }
-
 }

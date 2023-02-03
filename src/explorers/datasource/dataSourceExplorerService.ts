@@ -5,6 +5,7 @@ import { BuilderService } from '../../backend/builder/builderService';
 import { DataSourceContentService } from './dataSourceContentService';
 import {DataSourceItem, DataSource} from './dataSourceDataModel';
 import {DeployDataSourceRequest, TestDataSourceRequest} from '../../backend/builder/builderModel';
+import { BuilderClient } from '../../backend/builder/builderClient';
 
 
 export class DataSourceExplorerService {
@@ -13,9 +14,9 @@ export class DataSourceExplorerService {
     private builderService: BuilderService;
     private contentService: DataSourceContentService;
 
-    constructor(context: vscode.ExtensionContext, builderService: BuilderService) {
+    constructor(context: vscode.ExtensionContext, builderClient: BuilderClient) {
         this.context = context;
-        this.builderService = builderService;
+        this.builderService = builderClient.builderService;
         this.contentService = new DataSourceContentService();
     }
 

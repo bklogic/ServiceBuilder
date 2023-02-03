@@ -5,6 +5,7 @@ import {
     DeployService, Application, ApplicationAggregate, Module, Service, Test, DataSource
 } from '../../backend/builder/deployService';
 import { TestService } from '../../backend/builder/testService';
+import { BuilderClient } from '../../backend/builder/builderClient';
 
 
 export class DeploymentExplorerService {
@@ -13,10 +14,10 @@ export class DeploymentExplorerService {
     private deployService: DeployService;
     private testService: TestService;
 
-    constructor(context: vscode.ExtensionContext, deployService: DeployService, testService: TestService) {
+    constructor(context: vscode.ExtensionContext, builderClient: BuilderClient) {
         this.context = context;
-        this.deployService = deployService;
-        this.testService = testService;
+        this.deployService = builderClient.deployService;
+        this.testService = builderClient.testService;
     }
 
     async refreshDataSourceList(item: Item): Promise<void> {

@@ -13,7 +13,7 @@ export class DeploymentExplorer {
 	private doubleClick = new util.DoubleClick();
 
     constructor(context: vscode.ExtensionContext, builderClient: BuilderClient) {
-        this.explorerService = new DeploymentExplorerService(context, builderClient.deployService, builderClient.testService);
+        this.explorerService = new DeploymentExplorerService(context, builderClient);
         this.dataProvider = new DeploymentDataProvider();
         this.treeView = vscode.window.createTreeView('servicedeploymentExplorer', { treeDataProvider: this.dataProvider, showCollapseAll: true });
         context.subscriptions.push(this.treeView);

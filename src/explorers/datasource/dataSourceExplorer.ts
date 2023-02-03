@@ -17,7 +17,7 @@ export class DataSourceExplorer {
         context.subscriptions.push(this.treeView);
 
         // instantiate explorer service
-        this.explorerService = new DataSourceExplorerService(context, builderClient.builderService);
+        this.explorerService = new DataSourceExplorerService(context, builderClient);
 
         // register commands
 		vscode.commands.registerCommand('servicebuilderDataSourceExplorer.refresh', (resource) => this.refresh());        
