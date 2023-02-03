@@ -42,7 +42,7 @@ export class ApplicationExplorerService {
 		await util.writeJsonFile(vscode.Uri.joinPath(app.uri, 'src', '.versions.json'), versions);
 
 		// README file
-		const templatePath = path.join(__filename, '..', '..', '..', 'resources', 'README.md');
+		const templatePath = path.join(__filename, '..', '..', '..', '..', 'resources', 'README.md');
 		const templateUri = vscode.Uri.parse('file:' + templatePath, true);
 		const readmeUri = vscode.Uri.joinPath(app.uri, 'README.md');
 		await vscode.workspace.fs.copy(templateUri, readmeUri);
