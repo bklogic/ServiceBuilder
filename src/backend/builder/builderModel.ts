@@ -1,4 +1,10 @@
 
+export interface Versions {
+	engine: string; 
+	deployer: string; 
+	builder: string
+}
+
 // data model
 export interface DataSource {
     dbType: string;

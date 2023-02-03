@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as URL from 'url';
 import { BuilderService } from '../../backend/builder/builderService';
-import { Workspace, Versions} from './workspaceModel';
+import { Versions} from '../../backend/builder/builderModel';
 import { TryService } from '../../backend/try/tryService';
 
 

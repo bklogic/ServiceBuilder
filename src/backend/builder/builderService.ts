@@ -1,8 +1,8 @@
 
 import {HttpService} from '../../core/httpService';
 
-import {Versions, WorkspaceAuthentication} from '../../explorers/application/workspaceModel';
 import { 
+	Versions,
 	BindCrudQueryRequest,
 	BindCrudQueryResult,
 	BindCrudTableRequest,
@@ -22,7 +22,6 @@ import {
 	GetTableListRequest,
 	Table,
 	TestDataSourceRequest, TestDataSourceResult, TestServiceRequest, TestServiceResult,
-
 } from './builderModel';
 
 export class BuilderService {
@@ -42,13 +41,6 @@ export class BuilderService {
 		return versions;
 	}
 	
-	async authenticateWorkspace(workspaceName: string, accessToken: string): Promise<WorkspaceAuthentication> {
-		const url = '/auth/authenticate';
-		const auth = await this.http.builderPost(url, {workspaceName, accessToken});
-		return auth;
-	}
-
-
 	/**
 	 * Data Source
 	 */
