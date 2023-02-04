@@ -59,9 +59,10 @@ export class ServiceHandler {
 		vscode.window.showTextDocument(resource.uri, {preview: !this.doubleClick.check(resource)});
 	}
 
-	openWithJsonViewer(resource: Entry): void {
-		vscode.commands.executeCommand('vscode.openWith', resource.uri, 'jsonGridViewer.json', 
-			{viewColumn: ViewColumn.Beside, preserveFocus: true});
+	async openWithJsonViewer(resource: Entry): Promise<void> {
+		await vscode.window.showTextDocument(resource.uri);
+		await vscode.commands.executeCommand('vscode.openWith', resource.uri, 'jsonGridViewer.json', {viewColumn: ViewColumn.Beside, preserveFocus: true});
+		vscode.commands.executeCommand('workbench.action.focusPreviousGroup');
 	}
 
 	onCreateService(mod: Entry, serviceType: string): void {
