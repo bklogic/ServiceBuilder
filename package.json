@@ -236,8 +236,8 @@
 				"command": "servicebuilderExplorer.genCrudTableBindings",
 				"title": "Generate Table Bindings",
 				"icon": {
-					"light": "resources/light/multiple-windows.svg",
-					"dark": "resources/dark/multiple-windows.svg"
+					"light": "resources/light/table-bindings.svg",
+					"dark": "resources/dark/table-bindings.svg"
 				}
 			},
 			{

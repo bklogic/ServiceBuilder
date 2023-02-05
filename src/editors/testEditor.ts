@@ -60,11 +60,17 @@ export class TestEditor {
                 const result: TestServiceResult = await this.builderService.testService(request, archive);
 
                 // process result
-                this.outputChannel.clear();
-                let output = (result.succeed) ? result.output : result.exception;
-                this.outputChannel.appendLine( (result.succeed) ? 'TEST OUTPUT: ' : 'TEST EXCEPTION: ');
-                this.outputChannel.append(JSON.stringify(output, null, 4));
-                this.outputChannel.show(true);
+                const output = (result.succeed) ? result.output : result.exception;
+                // this.outputChannel.clear();
+                // this.outputChannel.appendLine( (result.succeed) ? 'TEST OUTPUT: ' : 'TEST EXCEPTION: ');
+                // this.outputChannel.append(JSON.stringify(output, null, 4));
+                // this.outputChannel.show(true);
+                const doc = await vscode.workspace.openTextDocument({language: 'plaintext'});
+                const textEditor = await vscode.window.showTextDocument( doc, {viewColumn: vscode.ViewColumn.Beside} );
+                textEditor.edit( (editBuilder: vscode.TextEditorEdit) => {
+                    editBuilder.replace(new vscode.Position( 0, 0 ), result.succeed ? '\nTEST OUTPUT: \n\n' : '\nTEST EXCEPTION: \n\n');
+                    editBuilder.insert(new vscode.Position( 2, 0 ), JSON.stringify(output, null, 4));
+                });
 
             } catch (error: any) {
                 console.error('Error in testing service', error);
