@@ -469,10 +469,10 @@ export class ServiceHandler {
 		// get operation if crud service
 		let testTypes: string [] = [];
 		if (serviceType === 'crud') {
-			await vscode.window.showQuickPick(['all', 'read', 'create', 'update', 'delete'], {ignoreFocusOut: true, placeHolder: "select an operation", 
+			await vscode.window.showQuickPick(['all', 'read', 'create', 'update', 'delete', 'save'], {ignoreFocusOut: true, placeHolder: "select an operation", 
 					canPickMany: false}).then( (operation) => {
 				if (operation) {
-					testTypes = (operation==='all') ? ['read', 'create', 'update', 'delete'] : [operation];		
+					testTypes = (operation==='all') ? ['read', 'create', 'update', 'delete', 'save'] : [operation];		
 				} else {
 					vscode.window.setStatusBarMessage("No operation selected.");
 					return;

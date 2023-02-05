@@ -242,7 +242,11 @@
 			},
 			{
 				"command": "servicebuilderExplorer.generateCrud",
-				"title": "Generate CRUD from Table"
+				"title": "Generate CRUD from Table",
+				"icon": {
+					"light": "resources/light/simple-crud.svg",
+					"dark": "resources/dark/simple-crud.svg"
+				}
 			},
 			{
 				"command": "servicebuilderExplorer.addTest",
@@ -535,6 +539,11 @@
 					"command": "servicebuilderExplorer.createCrudService",
 					"when": "view == servicebuilderExplorer && viewItem == module",
 					"group": "inline@3"
+				},
+				{
+					"command": "servicebuilderExplorer.generateCrud",
+					"when": "view == servicebuilderExplorer && viewItem == module",
+					"group": "inline@4"
 				},
 				{
 					"command": "servicebuilderExplorer.createQueryService",

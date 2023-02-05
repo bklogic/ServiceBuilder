@@ -122,7 +122,7 @@ export class ServiceHandlerService {
 				fileName = `test${util.initCap(testType)}${util.initCap(service.name)}`;
 				inputUri = vscode.Uri.joinPath(service.uri, 'read', 'input.json');
 				break;
-			case 'create': case 'update': 
+			case 'create': case 'update': case 'save':
 				fileName = `test${util.initCap(testType)}${util.initCap(service.name)}`;
 				inputUri = vscode.Uri.joinPath(service.uri, 'object.json');
 				break;
