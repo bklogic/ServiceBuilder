@@ -328,8 +328,6 @@ export class ServiceHandler {
 			const outputBidningsUri = vscode.Uri.joinPath(service.uri, 'output-bindings.json');
 			await util.writeJsonFile(inputBidningsUri, result.inputBindings);
 			await util.writeJsonFile(outputBidningsUri, result.outputBindings);
-			// vscode.window.showTextDocument(inputBidningsUri, {preview: true});
-			vscode.window.showTextDocument(outputBidningsUri, {preview: true});
 			// inform user
 			vscode.window.setStatusBarMessage('input and output bindings are generated');
 		} catch (error: any) {
@@ -387,8 +385,6 @@ export class ServiceHandler {
 			const outputBidningsUri = vscode.Uri.joinPath(service.uri, 'read', 'output-bindings.json');
 			await util.writeJsonFile(inputBidningsUri, result.inputBindings);
 			await util.writeJsonFile(outputBidningsUri, result.outputBindings);
-			vscode.window.showTextDocument(inputBidningsUri, {preview: false});
-			// vscode.window.showTextDocument(outputBidningsUri, {preview: false});
 			// inform user
 			vscode.window.setStatusBarMessage('input and output bindings are generated');
 		} catch (error: any) {

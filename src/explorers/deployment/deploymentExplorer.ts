@@ -64,6 +64,7 @@ export class DeploymentExplorer {
         try {
             await this.explorerService.cleanDataSource(item);
             vscode.window.setStatusBarMessage('Data source cleaned.');
+            this.dataProvider.fire(item.parent);
         } catch (error: any) {
             vscode.window.showErrorMessage(error.message);
         }
@@ -136,6 +137,7 @@ export class DeploymentExplorer {
             util.sleep(200);
             this.dataProvider.refresh();
             vscode.window.setStatusBarMessage('Application cleaned');
+            this.dataProvider.fire(app.parent);
         } catch (error: any) {
             vscode.window.showErrorMessage(error.message);
         }

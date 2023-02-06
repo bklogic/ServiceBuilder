@@ -100,8 +100,10 @@ export class DeploymentDataProvider implements TreeDataProvider<Item> {
 		this._onDidChangeTreeData.fire();
 	}
 
-	fire(item: Item): void {
-		this._onDidChangeTreeData.fire(item);
+	fire(item: Item | null): void {
+		if (item) {
+			this._onDidChangeTreeData.fire(item);
+		}
 	}
 
 }
