@@ -79,7 +79,7 @@ export function tablesFile(): Uint8Array {
 export function testFile(input: any, testName: string, testType: string | undefined): Uint8Array {
 	let content;
 	switch (testType) {
-		case 'read': case 'create': case 'update': case 'delete':
+		case 'read': case 'create': case 'update': case 'delete': case 'save':
 			content = {
 				name: testName,
 				input: input,
