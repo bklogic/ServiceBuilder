@@ -427,7 +427,6 @@ export class ServiceHandler {
 			}
 			const tablesUri = vscode.Uri.joinPath(service.uri, 'write', 'tables.json');
 			await util.writeJsonFile(tablesUri, tableContent);
-			vscode.window.showTextDocument(tablesUri, {preview: false});
 			this.dataProvider.fire(service);
 			this.revealTables(service);
 			// inform user

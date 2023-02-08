@@ -100,6 +100,7 @@ export function servicePathForTest(testPath: string) {
     return splits.join('/');
 }
 
+
 /*
 * Note: data source path format: ~/workspace/application/src/datasource.json
 */
@@ -272,6 +273,14 @@ export async function isModule(uri: vscode.Uri): Promise<boolean> {
 
 export async function isService(uri: vscode.Uri): Promise<boolean> {
     return fileExists(vscode.Uri.joinPath(uri, 'service.json'));
+}
+
+export function testResultUri(): vscode.Uri {
+    let uri = vscode.Uri.joinPath(getWorkFolder().uri, '.test');
+    if (!fileExists(uri)) {
+        vscode.workspace.fs.createDirectory(uri);
+    }
+    return vscode.Uri.joinPath(uri, 'TestResult');
 }
 
 /**

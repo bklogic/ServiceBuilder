@@ -57,21 +57,17 @@ export class TestEditor {
 				const archive = await util.getArchive(fsPath);
 
 				// call service
+                const start = new Date().getTime();
                 const result: TestServiceResult = await this.builderService.testService(request, archive);
+                const end = new Date().getTime();
 
                 // process result
                 const output = (result.succeed) ? result.output : result.exception;
-                // this.outputChannel.clear();
-                // this.outputChannel.appendLine( (result.succeed) ? 'TEST OUTPUT: ' : 'TEST EXCEPTION: ');
-                // this.outputChannel.append(JSON.stringify(output, null, 4));
-                // this.outputChannel.show(true);
-                const doc = await vscode.workspace.openTextDocument({language: 'plaintext'});
-                const textEditor = await vscode.window.showTextDocument( doc, {viewColumn: vscode.ViewColumn.Beside} );
-                textEditor.edit( (editBuilder: vscode.TextEditorEdit) => {
-                    editBuilder.replace(new vscode.Position( 0, 0 ), result.succeed ? '\nTEST OUTPUT: \n\n' : '\nTEST EXCEPTION: \n\n');
-                    editBuilder.insert(new vscode.Position( 2, 0 ), JSON.stringify(output, null, 4));
-                });
-
+                const message = (result.succeed) ? `Test sucessful (${end-start} ms)` : `Test exception (${end-start} ms)`;
+                const uri = util.testResultUri();
+                await util.writeJsonFile(uri, output);
+                vscode.window.showTextDocument( uri, {viewColumn: vscode.ViewColumn.Beside, preview: false} );
+                vscode.window.setStatusBarMessage(message);
             } catch (error: any) {
                 console.error('Error in testing service', error);
                 vscode.window.showErrorMessage(error.message);
