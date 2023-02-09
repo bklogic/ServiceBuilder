@@ -408,6 +408,13 @@ export class ServiceHandler {
 			};
 			// call service
 			const tables: Table[] = await this.builderService.bindCrudTable(request);
+			// clean up current binding fiels
+			const files = await vscode.workspace.fs.readDirectory(vscode.Uri.joinPath(service.uri, 'write'));
+			files.forEach( async ([name, type]) => {
+				if (name !== 'tables.json') {
+					await vscode.workspace.fs.delete(vscode.Uri.joinPath(service.uri, 'write', name));
+				}
+			});
 			// process result
 			const tableContent = [];
 			for (let table of tables) {

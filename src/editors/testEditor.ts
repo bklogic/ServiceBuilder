@@ -66,7 +66,7 @@ export class TestEditor {
                 const message = (result.succeed) ? `Test sucessful (${end-start} ms)` : `Test exception (${end-start} ms)`;
                 const uri = util.testResultUri();
                 await util.writeJsonFile(uri, output);
-                vscode.window.showTextDocument( uri, {viewColumn: vscode.ViewColumn.Beside, preview: false} );
+                vscode.window.showTextDocument( uri, {viewColumn: vscode.ViewColumn.Beside, preview: false, preserveFocus: true} );
                 vscode.window.setStatusBarMessage(message);
             } catch (error: any) {
                 console.error('Error in testing service', error);
