@@ -397,6 +397,13 @@ export class ServiceHandler {
 			return;
 		}
 		try {
+			// clean up current binding files
+			const files = await vscode.workspace.fs.readDirectory(vscode.Uri.joinPath(service.uri, 'write'));
+			files.forEach( async ([name, type]) => {
+				if (name !== 'tables.json') {
+					await vscode.workspace.fs.delete(vscode.Uri.joinPath(service.uri, 'write', name));
+				}
+			});
 			// prepare request
 			const [query, outputBindings] = await Promise.all([
 				util.readSqlFile(vscode.Uri.joinPath(service.uri, 'read', 'query.sql')),
@@ -408,13 +415,6 @@ export class ServiceHandler {
 			};
 			// call service
 			const tables: Table[] = await this.builderService.bindCrudTable(request);
-			// clean up current binding fiels
-			const files = await vscode.workspace.fs.readDirectory(vscode.Uri.joinPath(service.uri, 'write'));
-			files.forEach( async ([name, type]) => {
-				if (name !== 'tables.json') {
-					await vscode.workspace.fs.delete(vscode.Uri.joinPath(service.uri, 'write', name));
-				}
-			});
 			// process result
 			const tableContent = [];
 			for (let table of tables) {
@@ -429,7 +429,7 @@ export class ServiceHandler {
 					"columns": `./${table.table}.columns.json`
 				});
 				// columns
-				let columnFileName = `${table.table}.columns.json`;
+				let columnFileName = `${table.table}.${table.alias}.columns.json`;
 				await util.writeJsonFile(vscode.Uri.joinPath(service.uri, 'write', columnFileName), table.columns);
 			}
 			const tablesUri = vscode.Uri.joinPath(service.uri, 'write', 'tables.json');
