@@ -426,7 +426,7 @@ export class ServiceHandler {
 					"rootTable": table.rootTable,
 					"mainTable": table.mainTable,
 					"operationIndicator": table.operationIndicator,
-					"columns": `./${table.table}.columns.json`
+					"columns": `./${table.table}.${table.alias}.columns.json`
 				});
 				// columns
 				let columnFileName = `${table.table}.${table.alias}.columns.json`;
