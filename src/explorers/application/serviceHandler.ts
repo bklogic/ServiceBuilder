@@ -119,7 +119,7 @@ export class ServiceHandler {
 				// call service
 				const result = await this.builderService.deployService(appUri, modName, service.name, archive);
 				// inform user
-				vscode.window.setStatusBarMessage( result.valid ? 'service is deployed.' : result.reason);
+				vscode.window.setStatusBarMessage( result.valid ? 'service is deployed.' : 'Error: ' + result.reason);
 			});		
 		} catch (error: any) {
 			console.error('Error in deploying service', error);

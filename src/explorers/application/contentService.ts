@@ -44,6 +44,7 @@ export function sqlServiceFile(serviceName: string): Uint8Array {
 		"input": "./input.json",
 		"output": "./output.json",
 		"sqls": "./sqls.sql",
+		"variableLength": 0,
 		"query": "./query.sql",
 		"inputBindings": "./input-bindings.json",
 		"outputBindings": "./output-bindings.json"
