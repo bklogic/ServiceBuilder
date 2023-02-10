@@ -203,10 +203,6 @@ export class ServiceHandler {
 				const results: GenerateCrudResult[] = await this.builderService.genCruds(request);
 				// process result
 				const services = await this.createCruds(module, results);
-				// deploy services
-				for (let service of services) {
-					this.deployService(service);
-				}
 				// inform user
 				vscode.window.setStatusBarMessage('CRUD services are generated');
 			} catch (error: any) {
@@ -566,10 +562,10 @@ export class ServiceHandler {
 				"rootTable": table.rootTable,
 				"mainTable": table.mainTable,
 				"operationIndicator": table.operationIndicator,
-				"columns": `./${table.table}.columns.json`
+				"columns": `./${table.table}.${table.alias}.columns.json`
 			});
 			// columns
-			let columnFileName = `${table.table}.columns.json`;
+			let columnFileName = `${table.table}.${table.alias}.columns.json`;
 			await util.writeJsonFile(vscode.Uri.joinPath(serviceUri, 'write', columnFileName), table.columns);
 		}
 		const tablesUri = vscode.Uri.joinPath(serviceUri, 'write', 'tables.json');
