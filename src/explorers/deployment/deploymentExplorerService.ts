@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as util from '../../core/util';
 import {Item, ItemType} from './deploymentModel';
 import {
-    Application, ApplicationAggregate, Test, DataSource
+    Application, ApplicationAggregate, Service, Test, DataSource
 } from '../../backend/builder/deployModel';
 import {DeployService} from '../../backend/builder/deployService';
 import { TestService } from '../../backend/builder/testService';
@@ -208,5 +208,10 @@ export class DeploymentExplorerService {
         return docUri;
     }
 
+    async getInvalidatedReason(item: Item): Promise<string> {
+        const service = await util.readJsonFile(vscode.Uri.joinPath(item.fileUri, 'service')) as Service;
+        return service.reason;
+    }
+    
 }
 

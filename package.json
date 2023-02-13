@@ -345,6 +345,14 @@
 				}
 			},
 			{
+				"command": "servicedeploymentExplorer.showInvalidatedReason",
+				"title": "Show invalidated reason",
+				"icon": {
+					"light": "resources/light/question.svg",
+					"dark": "resources/dark/question.svg"
+				}
+			},
+			{
 				"command": "servicedeploymentExplorer.viewDataSource",
 				"title": "View Data Source",
 				"icon": {
@@ -824,6 +832,16 @@
 					"command": "servicedeploymentExplorer.loadTest",
 					"when": "view == servicedeploymentExplorer && viewItem == crudservice",
 					"group": "ctx@1"
+				},
+				{
+					"command": "servicedeploymentExplorer.showInvalidatedReason",
+					"when": "view == servicedeploymentExplorer && viewItem == invalidservice",
+					"group": "inline@2"
+				},
+				{
+					"command": "servicedeploymentExplorer.showInvalidatedReason",
+					"when": "view == servicedeploymentExplorer && viewItem == invalidservice",
+					"group": "ctx@2"
 				},
 				{
 					"command": "servicebuilderDataSourceExplorer.testDataSource",

@@ -26,6 +26,7 @@ export class DeploymentExplorer {
 		vscode.commands.registerCommand('servicedeploymentExplorer.refreshAppList', (resource) => this.refreshAppList(resource));
 		vscode.commands.registerCommand('servicedeploymentExplorer.refreshApplication', (resource) => this.refreshApplication(resource));
 		vscode.commands.registerCommand('servicedeploymentExplorer.loadTest', (resource) => this.loadTest(resource));
+		vscode.commands.registerCommand('servicedeploymentExplorer.showInvalidatedReason', (resource) => this.showInvalidatedReason(resource));
 		vscode.commands.registerCommand('servicedeploymentExplorer.viewDataSource', (resource) => this.viewDataSource(resource));
 		vscode.commands.registerCommand('servicedeploymentExplorer.viewService', (resource) => this.viewService(resource));
 		vscode.commands.registerCommand('servicedeploymentExplorer.cleanApplication', (resource) => this.cleanApplication(resource));        
@@ -119,6 +120,11 @@ export class DeploymentExplorer {
         } catch (error: any) {
             vscode.window.showErrorMessage(error.message);
         }
+    }
+
+    async showInvalidatedReason(service: Item): Promise<void> {
+        const reason = await this.explorerService.getInvalidatedReason(service);
+        vscode.window.setStatusBarMessage('Invalidated reason: ' + reason);
     }
 
     async viewDataSource(app: Item): Promise<void> {
