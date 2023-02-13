@@ -2,8 +2,9 @@ import * as vscode from 'vscode';
 import * as util from '../../core/util';
 import {Item, ItemType} from './deploymentModel';
 import {
-    DeployService, Application, ApplicationAggregate, Module, Service, Test, DataSource
-} from '../../backend/builder/deployService';
+    Application, ApplicationAggregate, Test, DataSource
+} from '../../backend/builder/deployModel';
+import {DeployService} from '../../backend/builder/deployService';
 import { TestService } from '../../backend/builder/testService';
 import { BuilderClient } from '../../backend/builder/builderClient';
 

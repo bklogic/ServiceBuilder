@@ -3,7 +3,7 @@ import * as util from '../../core/util';
 import {ApplicationDataProvider} from './applicationDataProvider';
 import {ApplicationExplorerService} from "./applicationExplorerService";
 import {Entry, EntryType} from './applicationModel';
-import { Application, Module, Service } from '../../backend/builder/deployService';
+import { Application, Module, Service } from '../../backend/builder/deployModel';
 import { WorkspaceHandler } from './workspaceHandler';
 import { TryClient } from '../../backend/try/tryClient';
 import { BuilderClient } from '../../backend/builder/builderClient';
