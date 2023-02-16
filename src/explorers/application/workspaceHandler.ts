@@ -103,9 +103,11 @@ export class WorkspaceHandler {
 
 		// request access token
 		let accessToken = 'default+token';
+		let devtimeUrl = `${url}/service`;
 		if ( workspaceName !== 'default' )  {
 			try {
 				accessToken = await this.tryService.requestAccessToken(url, accessKey);
+				devtimeUrl = await this.tryService.getDevtimeUrl(url);
 			} catch(err: any) {
 				this.showConnectIssue(url, accessKey, err.message);
 				return;
@@ -115,6 +117,7 @@ export class WorkspaceHandler {
 		// save connection
 		await this.context.secrets.store('servicebuilder.workspace', workspaceName);
 		await this.context.secrets.store('servicebuilder.url', url);
+		await this.context.secrets.store('servicebuilder.devtimeUrl', devtimeUrl);
 		await this.context.secrets.store('servicebuilder.accessKey', accessKey);
 		await this.context.secrets.store('servicebuilder.accessToken', accessToken);
 

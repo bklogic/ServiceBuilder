@@ -21,4 +21,10 @@ export class TryService {
 		return await this.http.tryPost(url, req);
 	}
 
+	async getDevtimeUrl(workspaceUrl: string): Promise<string> {
+		const url = '/try/requestAccessToken';
+		const req = {workspaceUrl};
+		return await this.http.tryPost(url, req);
+	}
+
 }

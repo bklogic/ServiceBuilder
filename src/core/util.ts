@@ -284,6 +284,18 @@ export function testResultUri(): vscode.Uri {
 }
 
 /**
+ * Secrete
+ */
+export async function readSecret(context: vscode.ExtensionContext, name: string): Promise<string | undefined> {
+    try {
+        return context.secrets.get(name);
+    } catch (err: any) {
+        return undefined;
+    }
+}
+
+
+/**
  * Misc 
  */
 export function sleep(ms: number) {

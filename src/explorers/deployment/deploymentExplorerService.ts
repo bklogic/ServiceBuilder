@@ -150,10 +150,16 @@ export class DeploymentExplorerService {
         // get tests
         const tests = await this.deployService.getTests(service.uri);
 
+        // get devtime url
+        const devtimeUrl = await util.readSecret(this.context, 'servicebuilder.devtimeUrl');
+        if (!devtimeUrl) {
+            throw new Error('Devtime URL not found.');
+        }
+
         // build tests contents
         let content : string[] = ['', '## Tests to run with REST Client for Visual Studio Code', ''];
         for (let test of tests) {
-            content = content.concat( this.writeTest(test, builderUrl, token, service.type));
+            content = content.concat( this.writeTest(test, devtimeUrl, token, service.type));
         }
 
         // write tests file
@@ -161,13 +167,14 @@ export class DeploymentExplorerService {
         vscode.workspace.fs.writeFile(vscode.Uri.joinPath(service.fileUri, 'tests.http'),  util.strToBuffer(str));
     }
 
-    writeTest(test: Test, builderUrl: string, token: string | undefined, serviceType: ItemType): string[] {
+    writeTest(test: Test, devtimeUrl: string, token: string | undefined, serviceType: ItemType): string[] {
+
         const content : string[] = []; 
         content.push(`### ${test.testId}`); 
         if (serviceType === ItemType.CrudService) {
-            content.push(`POST ${builderUrl}/service/${test.serviceUri}/${test.operation}`);     
+            content.push(`POST ${devtimeUrl}/${test.serviceUri}/${test.operation}`);     
         } else {
-            content.push(`POST ${builderUrl}/service/${test.serviceUri}`);     
+            content.push(`POST ${devtimeUrl}/${test.serviceUri}`);     
         }
         content.push('Content-Type: application/json');       
         content.push(`Authorization: Bearer ${token}`);       

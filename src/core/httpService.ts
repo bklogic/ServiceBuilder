@@ -66,14 +66,18 @@ export class HttpService {
             const response = await axios.post(config.baseURL + url, form, {"headers": config.headers} );
             return response.data;
           } catch (error: any) {
-                console.error('http post archive error: ', error.message || error.response.data.message, '\n',  'url: ', config.baseURL + url);
-                console.info('Data: ');
-                console.info(data);
-                console.error(error);
-                // error.message = error.message || error.response.data.message;
-                error.message = error.response.data.message;
-                throw error;
-                // throw new Error(error.message + ' | ' + error.message || error.response.data.message);
+                if (!error.response) {
+                    error.message = 'Cannot connect to Server.';
+                    throw error;    
+                } else {
+                    console.error('http post archive error: ', error.message || error.response?.data?.message, '\n',  'url: ', config.baseURL + url);
+                    console.info('Data: ');
+                    console.info(data);
+                    console.error(error);
+                    // error.message = error.message || error.response.data.message;
+                    error.message = error.response?.data?.message;
+                    throw error;
+                }
           }    
     }
 
