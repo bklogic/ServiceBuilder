@@ -349,7 +349,6 @@ export function getArchive(fsPath: string): Buffer {
     return buffer;	
 }
 
-//TODO: skip .git
 export async function getApplicationArchive(uri: vscode.Uri): Promise<Buffer> {
     // get archive
     const buffer = getArchive(uri.fsPath);
@@ -362,5 +361,17 @@ export function initCap(str: string | null | undefined): string {
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     } else {
         return '';
+    }
+}
+
+/*
+* Methods for showing error
+*/ 
+export function showErrorStatus(message: string, error: string) {
+    if (message.length + error.length <= 120) {
+        vscode.window.setStatusBarMessage(message + ' ' + error);
+    } else {
+        vscode.window.setStatusBarMessage(message  + ' Detail in error message.');
+        vscode.window.showErrorMessage(error);
     }
 }

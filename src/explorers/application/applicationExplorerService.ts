@@ -1,22 +1,11 @@
-import { TextDecoder } from 'util';
 import * as vscode from 'vscode';
-import * as path from 'path';
 import * as util from '../../core/util';
 import * as cs from './contentService';
 import {Entry, EntryType} from './applicationModel';
-import {GitExtension} from './git';
 
 export class ApplicationExplorerService {
 
 	construct() {}
-
-	/**
-	 * Description:
-	 * Each workspace folder serves a backlogic workspace. will be created the first time user uses service builder.
-	 * @param uri workfolder uri
-	 */
-	public createWorkspacefolder(uri: vscode.Uri) {
-	}
 
 	/**
 	 * create application
@@ -31,7 +20,7 @@ export class ApplicationExplorerService {
 		if (exists) {
 			throw vscode.FileSystemError.FileExists();
 		}
-		// application foler
+		// application folder
 		await vscode.workspace.fs.createDirectory(app.uri);
 		// source folder
 		await vscode.workspace.fs.createDirectory(vscode.Uri.joinPath(app.uri, 'src'));
@@ -41,35 +30,8 @@ export class ApplicationExplorerService {
 		// version file
 		await util.writeJsonFile(vscode.Uri.joinPath(app.uri, 'src', '.versions.json'), versions);
 
-		// README file
-		const templatePath = path.join(__filename, '..', '..', '..', '..', 'resources', 'README.md');
-		const templateUri = vscode.Uri.parse('file:' + templatePath, true);
-		const readmeUri = vscode.Uri.joinPath(app.uri, 'README.md');
-		await vscode.workspace.fs.copy(templateUri, readmeUri);
-
-		// init git repository
-		await this.initGit(app.uri);
-
 		// return 
 		return app;
-	}
-
-	private initGit(appUri: vscode.Uri): Promise<void> {
-		const extension = vscode.extensions.getExtension<GitExtension>('vscode.git') as vscode.Extension<GitExtension>;
-		if (!extension) {
-			console.error('vscode git extension is missing.');
-		}
-		const gitExtension = extension.exports;
-		const git = gitExtension.getAPI(1);
-		git.init(appUri)
-		   .then( repository => {
-			   console.log(repository);
-		   })
-		   .catch ( error => {
-			   console.error('git init error:');
-			   console.error(error);
-		   });
-		return Promise.resolve();
 	}
 
 	/**

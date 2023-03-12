@@ -41,13 +41,8 @@
 			"properties": {
 				"servicebuilder.tryServiceEndpoint": {
 					"type": "string",
-					"default": "https://try.backlogic.net",
+					"default": "https://request.tryprod.backlogic.net",
 					"description": "Endpoint for try service"
-				},
-				"servicebuilder.tryServiceApiToken": {
-					"type": "string",
-					"default": "xvncyn56ghgh66hgdhs63gfgyb78bbd",
-					"description": "API token for TryWithoutSignup service"
 				}
 			}
 		},
@@ -930,8 +925,5 @@
 		"minimist": "^0.2.1",
 		"mkdirp": "^0.5.1",
 		"rimraf": "^2.6.2"
-	},
-	"extensionDependencies": [
-		"vscode.git"
-	]
+	}
 }

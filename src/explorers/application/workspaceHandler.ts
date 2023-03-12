@@ -138,6 +138,7 @@ export class WorkspaceHandler {
 		const workspaceName = await this.context.secrets.get("servicebuilder.workspace") || '';
 		const workspaceUrl = await this.context.secrets.get("servicebuilder.url") || '';
 		const accessKey = await this.context.secrets.get("servicebuilder.accessKey") || '';
+		const devtimeUrl = await this.context.secrets.get("servicebuilder.devtimeUrl") || '';
 		try {
 			const accessToken = await this.tryService.requestAccessToken(workspaceUrl, accessKey);
 			this.context.secrets.store("servicebuilder.accessToken", accessToken);
@@ -148,7 +149,7 @@ export class WorkspaceHandler {
 		// test builder connection
 		try {
 			await this.builderService.getBuilderVersions();
-			this.showConnectedMessage(workspaceName, workspaceUrl);
+			this.showConnectedMessage(workspaceName, workspaceUrl, devtimeUrl);
 		} catch (err: any) {
 			vscode.window.showWarningMessage(`Reconnect failed: ${err.message}. Please try later.`, {modal:true});
 		}
@@ -165,11 +166,12 @@ export class WorkspaceHandler {
 		// get current workspace setting
 		const workspaceName = await this.context.secrets.get("servicebuilder.workspace") || '';
 		const workspaceUrl = await this.context.secrets.get("servicebuilder.url") || '';
+		const devtimeUrl = await this.context.secrets.get('servicebuilder.devtimeUrl') || '';
 
 		// test connection
 		try {
 			await this.builderService.getBuilderVersions();
-			this.showConnectedMessage(workspaceName, workspaceUrl);
+			this.showConnectedMessage(workspaceName, workspaceUrl, devtimeUrl);
 		} catch(err: any) {
 			this.showConnectionFailure(workspaceName, workspaceUrl, err.message);
 		}
@@ -206,11 +208,12 @@ export class WorkspaceHandler {
 	/*
 	* Show connected workspace for "Show Workspace"
 	*/
-	showConnectedMessage(workspaceName: string, workspaceUrl: string): void {
+	showConnectedMessage(workspaceName: string, workspaceUrl: string, devtimeUrl: string): void {
 			vscode.window.showInformationMessage(
 				`Workspace:
 				 \t   \t Name: \t ${workspaceName}
 				 \t   \t Url: \t ${workspaceUrl}
+				 \t   \t service endpoint: \t ${devtimeUrl}/${workspaceName}
 				 \t   \t Status: \t Connected `,
 				 { modal: true },
 				 'Switch Workspace'

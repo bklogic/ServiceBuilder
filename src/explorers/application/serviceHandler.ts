@@ -123,7 +123,7 @@ export class ServiceHandler {
 			});		
 		} catch (error: any) {
 			console.error('Error in deploying service', error);
-			vscode.window.setStatusBarMessage('Failed to deploy service: ' + error.message);
+			util.showErrorStatus('Failed to deploy service.', error.message);
 		}
 	}
 
@@ -207,7 +207,7 @@ export class ServiceHandler {
 				vscode.window.setStatusBarMessage('CRUD services are generated');
 			} catch (error: any) {
 				console.error('Error in generating crud services', error);
-				vscode.window.setStatusBarMessage('Failed to generate crud services: ' + error.message);
+				util.showErrorStatus('Failed to generate crud services.', error.message);
 			}
 		});
 	}
@@ -235,7 +235,7 @@ export class ServiceHandler {
 			vscode.window.setStatusBarMessage('input and output are generated');
 		} catch (error: any) {
 			console.error('Error in generating query input and output', error);
-			vscode.window.setStatusBarMessage('Failed to generate query input and output: ' + error.message);
+			util.showErrorStatus('Failed to generate query input and output.', error.message);
 		}
 	}
 
@@ -267,7 +267,7 @@ export class ServiceHandler {
 				vscode.window.setStatusBarMessage('input and output bindings are generated');
 			} catch (error: any) {
 				console.error('Error in generating query input and output bindings', error);
-				vscode.window.setStatusBarMessage('Failed to generate query input and output bindings: ' + error.message);
+				util.showErrorStatus('Failed to generate query input and output bindings.', error.message);
 			}
 		});
 	}
@@ -326,7 +326,7 @@ export class ServiceHandler {
 			vscode.window.setStatusBarMessage('input and output bindings are generated');
 		} catch (error: any) {
 			console.error('Error in generating sqls input and output bindings', error);
-			vscode.window.setStatusBarMessage('Failed to generate sqls input and output bindings: ' + error.message);
+			util.showErrorStatus('Failed to generate sql input and output bindings.', error.message);
 		}
 	}
 
@@ -383,7 +383,7 @@ export class ServiceHandler {
 			vscode.window.setStatusBarMessage('input and output bindings are generated');
 		} catch (error: any) {
 			console.error('Error in generating crud input and output bindings', error);
-			vscode.window.setStatusBarMessage('Failed to generate crud input and output bindings: ' + error.message);
+			util.showErrorStatus('Failed to generate crud input and output bindings.', error.message);
 		}
 	}
 
@@ -436,7 +436,7 @@ export class ServiceHandler {
 			vscode.window.setStatusBarMessage('table bindings are generated');
 		} catch (error: any) {
 			console.error('Error in generating crud tables bindings', error);
-			vscode.window.setStatusBarMessage('Failed to generate crud table bindings: ' + error.message);
+			util.showErrorStatus('Failed to generate crud table bindings.', error.message);
 		}
 	}
 
