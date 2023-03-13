@@ -10,8 +10,8 @@ The development tool for data access service (DAS). DAS provides developer with
 
 Follow the get started tutorials for `Service Builder` and `data access service`:
 
-[`Get Started with Service Builder`](https://docs.backlogic.net/#/GetStarted/get-started-with-service-builder.md)  
-[`Get Started with Data Access Service`](https://docs.backlogic.net/#/GetStarted/get-started-with-data-access-service.md)  
+[`Get Started with Service Builder`](http://docs.backlogic.net/#/GetStarted/getStartedWithServiceBuilder)  
+[`Get Started with Data Access Service`](https://docs.backlogic.net/#/GetStarted/getStartedWithDataAccessService)  
 
 # Features
 
