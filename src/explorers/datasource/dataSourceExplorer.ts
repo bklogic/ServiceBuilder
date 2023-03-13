@@ -1,5 +1,7 @@
 
+import { utils } from 'mocha';
 import * as vscode from 'vscode';
+import * as util from '../../core/util';
 import { BuilderClient } from '../../backend/builder/builderClient';
 import { DataSourceItem } from './dataSourceDataModel';
 import {DataSourceDataProvider} from './dataSourceDataProvider';
@@ -77,7 +79,7 @@ export class DataSourceExplorer {
                 vscode.window.setStatusBarMessage('Data source test succeeded.');
             }
         } catch (err: any) {
-            vscode.window.showErrorMessage(`Test data source error: ${err.message}`);    
+            util.showErrorStatus('Test data source error.', err.message); 
             vscode.window.setStatusBarMessage('');
         }
     }
@@ -89,7 +91,7 @@ export class DataSourceExplorer {
             await this.explorerService.deployDataSource(item);
             vscode.window.setStatusBarMessage('Data source deployed.');
         } catch (err: any) {
-            vscode.window.showErrorMessage(`Data source deployment failed: ${err.message}`);    
+            util.showErrorStatus('Data source deployment failed.', err.message); 
         }
     }
 

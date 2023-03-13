@@ -1,7 +1,7 @@
 # Service Builder
 
-The development tool for data access services (DAS). DAS is a cross-platform data access layer technology that provides developer with
-- the flexibility of querying and persisting aggregate objects of any shape from/into relational database, and
+The development tool for data access service (DAS). DAS provides developer with
+- the flexibility of querying and persisting aggregate object of complex shapes from/into relational database, and
 - the simplicity of specifying query, command and repository services with SQL and JSON only.
 
 >[Visit here](https://docs.backlogic.net) to read more about data access service.  

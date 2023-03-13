@@ -3,7 +3,7 @@
 	"displayName": "Service Builder",
 	"description": "Develop data access service.",
 	"author": {
-		"name": "Ken"
+		"name": "Ken Wang"
 	},
 	"version": "0.1.2",
 	"publisher": "BackLogic",
@@ -11,7 +11,7 @@
 		"type": "git",
 		"url": "https://github.com/bklogic/ServiceBuilder"
 	},
-	"homepage": "http://www.backlogic.net",
+	"homepage": "http://docs.backlogic.net",
 	"engines": {
 		"vscode": "^1.51.1"
 	},
@@ -31,6 +31,7 @@
 		"color": "#C80000",
 		"theme": "dark"
 	},
+	"license": "MIT",
 	"activationEvents": [
 		"onView:servicebuilderExplorer"
 	],

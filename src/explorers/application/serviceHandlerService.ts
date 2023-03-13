@@ -117,24 +117,27 @@ export class ServiceHandlerService {
 		}
 		let fileName;
 		let inputUri;
+		let input;
 		switch (testType) {
 			case 'read': case 'delete':
 				fileName = `test${util.initCap(testType)}${util.initCap(service.name)}`;
 				inputUri = vscode.Uri.joinPath(service.uri, 'read', 'input.json');
+				input = await util.readJsonFile(inputUri);
 				break;
 			case 'create': case 'update': case 'save':
 				fileName = `test${util.initCap(testType)}${util.initCap(service.name)}`;
 				inputUri = vscode.Uri.joinPath(service.uri, 'object.json');
+				input = await util.readJsonFile(inputUri);
 				break;
 			default:
 				fileName = `test${util.initCap(service.name)}`;
 				inputUri = vscode.Uri.joinPath(service.uri, 'input.json');
+				input = await util.readJsonFile(inputUri);
 		}
 
 		// input and test file
 		const newFileName = await this.newTestFileName(testFolder, fileName);
 		const newFileUri = vscode.Uri.joinPath(testFolder.uri, newFileName);
-		const input = await util.readJsonFile(inputUri);
 		const content =cs.testFile(input, fileName, testType);
 		await vscode.workspace.fs.writeFile(newFileUri, content);
 

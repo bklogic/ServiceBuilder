@@ -82,7 +82,7 @@ export class DeploymentExplorer {
                 vscode.window.setStatusBarMessage('Succeeded');
             }
         } catch (err: any) {
-            vscode.window.showErrorMessage(`Test data source error: ${err.message}`);    
+            util.showErrorStatus('Test data source error.', err.message);   
         }
     }
 

@@ -8,11 +8,11 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 - Initial release
 
-## 0.1.1 - 10/01/2023
+## 0.1.1 - 07/18/2022
 
 - Second release
 
-## 0.1.2 - 04/01/2023
+## 0.1.2 - 03/15/2023
 
 - Workspace request
 - Data source explorer

@@ -118,14 +118,19 @@ export class ApplicationExplorer {
 				const appUri = await util.applicationUriForApplication(app.uri.path);
 				const archive = await util.getApplicationArchive(app.uri);
 				// call service to deploy application only
-				await this.builderService.deployApplication(appUri, archive);
+				const result = await this.builderService.deployApplication(appUri, archive).catch( error => { 
+					util.showErrorStatus('Failed to deploy application.', error.message);
+					process.exit(1);
+				});
 
 				// inform user
-				vscode.window.setStatusBarMessage('application is deployed.');
+				if (result?.succeed) {
+					vscode.window.setStatusBarMessage('application is deployed.');
+				}
 			});		
 		} catch (error: any) {
 			console.error('Error in deploying application', error);
-			vscode.window.setStatusBarMessage('Failed to deploy application: ' + error.message);
+			util.showErrorStatus('Failed to deploy application.', error.message);
 		}
 	}
 
