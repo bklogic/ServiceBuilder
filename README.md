@@ -53,7 +53,7 @@ Click `Extensions` on `Activity Bar`, and then search for `service builder pack`
 
 # Required VSCode Extensions
 
-The following VS Code extensions are required by some functionalities of `Service Builder`, and are included with `Service Builder Pack`.
+The following VS Code extensions are required by some functionalities of `Service Builder`, and are included with `Service Builder Extension Pack`.
 
 - [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)  
   A great HTTP client tool. Required for testing data access service from Deployment Explorer.
