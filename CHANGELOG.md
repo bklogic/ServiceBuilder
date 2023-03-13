@@ -12,7 +12,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 - Second release
 
-## 0.1.2 - 03/15/2023
+## 0.2.0 - 03/15/2023
 
 - Workspace request
 - Data source explorer
