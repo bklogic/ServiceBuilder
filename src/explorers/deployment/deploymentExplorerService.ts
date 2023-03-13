@@ -142,7 +142,7 @@ export class DeploymentExplorerService {
     async reloadTests(service: Item): Promise<void> {
         // get builder url
         const builderUrl = await this.context.secrets.get('servicebuilder.url');
-        const token = await this.context.secrets.get('servicebuilder.token');
+        const token = await this.context.secrets.get('servicebuilder.accessToken');
         if (!builderUrl) {
             throw new Error('Not connected to workspace');
         }

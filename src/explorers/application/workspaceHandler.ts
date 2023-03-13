@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import * as util from '../../core/util';
 import * as URL from 'url';
 import { BuilderService } from '../../backend/builder/builderService';
 import { Versions} from '../../backend/builder/builderModel';
@@ -208,18 +209,22 @@ export class WorkspaceHandler {
 	/*
 	* Show connected workspace for "Show Workspace"
 	*/
-	showConnectedMessage(workspaceName: string, workspaceUrl: string, devtimeUrl: string): void {
-			vscode.window.showInformationMessage(
+	async showConnectedMessage(workspaceName: string, workspaceUrl: string, devtimeUrl: string): Promise<void> {
+		const tokenBtn = 'Copy Token';
+		const token = await util.readSecret(this.context, 'servicebuilder.accessToken') || '';
+		vscode.window.showInformationMessage(
 				`Workspace:
 				 \t   \t Name: \t ${workspaceName}
+				 \t   \t Status: \t Connected 
 				 \t   \t Url: \t ${workspaceUrl}
-				 \t   \t service endpoint: \t ${devtimeUrl}/${workspaceName}
-				 \t   \t Status: \t Connected `,
+				 \t   \t Service endpoint: \t ${devtimeUrl}/${workspaceName}
+				 \t   \t Access token: \t ${token.substring(0, 15)}...... `,
 				 { modal: true },
-				 'Switch Workspace'
-			).then( btn => {
-				if ( btn === 'Switch Workspace') {
-					this.connect();
+				 tokenBtn
+			).then( async btn => {
+				if ( btn === tokenBtn) {
+					await vscode.env.clipboard.writeText(token);
+					vscode.window.setStatusBarMessage('Access token is copied to clip board');
 				}
 			});
 	}

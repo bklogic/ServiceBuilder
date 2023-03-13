@@ -101,7 +101,7 @@ export class HttpService {
         // get connection data
         let [url, token] = await Promise.all([
             this.context.secrets.get('servicebuilder.url'),
-            this.context.secrets.get('servicebuilder.token')    
+            this.context.secrets.get('servicebuilder.accessToken')    
         ]);
 
         if (!url) {
