@@ -28,7 +28,7 @@ Follow the get started tutorials for `Service Builder` and `data access service`
   - Inspect applications and data sources deployed in remote workspace
   - Test services deployed in remote workspace
   
-![Service Builder Explorer](./resources/images/servicebuilder.png)
+![Service Builder Explorer](https://github.com/bklogic/ServiceBuilder/blob/master/resources/images/service-builder-explorer.png)
 
 # Remote Workspace
 
@@ -36,7 +36,7 @@ Follow the get started tutorials for `Service Builder` and `data access service`
 
 The remote workspace can be requested from inside of `Service Builder`.
 
-![Remote Workspace](./resources/images/backlogic-workspace.png)
+![Remote Workspace](https://github.com/bklogic/ServiceBuilder/blob/master/resources/images/backlogic-workspace.png)
 
 # Usage
 
