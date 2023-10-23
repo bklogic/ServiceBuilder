@@ -18,5 +18,6 @@ export interface DataSource {
     database: string;
     username: string;
     password: string;
+	ssl: boolean;
 	comments: string;
 }

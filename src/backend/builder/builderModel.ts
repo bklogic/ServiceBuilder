@@ -32,6 +32,7 @@ export interface TestDataSourceRequest {
 	database: string;
 	username: string;
 	password: string;
+	ssl: boolean;
 }
 
 export interface TestDataSourceResult {

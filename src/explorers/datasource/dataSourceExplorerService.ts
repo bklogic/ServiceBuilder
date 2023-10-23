@@ -48,7 +48,7 @@ export class DataSourceExplorerService {
         if (password === util.passwordMask) {
             password = await util.retrievePassword(this.context, dataSourceItem.name);
             if (!password) {
-                return "Please eneter a valid password.";
+                return "Please enter a valid password.";
             }
         }
         
@@ -59,7 +59,8 @@ export class DataSourceExplorerService {
             port: ds.port,
             database: ds.database,
             username: ds.username,
-            password: password
+            password: password,
+            ssl: ds.ssl
         };
         const result = await this.builderService.testDataSource(testRequest);
 

@@ -8,6 +8,9 @@ export class DataSourceContentService {
             case 'mysql':
                 datasource = this.initializeMySQLDataSource();
                 break;
+            case 'postgresql':
+                datasource = this.initializePostgreSQLDataSource();
+                break;
             default:
                 datasource = this.initializeMySQLDataSource();
         }
@@ -22,6 +25,21 @@ export class DataSourceContentService {
             port: 3306, 
             database: '', 
             username: '', password: '',
+            ssl: false,
+            comments: "Complete host, port, database, username and password. Test data source using TEST button."
+        } as DataSource;
+        return datasource;
+    }
+
+    initializePostgreSQLDataSource(): DataSource {
+        let datasource: DataSource;
+        datasource = {
+            dbType: 'postgresql', 
+            host: 'localhost', 
+            port: 5432, 
+            database: '', 
+            username: '', password: '',
+            ssl: false,
             comments: "Complete host, port, database, username and password. Test data source using TEST button."
         } as DataSource;
         return datasource;
