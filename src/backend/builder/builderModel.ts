@@ -23,6 +23,7 @@ export interface DeployDataSourceRequest {
 	database: string;
 	username: string;
 	password: string;
+	ssl: boolean;
 }
 
 export interface TestDataSourceRequest {

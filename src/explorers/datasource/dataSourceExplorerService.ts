@@ -88,7 +88,8 @@ export class DataSourceExplorerService {
             port: ds.port,
             database: ds.database,
             username: ds.username,
-            password: password
+            password: password,
+            ssl: ds.ssl
         };
         const result = await this.builderService.deployDataSource(deployRequest);
     }
