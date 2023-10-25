@@ -70,7 +70,7 @@ export class DataSourceExplorerService {
             ds.password = util.passwordMask;
             util.writeJsonFile(dataSourceItem.fileUri, ds);
         }
-        return (result.succeed) ? null : result.message;
+        return (result.succeed) ? null : `Data source test failed: ${result.message}` ;
 	}
 
     async deployDataSource(dataSourceItem: DataSourceItem): Promise<void> {

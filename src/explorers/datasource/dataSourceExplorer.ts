@@ -74,7 +74,7 @@ export class DataSourceExplorer {
         try {
             const message = await this.explorerService.testDataSource(item);
             if (message) {
-                vscode.window.setStatusBarMessage(`Data source test failed: ${message}`);
+                vscode.window.setStatusBarMessage(message);
             } else {
                 vscode.window.setStatusBarMessage('Data source test succeeded.');
             }
