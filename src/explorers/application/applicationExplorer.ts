@@ -125,6 +125,31 @@ export class ApplicationExplorer {
 		});	
 	}
 
+	async redeployApplication(app: Entry, newApp: Entry): Promise<void> {
+		vscode.window.withProgress({
+			location: vscode.ProgressLocation.Window,
+			cancellable: false,
+			title: 'redeploying application'
+		}, async (progress) => {
+			try {
+				// clear status message
+				vscode.window.setStatusBarMessage('');
+				// get app uri
+				const appUri = await util.applicationUriForApplication(app.uri.path);
+				// undeploy original application
+				await this.builderService.undeployApplication(appUri);
+				// deploy new application
+				const newAppUri = await util.applicationUriForApplication(newApp.uri.path);
+				const archive = await util.getApplicationArchive(newApp.uri);
+				const result = await this.builderService.deployApplication(newAppUri, archive);
+				// inform user
+				vscode.window.setStatusBarMessage('Application is redeployed.');
+			} catch (error: any) {
+				vscode.window.setStatusBarMessage('Failed to redeploy application: ' + error.message);
+			}
+		});	
+	}
+
 	async undeployApplication(app: Entry): Promise<void> {
 		vscode.window.withProgress({
 			location: vscode.ProgressLocation.Window,
@@ -194,6 +219,35 @@ export class ApplicationExplorer {
 				vscode.window.setStatusBarMessage('Failed to deploy module: ' + error.message);
 			}
 		});		
+	}
+
+	/**
+	 * Redeploy module as new module
+	 * @param mod original module
+	 * @param newMod new module
+	 */
+	async redeployModule(mod: Entry, newMod: Entry): Promise<void> {
+		vscode.window.withProgress({
+			location: vscode.ProgressLocation.Window,
+			cancellable: false,
+			title: 'redeploying module'
+		}, async (progress) => {
+			try {
+				// clear status message
+				vscode.window.setStatusBarMessage('');
+				// get app uri
+				const appUri = await util.applicationUriForModule(mod.uri.path);
+				// undeploy original module
+				await this.builderService.undeployModule(appUri, mod.name);
+				// deploy new module
+				const archive = await util.getArchive(newMod.uri.fsPath);
+				await this.builderService.deployModule(appUri, newMod.name, archive);
+				// inform user
+				vscode.window.setStatusBarMessage('module is redeployed.');
+			} catch (error: any) {
+				vscode.window.setStatusBarMessage('Failed to redeploy module: ' + error.message);
+			}
+		});	
 	}
 
 	async undeployModule(mod: Entry): Promise<void> {
@@ -301,16 +355,14 @@ export class ApplicationExplorer {
 				app.name = newEntry.name;
 				await util.writeJsonFile(appUri, app);
 				await this.resavePassword(entry, newEntry);
-				await this.undeployApplication(entry);
-				await this.deployApplication(newEntry);
+				await this.redeployApplication(entry, newEntry);
 				break;
 			case EntryType.Module:
 				const modUri = vscode.Uri.joinPath(newEntry.uri, 'module.json');
 				const mod = await util.readJsonFile(modUri) as Module;
 				mod.name = newEntry.name;
 				await util.writeJsonFile(modUri, mod);
-				await this.undeployModule(entry);
-				await this.deployModule(newEntry);
+				await this.redeployModule(entry, newEntry);
 				break;
 			case EntryType.QueryService: case EntryType.SqlService: case EntryType.CrudService:
 				const serviceUri = vscode.Uri.joinPath(newEntry.uri, 'service.json');
