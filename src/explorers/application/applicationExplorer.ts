@@ -105,42 +105,33 @@ export class ApplicationExplorer {
 	}
 
 	async deployApplication(app: Entry): Promise<void> {
-		try {
-			vscode.window.withProgress({
-				location: vscode.ProgressLocation.Window,
-				cancellable: false,
-				title: 'deploying application'
-			}, async (progress) => {
+		vscode.window.withProgress({
+			location: vscode.ProgressLocation.Window,
+			cancellable: false,
+			title: 'deploying application'
+		}, async (progress) => {
+			try {
 				// clear status message
 				vscode.window.setStatusBarMessage('');
 
 				// zip application
 				const appUri = await util.applicationUriForApplication(app.uri.path);
 				const archive = await util.getApplicationArchive(app.uri);
-				// call service to deploy application only
-				const result = await this.builderService.deployApplication(appUri, archive).catch( error => { 
-					util.showErrorStatus('Failed to deploy application.', error.message);
-					process.exit(1);
-				});
-
-				// inform user
-				if (result?.succeed) {
-					vscode.window.setStatusBarMessage('application is deployed.');
-				}
-			});		
-		} catch (error: any) {
-			console.error('Error in deploying application', error);
-			util.showErrorStatus('Failed to deploy application.', error.message);
-		}
+				const result = await this.builderService.deployApplication(appUri, archive);
+				vscode.window.setStatusBarMessage('application is deployed.');
+			} catch (error: any) {
+				util.showErrorStatus('Failed to deploy application.', error.message);
+			}
+		});	
 	}
 
 	async undeployApplication(app: Entry): Promise<void> {
-		try {
-			vscode.window.withProgress({
-				location: vscode.ProgressLocation.Window,
-				cancellable: false,
-				title: 'undeploying application'
-			}, async (progress) => {
+		vscode.window.withProgress({
+			location: vscode.ProgressLocation.Window,
+			cancellable: false,
+			title: 'undeploying application'
+		}, async (progress) => {
+			try {
 				// clear status message
 				vscode.window.setStatusBarMessage('');
 				// zip application
@@ -149,11 +140,11 @@ export class ApplicationExplorer {
 				await this.builderService.undeployApplication(appUri);
 				// inform user
 				vscode.window.setStatusBarMessage('application is undeployed.');
-			});		
-		} catch (error: any) {
-			console.error('Error in undeploying application', error);
-			vscode.window.setStatusBarMessage('Failed to undeploy application: ' + error.message);
-		}
+			} catch (error: any) {
+				console.error('Error in undeploying application', error);
+				vscode.window.setStatusBarMessage('Failed to undeploy application: ' + error.message);
+			}
+		});		
 	}
 
 	
@@ -184,12 +175,12 @@ export class ApplicationExplorer {
 	}
 
 	async deployModule(mod: Entry): Promise<void> {
-		try {
-			vscode.window.withProgress({
-				location: vscode.ProgressLocation.Window,
-				cancellable: false,
-				title: 'deploying module'
-			}, async (progress) => {
+		vscode.window.withProgress({
+			location: vscode.ProgressLocation.Window,
+			cancellable: false,
+			title: 'deploying module'
+		}, async (progress) => {
+			try {
 				// clear status message
 				vscode.window.setStatusBarMessage('');
 				// zip module
@@ -199,20 +190,19 @@ export class ApplicationExplorer {
 				await this.builderService.deployModule(appUri, mod.name, archive);
 				// inform user
 				vscode.window.setStatusBarMessage('module is deployed.');
-			});		
-		} catch (error: any) {
-			console.error('Error in deploying module', error);
-			vscode.window.setStatusBarMessage('Failed to deploy module: ' + error.message);
-		}
+			} catch (error: any) {
+				vscode.window.setStatusBarMessage('Failed to deploy module: ' + error.message);
+			}
+		});		
 	}
 
 	async undeployModule(mod: Entry): Promise<void> {
-		try {
-			vscode.window.withProgress({
-				location: vscode.ProgressLocation.Window,
-				cancellable: false,
-				title: 'undeploying module'
-			}, async (progress) => {
+		vscode.window.withProgress({
+			location: vscode.ProgressLocation.Window,
+			cancellable: false,
+			title: 'undeploying module'
+		}, async (progress) => {
+			try {
 				// clear status message
 				vscode.window.setStatusBarMessage('');
 				// zip module
@@ -221,11 +211,11 @@ export class ApplicationExplorer {
 				await this.builderService.undeployModule(appUri, mod.name);
 				// inform user
 				vscode.window.setStatusBarMessage('module is undeployed.');
-			});		
-		} catch (error: any) {
-			console.error('Error in undeploying module', error);
-			vscode.window.setStatusBarMessage('Failed to undeploy module: ' + error.message);
-		}
+			} catch (error: any) {
+				console.error('Error in undeploying module', error);
+				vscode.window.setStatusBarMessage('Failed to undeploy module: ' + error.message);
+			}
+		});		
 	}
 
 	async delete(entry: Entry): Promise<void> {

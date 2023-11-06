@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as https from 'https';
 import {HttpConfig} from './httpModel';
+import { ServerResponse } from 'http';
 
 const axios = require('axios');
 const formData = require('form-data');
@@ -19,15 +20,8 @@ export class HttpService {
             const response = await axios.get(url, config);
             return response.data;
         } catch (error: any) {
-            if (!error.response) {
-                error.message = 'Server connection error - ' + error.message;
-                console.error('Server connection error', error);
-                throw error;    
-            } else {
-                console.error('http get error: ', error.response?.data?.message, '\n',  'url: ', config.baseURL + url, '\n', error);
-                error.message = error.response?.data?.message || error.message;
-                throw error;    
-            }
+            console.error('http GET error for url: ', config.baseURL + url);
+            this.handleError(error);
         }    
     }
     
@@ -35,19 +29,11 @@ export class HttpService {
         try {
             const response = await axios.post(url, data, config);
             return response.data;
-          } catch (error: any) {
-            if (!error.response) {
-                error.message = 'Cannot connect to Server.';
-                throw error;    
-            } else {
-                console.error('http post error: ', error.response.data.message, '\n',  'url: ', config.baseURL + url);
-                console.info('Data: ');
-                console.info(data);
-                console.error(error);
-                error.message = error.response?.data?.message || error.message;
-                throw error;
-            }
-          }    
+        } catch (error: any) {
+            console.error('http POST error for url: ', config.baseURL + url);
+            console.info('Data: ', data);
+            this.handleError(error);
+        }    
     }
 
     async postArchive(url: string, data: any, archive: Buffer, timeout?: number): Promise<any> {
@@ -66,17 +52,9 @@ export class HttpService {
             const response = await axios.post(config.baseURL + url, form, {"headers": config.headers} );
             return response.data;
           } catch (error: any) {
-                if (!error.response) {
-                    error.message = 'Cannot connect to Server.';
-                    throw error;    
-                } else {
-                    console.error('http post archive error: ', error.message || error.response?.data?.message, '\n',  'url: ', config.baseURL + url);
-                    console.info('Data: ');
-                    console.info(data);
-                    console.error(error);
-                    error.message = error.response?.data?.message;
-                    throw error;
-                }
+            console.error('http archive POST error for url: ', config.baseURL + url);
+            console.info('Data: ', data);
+            this.handleError(error);
           }    
     }
 
@@ -137,6 +115,29 @@ export class HttpService {
             httpsAgent: new https.Agent({ keepAlive: true, rejectUnauthorized: this.rejectUnauthorized })
         };  
         return config; 
+    }
+
+
+    handleError(error: any): void {
+        if (!error.response) {
+            error.message = 'Cannot connect to server.';
+            throw error;    
+        } else {
+            switch(error.response.status) {
+                case 404:
+                    error.message = "404 backend API not found";
+                    break;
+                case 403:
+                    error.message = "403 backend API not authorized";
+                    break;
+                case 500:
+                    error.message = "500 backend server issue";
+                    break;
+                default:
+                    error.message = error.response?.data?.message;                    
+            }
+            throw error;
+        }
     }
 
 }

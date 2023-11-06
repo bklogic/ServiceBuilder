@@ -75,41 +75,41 @@ export class ServiceHandler {
 	}
 
 	async createService(mod: Entry, name: string, type: string): Promise<void> {
-			vscode.window.withProgress({
-				location: vscode.ProgressLocation.Window,
-				cancellable: false,
-				title: 'creating service'
-			}, async (progress) => {
-				try {
-					// clear status message
-					vscode.window.setStatusBarMessage('');
-					// create service
-					const service = await this.handlerService.createService(mod, name, type);
-					this.dataProvider.fire(mod);
-					this.treeView.reveal(service, {expand: 2, focus: true, select: true});	
-					// inform user
-					vscode.window.setStatusBarMessage('service is created.');
-				} catch (error: any) {
-					let message: string;
-					switch (error.code) {
-						case 'FileExists':
-							message = 'Service name exists.';
-							break;
-						default:
-							message = error.message;
-					}
-					vscode.window.showErrorMessage(message);
+		vscode.window.withProgress({
+			location: vscode.ProgressLocation.Window,
+			cancellable: false,
+			title: 'creating service'
+		}, async (progress) => {
+			try {
+				// clear status message
+				vscode.window.setStatusBarMessage('');
+				// create service
+				const service = await this.handlerService.createService(mod, name, type);
+				this.dataProvider.fire(mod);
+				this.treeView.reveal(service, {expand: 2, focus: true, select: true});	
+				// inform user
+				vscode.window.setStatusBarMessage('service is created.');
+			} catch (error: any) {
+				let message: string;
+				switch (error.code) {
+					case 'FileExists':
+						message = 'Service name exists.';
+						break;
+					default:
+						message = error.message;
 				}
-			});		
+				vscode.window.showErrorMessage(message);
+			}
+		});		
 	}
 
 	async deployService(service: Entry): Promise<void> {
-		try {
-			vscode.window.withProgress({
-				location: vscode.ProgressLocation.Window,
-				cancellable: false,
-				title: 'deploying service'
-			}, async (progress) => {
+		vscode.window.withProgress({
+			location: vscode.ProgressLocation.Window,
+			cancellable: false,
+			title: 'deploying service'
+		}, async (progress) => {
+			try {
 				// clear status message
 				vscode.window.setStatusBarMessage('');
 				// zip 
@@ -120,20 +120,19 @@ export class ServiceHandler {
 				const result = await this.builderService.deployService(appUri, modName, service.name, archive);
 				// inform user
 				vscode.window.setStatusBarMessage( result.valid ? 'service is deployed.' : 'Error: ' + result.reason);
-			});		
-		} catch (error: any) {
-			console.error('Error in deploying service', error);
-			util.showErrorStatus('Failed to deploy service.', error.message);
-		}
+			} catch (error: any) {
+				util.showErrorStatus('Failed to deploy service.', error.message);
+			}
+		});		
 	}
 
 	async undeployService(service: Entry): Promise<void> {
-		try {
-			vscode.window.withProgress({
-				location: vscode.ProgressLocation.Window,
-				cancellable: false,
-				title: 'undeploying service'
-			}, async (progress) => {
+		vscode.window.withProgress({
+			location: vscode.ProgressLocation.Window,
+			cancellable: false,
+			title: 'undeploying service'
+		}, async (progress) => {
+			try {
 				// clear status message
 				vscode.window.setStatusBarMessage('');
 				// zip 
@@ -143,11 +142,11 @@ export class ServiceHandler {
 				await this.builderService.undeployService(appUri, modName, service.name);
 				// inform user
 				vscode.window.setStatusBarMessage('service is undeployed.');
-			});		
-		} catch (error: any) {
-			console.error('Error in undeploying service', error);
-			vscode.window.setStatusBarMessage('Failed to undeploy service: ' + error.message);
-		}
+			} catch (error: any) {
+				console.error('Error in undeploying service', error);
+				vscode.window.setStatusBarMessage('Failed to undeploy service: ' + error.message);
+			}
+		});		
 	}
 
 	async onGenerateCrud(module: Entry) {
