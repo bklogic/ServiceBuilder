@@ -5,10 +5,10 @@ import {ApplicationExplorerService} from "./applicationExplorerService";
 import {Entry, EntryType} from './applicationModel';
 import { Application, Module, Service } from '../../backend/builder/deployModel';
 import { WorkspaceHandler } from './workspaceHandler';
-import { TryClient } from '../../backend/try/tryClient';
 import { BuilderClient } from '../../backend/builder/builderClient';
 import { BuilderService } from '../../backend/builder/builderService';
 import { ServiceHandler } from './serviceHandler';
+import { Workspace } from '../../backend/builder/builderModel';
 
 
 export class ApplicationExplorer {
@@ -19,14 +19,14 @@ export class ApplicationExplorer {
 	private builderService: BuilderService;
 	private doubleClick = new util.DoubleClick();
 
-	constructor(context: vscode.ExtensionContext, builderClient: BuilderClient, tryClient: TryClient) {
+	constructor(context: vscode.ExtensionContext, builderClient: BuilderClient) {
 		this.context = context;
 		this.explorerService = new ApplicationExplorerService();
 		this.builderService = builderClient.builderService;
 		this.dataProvider = new ApplicationDataProvider();
 		this.treeView = vscode.window.createTreeView('servicebuilderExplorer', { treeDataProvider: this.dataProvider, showCollapseAll: true });
 		context.subscriptions.push(this.treeView);
-		new WorkspaceHandler(context, builderClient.builderService, tryClient.tryService);
+		new WorkspaceHandler(context, builderClient.builderService);
 		new ServiceHandler(builderClient, this.dataProvider, this.treeView);
 		vscode.commands.registerCommand('servicebuilderExplorer.openResource', (resource) => this.openResource(resource));
 		vscode.commands.registerCommand('servicebuilderExplorer.refresh', () => this.refresh());
@@ -80,7 +80,8 @@ export class ApplicationExplorer {
 			vscode.window.setStatusBarMessage('');
 
 			// create application
-			const versions = await this.builderService.getBuilderVersions();
+			const workspace = await util.readWorkspace(this.context) as Workspace;
+			const versions = await this.builderService.getVersions(workspace.builderEndpoint);
 			const app = await this.explorerService.createApplication(this.dataProvider.workfolder, appName, dbType, versions);
 
 			// reveal

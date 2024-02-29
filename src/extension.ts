@@ -8,7 +8,6 @@ import { DeploymentExplorer } from './explorers/deployment/deploymentExplorer';
 import { HttpService } from './core/httpService';
 import { DataSourceExplorer } from './explorers/datasource/dataSourceExplorer';
 import { BuilderClient } from './backend/builder/builderClient';
-import { TryClient } from './backend/try/tryClient';
 
 // this method is called when your extension is activated
 export function activate(context: vscode.ExtensionContext) {
@@ -18,10 +17,9 @@ export function activate(context: vscode.ExtensionContext) {
 	// construct client services
 	const httpService = new HttpService(context);
 	const builderClient = new BuilderClient(httpService);
-	const tryClient = new TryClient(httpService);
 
 	// explorer
-	new ApplicationExplorer(context, builderClient, tryClient);
+	new ApplicationExplorer(context, builderClient);
 	new DeploymentExplorer(context, builderClient);
 	new DataSourceExplorer(context, builderClient);
 

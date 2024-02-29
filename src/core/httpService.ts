@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import * as https from 'https';
+import * as util from './util';
 import {HttpConfig} from './httpModel';
-import { ServerResponse } from 'http';
+import { Workspace } from '../backend/builder/builderModel';
 
 const axios = require('axios');
 const formData = require('form-data');
@@ -58,7 +59,6 @@ export class HttpService {
           }    
     }
 
-
     async builderGet(url: string, timeout?: number): Promise<any> {
         const config = await this.builderHttpConfig(timeout);
         return this.get(url, config);
@@ -69,41 +69,33 @@ export class HttpService {
         return this.post(url, data, config);
     }
 
-    async tryPost(url: string, data: any, timeout?: number): Promise<any> {
-        const config = await this.tryHttpConfig(timeout);
-        return this.post(url, data, config);
-    }
-
-
     async builderHttpConfig(timeout?: number): Promise<HttpConfig> {
         // get connection data
-        let [url, token] = await Promise.all([
-            this.context.secrets.get('servicebuilder.url'),
-            this.context.secrets.get('servicebuilder.accessToken')    
-        ]);
-
-        if (!url) {
-            throw new Error("Not connected to workspace.");
+        const workspace = await util.readWorkspace(this.context) as Workspace;
+        if (!workspace?.url) {
+            throw new Error("No workspace connection.");
         }
 
         // create and return config
         const config: HttpConfig = {
-            baseURL: url,
+            baseURL: workspace.url,
             timeout: (timeout) ? timeout : 5000,
             headers: {
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 'Content-Type': 'application/json',
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                'Authorization': 'Bearer ' + token
             },
             httpsAgent: new https.Agent({ keepAlive: true, rejectUnauthorized: this.rejectUnauthorized })
         };  
+
+        // token
+        if (workspace.token?.token) {
+            config.headers['Authorization'] = 'Bearer ' + workspace.token.token;
+        }
+
         return config; 
     }
 
-    async tryHttpConfig(timeout?: number): Promise<HttpConfig> {
-        // get url
-        const url = vscode.workspace.getConfiguration('servicebuilder').get('tryServiceEndpoint') as string;
+    httpConfig(url: string, timeout?: number): HttpConfig {
         // create and return config
         const config: HttpConfig = {
             baseURL: url,

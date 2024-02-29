@@ -61,23 +61,23 @@
 				}
 			},
 			{
-				"command": "servicebuilderExplorer.request",
-				"title": "Request workspace",
+				"command": "servicebuilderWorkspace.register",
+				"title": "Register with builder",
 				"icon": {
 					"light": "resources/light/plug.svg",
 					"dark": "resources/dark/plug.svg"
 				}
 			},
 			{
-				"command": "servicebuilderExplorer.connect",
-				"title": "Connect workspace",
+				"command": "servicebuilderWorkspace.connect",
+				"title": "Connect to workspace",
 				"icon": {
 					"light": "resources/light/plug.svg",
 					"dark": "resources/dark/plug.svg"
 				}
 			},
 			{
-				"command": "servicebuilderExplorer.workspace",
+				"command": "servicebuilderWorkspace.show",
 				"title": "Show workspace",
 				"icon": {
 					"light": "resources/light/plug.svg",
@@ -85,7 +85,7 @@
 				}
 			},
 			{
-				"command": "servicebuilderExplorer.about",
+				"command": "servicebuilderWorkspace.about",
 				"title": "About"
 			},
 			{
@@ -425,16 +425,16 @@
 		"views": {
 			"service-builder": [
 				{
+					"id": "servicebuilderDataSourceExplorer",
+					"name": "Data Sources"
+				},
+				{
 					"id": "servicebuilderExplorer",
 					"name": "Applications"
 				},
 				{
 					"id": "servicedeploymentExplorer",
 					"name": "Deployments"
-				},
-				{
-					"id": "servicebuilderDataSourceExplorer",
-					"name": "Data Sources"
 				}
 			]
 		},
@@ -452,23 +452,23 @@
 					"group": "navigation@7"
 				},
 				{
-					"command": "servicebuilderExplorer.request",
-					"when": "view == servicebuilderExplorer",
+					"command": "servicebuilderWorkspace.register",
+					"when": "view == servicebuilderDataSourceExplorer",
 					"group": "more@1"
 				},
 				{
-					"command": "servicebuilderExplorer.connect",
-					"when": "view == servicebuilderExplorer",
+					"command": "servicebuilderWorkspace.connect",
+					"when": "view == servicebuilderDataSourceExplorer",
 					"group": "more@2"
 				},
 				{
-					"command": "servicebuilderExplorer.workspace",
-					"when": "view == servicebuilderExplorer",
+					"command": "servicebuilderWorkspace.show",
+					"when": "view == servicebuilderDataSourceExplorer",
 					"group": "more@3"
 				},
 				{
-					"command": "servicebuilderExplorer.about",
-					"when": "view == servicebuilderExplorer",
+					"command": "servicebuilderWorkspace.about",
+					"when": "view == servicebuilderDataSourceExplorer",
 					"group": "more@5"
 				},
 				{

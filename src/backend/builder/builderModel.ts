@@ -1,10 +1,34 @@
+import { timeStamp } from "console";
+
+export interface AccessToken {
+	token: string;
+	expireAt: Date;
+}
 
 export interface Versions {
-	engine: string; 
-	deployer: string; 
+	runtime: string; 
 	builder: string
 }
 
+export interface Workspace {
+	name: string;
+	url: string;
+	builderEndpoint: string;
+	serviceEndpoint: string;
+	natIp: string;
+	accessKey: string;
+	token: AccessToken;
+}
+
+export interface ConnectRequest {
+	workspaceUrl: string;
+	accessKey: string;
+}
+
+export interface RefreshTokenRequest {
+	workspaceName: string;
+	accessKey: string;
+}
 // data model
 export interface DataSource {
     dbType: string;

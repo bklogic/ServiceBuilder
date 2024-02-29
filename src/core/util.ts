@@ -294,6 +294,38 @@ export async function readSecret(context: vscode.ExtensionContext, name: string)
     }
 }
 
+export async function storeSecret(context: vscode.ExtensionContext, name: string, value: string): Promise<void> {
+    context.secrets.store(qualifiedName(name), value);
+}
+
+export function qualifiedName(name: String): string {
+    return  `${constants.namespace}.${name}`;
+}
+
+export async function storeWorkspace(context: vscode.ExtensionContext, workspace: any): Promise<void> {
+    context.secrets.store(qualifiedName('workspace'), JSON.stringify(workspace));
+}
+
+export async function readWorkspace(context: vscode.ExtensionContext): Promise<any | undefined> {
+    try {
+        const json = await context.secrets.get(qualifiedName('workspace'));
+        if (json) {
+            return JSON.parse(json);
+        } else {
+            return undefined;
+        }
+    } catch (err: any) {
+        return undefined;
+    }
+}
+
+/**
+ * configuration
+ */
+export async function readConfig(name: string): Promise<string | undefined> {
+    return vscode.workspace.getConfiguration(constants.namespace).get(name) as string;
+}
+
 
 /**
  * Misc 

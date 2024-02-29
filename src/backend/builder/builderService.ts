@@ -1,6 +1,5 @@
 
 import {HttpService} from '../../core/httpService';
-
 import { 
 	Versions,
 	BindCrudQueryRequest,
@@ -21,7 +20,8 @@ import {
 	GenerateObjectResult,
 	GetTableListRequest,
 	Table,
-	TestDataSourceRequest, TestDataSourceResult, TestServiceRequest, TestServiceResult,
+	TestDataSourceRequest, TestDataSourceResult, TestServiceRequest, TestServiceResult, 
+	ConnectRequest, Workspace, RefreshTokenRequest, AccessToken, 
 } from './builderModel';
 
 export class BuilderService {
@@ -35,12 +35,35 @@ export class BuilderService {
 	/**
 	 * workspace
 	 */
-	async getBuilderVersions(): Promise<Versions> {
-		const url = '/builder/getVersions';
-		const versions = await this.http.builderGet(url);
-		return versions;
+	async register(builderEndpoint: string): Promise<Workspace> {
+		const url = '/builder/register';
+		const config = this.http.httpConfig(builderEndpoint);
+		const workspace = await this.http.post(url, {}, config);
+		return workspace;
+	}
+
+	async connect(builderEndpoint: string, request: ConnectRequest): Promise<Workspace> {
+		const url = '/builder/connect';
+		const config = this.http.httpConfig(builderEndpoint);
+		const workspace = await this.http.post(url, request, config);
+		workspace.accessKey = request.accessKey;
+		return workspace;
 	}
 	
+	async refreshToken(builderEndpoint: string, request: RefreshTokenRequest): Promise<AccessToken> {
+		const url = '/builder/refreshToken';
+		const config = this.http.httpConfig(builderEndpoint);
+		const token = await this.http.post(url, request, config);
+		return token;
+	}
+	
+	async getVersions(builderEndpoint: string): Promise<Versions> {
+		const url = '/builder/getVersions';
+		const config = this.http.httpConfig(builderEndpoint);
+		const versions = await this.http.get(url, config);
+		return versions;
+	}
+
 	/**
 	 * Data Source
 	 */
