@@ -56,21 +56,6 @@ export function getWorkFolder(): vscode.WorkspaceFolder {
         }
     }
 
-export function getDevtimeFolder(): vscode.Uri {
-    const workfolder = getWorkFolder();
-    return vscode.Uri.joinPath(workfolder.uri, '.devtime');
-}
-
-export function getDevtimeAppFolder(): vscode.Uri {
-    const workfolder = getWorkFolder();
-    return vscode.Uri.joinPath(workfolder.uri, '.devtime', 'applications');
-}
-
-export function getDevtimeDsFolder(): vscode.Uri {
-    const workfolder = getWorkFolder();
-    return vscode.Uri.joinPath(workfolder.uri, '.devtime', 'datasources');
-}
-
 export function dataSourceUriForName(dataSourceName: string): Promise<string> {
     return dataSourceUri(fromDataSourceName(dataSourceName));
 }
@@ -234,14 +219,8 @@ export interface Resource {
 /**
  * Data Source Files
  */
-export function dataSourceFolderUri(): vscode.Uri {
-    const workfolder = getWorkFolder();
-    return vscode.Uri.joinPath(workfolder.uri, constants.dataSourceFolderName);
-}
-
-
 export function dataSourceFileUri(dataSourceName: string) {
-    return vscode.Uri.joinPath(dataSourceFolderUri(), `${dataSourceName}.json`);
+    return vscode.Uri.joinPath(localDsUri(), `${dataSourceName}.json`);
 }
 
 
@@ -297,12 +276,26 @@ export async function isService(uri: vscode.Uri): Promise<boolean> {
 }
 
 export function testResultUri(): vscode.Uri {
-    let uri = vscode.Uri.joinPath(getWorkFolder().uri, '.test');
-    if (!fileExists(uri)) {
-        vscode.workspace.fs.createDirectory(uri);
-    }
-    return vscode.Uri.joinPath(uri, 'TestResult');
+    return vscode.Uri.joinPath(getWorkFolder().uri, '.builder', 'test', 'TestResult');
 }
+
+export function localDsUri(): vscode.Uri {
+    return vscode.Uri.joinPath(getWorkFolder().uri, '.builder', 'datasource');
+}
+
+export function devtimeUri(): vscode.Uri {
+    return vscode.Uri.joinPath(getWorkFolder().uri, '.builder', 'devtime');
+}
+
+export function devtimeAppUri(): vscode.Uri {
+    return vscode.Uri.joinPath(devtimeUri(), 'applications');
+}
+
+export function devtimeDsUri(): vscode.Uri {
+    const workfolder = getWorkFolder();
+    return vscode.Uri.joinPath(devtimeUri(), 'datasources');
+}
+
 
 /**
  * Secrete

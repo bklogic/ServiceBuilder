@@ -28,8 +28,7 @@ export class DeploymentExplorerService {
         // get data source list
         const dataSources = await this.deployService.getDataSources();
         // write app list
-        const dataSourcesFolder = vscode.Uri.joinPath(workfolder.uri, '.devtime', 'datasources');
-        await this.writeDataSourceList(dataSourcesFolder, dataSources);
+        await this.writeDataSourceList(util.devtimeDsUri(), dataSources);
     }
 
     async refreshDataSource(item: Item): Promise<void> {
@@ -66,8 +65,7 @@ export class DeploymentExplorerService {
         // get applicationas
         const apps = await this.deployService.getApplications();
         // write app list
-        const appsFolder = vscode.Uri.joinPath(workfolder.uri, '.devtime', 'applications');
-        await this.writeAppList(appsFolder, apps);
+        await this.writeAppList(util.devtimeAppUri(), apps);
     }
 
     async refreshDeployFolder(deployFolder: vscode.Uri): Promise<void> {
@@ -195,8 +193,8 @@ export class DeploymentExplorerService {
 
     async cleanWorkspace(): Promise<void> {
         this.deployService.cleanWorkspace();
-        vscode.workspace.fs.delete(util.getDevtimeAppFolder(), {recursive: true});
-        vscode.workspace.fs.delete(util.getDevtimeDsFolder(), {recursive: true});
+        vscode.workspace.fs.delete(util.devtimeAppUri(), {recursive: true});
+        vscode.workspace.fs.delete(util.devtimeDsUri(), {recursive: true});
     }
 
     async loadService(service: Item): Promise<vscode.Uri> {

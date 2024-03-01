@@ -32,7 +32,6 @@ export class DeploymentDataService {
         } 
     }
 
-
     async getTopItems(): Promise<Item[]> {
         // get workfolder
         const workfolder = util.getWorkFolder();
@@ -45,7 +44,7 @@ export class DeploymentDataService {
             type: ItemType.DataSources,
             name: 'Data Sources',
             fileType: vscode.FileType.Directory,
-            fileUri: vscode.Uri.joinPath(workfolder.uri, '.devtime', 'datasources'),
+            fileUri:util.devtimeDsUri(),
             parent: null,
             seqNo: 1
         } as Item;
@@ -55,7 +54,7 @@ export class DeploymentDataService {
             type: ItemType.Applications,
             name: 'Applications',
             fileType: vscode.FileType.Directory,
-            fileUri: vscode.Uri.joinPath(workfolder.uri, '.devtime', 'applications'),
+            fileUri: util.devtimeAppUri(),
             parent: null,
             seqNo: 2
         } as Item;

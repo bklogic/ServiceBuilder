@@ -12,7 +12,7 @@ export class DataSourceDataService {
         }
 
         // check data source folder  
-        const dsFolder = vscode.Uri.joinPath(workfolder.uri, '.datasource');
+        const dsFolder = util.localDsUri();
         const exists = await util.fileExists(dsFolder);
         if (!exists) {
             await vscode.workspace.fs.createDirectory(dsFolder);
