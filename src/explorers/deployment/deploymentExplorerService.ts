@@ -5,23 +5,21 @@ import {
     Application, ApplicationAggregate, Service, Test, DataSource
 } from '../../backend/builder/deployModel';
 import {DeployService} from '../../backend/builder/deployService';
-import { TestService } from '../../backend/builder/testService';
 import { BuilderClient } from '../../backend/builder/builderClient';
+import { Workspace } from '../../backend/builder/builderModel';
 
 
 export class DeploymentExplorerService {
 
     private context: vscode.ExtensionContext;
     private deployService: DeployService;
-    private testService: TestService;
 
     constructor(context: vscode.ExtensionContext, builderClient: BuilderClient) {
         this.context = context;
         this.deployService = builderClient.deployService;
-        this.testService = builderClient.testService;
     }
 
-    async refreshDataSourceList(item: Item): Promise<void> {
+    async refreshDataSourceList(): Promise<void> {
         // get local workfolder
         const workfolder = util.getWorkFolder();
         if (!workfolder) {
@@ -48,8 +46,8 @@ export class DeploymentExplorerService {
         await vscode.workspace.fs.delete(item.fileUri);
     }
 
-    async testDataSource(item: Item): Promise<string|null> {
-        const result = await this.testService.testDeployedDataSource(item.uri);
+    async testDataSource(dataSource: Item): Promise<string|null> {
+        const result = await this.deployService.testDeployedDataSource(dataSource.uri);
         return (result.succeed) ? null : result.message;
     }
 
@@ -66,7 +64,7 @@ export class DeploymentExplorerService {
             return;
         }
         // get applicationas
-        const apps = await this.deployService.getApplications(workspace);
+        const apps = await this.deployService.getApplications();
         // write app list
         const appsFolder = vscode.Uri.joinPath(workfolder.uri, '.devtime', 'applications');
         await this.writeAppList(appsFolder, apps);
@@ -134,26 +132,19 @@ export class DeploymentExplorerService {
     }
 
     async reloadTests(service: Item): Promise<void> {
-        // get builder url
-        const builderUrl = await this.context.secrets.get('servicebuilder.url');
-        const token = await this.context.secrets.get('servicebuilder.accessToken');
-        if (!builderUrl) {
-            throw new Error('Not connected to workspace');
+        // get workspace
+        const workspace = await util.readWorkspace(this.context) as Workspace;
+        if (!workspace) {
+            throw new Error('No workspace connection.');
         }
 
         // get tests
         const tests = await this.deployService.getTests(service.uri);
 
-        // get devtime url
-        const devtimeUrl = await util.readSecret(this.context, 'servicebuilder.devtimeUrl');
-        if (!devtimeUrl) {
-            throw new Error('Devtime URL not found.');
-        }
-
         // build tests contents
         let content : string[] = ['', '## Tests to run with REST Client for Visual Studio Code', ''];
         for (let test of tests) {
-            content = content.concat( this.writeTest(test, devtimeUrl, token, service.type));
+            content = content.concat( this.writeTest(test, workspace.serviceEndpoint, workspace.token.token, service.type));
         }
 
         // write tests file
@@ -164,14 +155,17 @@ export class DeploymentExplorerService {
     writeTest(test: Test, devtimeUrl: string, token: string | undefined, serviceType: ItemType): string[] {
 
         const content : string[] = []; 
+        const modifiedUri = util.modifiedUri(test.serviceUri);
         content.push(`### ${test.testId}`); 
         if (serviceType === ItemType.CrudService) {
-            content.push(`POST ${devtimeUrl}/${test.serviceUri}/${test.operation}`);     
+            content.push(`POST ${devtimeUrl}/${modifiedUri}/${test.operation}`);     
         } else {
-            content.push(`POST ${devtimeUrl}/${test.serviceUri}`);     
+            content.push(`POST ${devtimeUrl}/${modifiedUri}`);     
         }
-        content.push('Content-Type: application/json');       
-        content.push(`Authorization: Bearer ${token}`);       
+        content.push('Content-Type: application/json'); 
+        if (token) {
+            content.push(`Authorization: Bearer ${token}`);       
+        }     
         content.push('');       
         content.push( JSON.stringify(test.input, null, 4) );    
         content.push('');       

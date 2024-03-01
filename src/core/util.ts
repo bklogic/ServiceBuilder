@@ -201,6 +201,11 @@ export async function serviceUri(resource: Resource): Promise<string> {
     return `${builderWorkspace}/${resource.application}/${resource.module}/${resource.service}`;
 }
 
+// modified uri with workspace removed
+export function modifiedUri(uri: string) {
+    return uri.substring(uri.indexOf('/') + 1);
+}
+
 export interface Resource {
     workspace: string;
     dataSource: string;

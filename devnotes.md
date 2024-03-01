@@ -23,4 +23,15 @@
 
 - Display builder versions
 
+## Concepts
 
+### Workfolder
+
+Service Builder works in a local workfolder. 
+
+### Workspace
+
+### URI
+
+- workfolder:  application/module/service
+- workspace: workspace/application/module/service
