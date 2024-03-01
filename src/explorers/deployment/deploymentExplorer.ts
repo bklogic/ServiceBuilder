@@ -30,6 +30,7 @@ export class DeploymentExplorer {
 		vscode.commands.registerCommand('servicedeploymentExplorer.viewDataSource', (resource) => this.viewDataSource(resource));
 		vscode.commands.registerCommand('servicedeploymentExplorer.viewService', (resource) => this.viewService(resource));
 		vscode.commands.registerCommand('servicedeploymentExplorer.cleanApplication', (resource) => this.cleanApplication(resource));        
+		vscode.commands.registerCommand('servicedeploymentExplorer.cleanWorkspace', (resource) => this.cleanWorkspace(resource));        
     }
 
 	openResource(resource: Item): void {
@@ -42,7 +43,7 @@ export class DeploymentExplorer {
 
 	async refreshDataSourceList(item: Item): Promise<void> {
         try {
-            await this.explorerService.refreshDataSourceList(item);
+            await this.explorerService.refreshDataSourceList();
             await util.sleep(200);
             this.refresh();
             this.treeView.reveal(item, {expand: 2, focus: true, select: true});
@@ -149,6 +150,18 @@ export class DeploymentExplorer {
         }
     }
 
+    async cleanWorkspace(explorer: any): Promise<void> {
+        try {
+            console.log(explorer);
+            await this.explorerService.cleanWorkspace();
+            util.sleep(200);
+            this.refresh();
+            vscode.window.setStatusBarMessage('Workspace cleaned');
+        } catch (error: any) {
+            vscode.window.showErrorMessage(error.message);
+        }
+    }
+    
     async viewService(service: Item): Promise<void> {
         try {
             const docUri = await this.explorerService.loadService(service);

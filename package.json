@@ -365,6 +365,10 @@
 				}
 			},
 			{
+				"command": "servicedeploymentExplorer.cleanWorkspace",
+				"title": "Clean Workspace"
+			},
+			{
 				"command": "servicedeploymentExplorer.viewService",
 				"title": "View Service",
 				"icon": {
@@ -485,6 +489,11 @@
 					"command": "servicebuilderDataSourceExplorer.addDataSource",
 					"when": "view == servicebuilderDataSourceExplorer",
 					"group": "navigation@1"
+				},
+				{
+					"command": "servicedeploymentExplorer.cleanWorkspace",
+					"when": "view == servicedeploymentExplorer",
+					"group": "more@1"
 				}
 			],
 			"view/item/context": [

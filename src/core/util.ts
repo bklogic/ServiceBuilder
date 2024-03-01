@@ -1,6 +1,7 @@
 import { TextDecoder } from 'util';
 import * as vscode from 'vscode';
 import * as constants from './constants';
+import { worker } from 'cluster';
 
 var ZIP = require("adm-zip");
 
@@ -54,6 +55,21 @@ export function getWorkFolder(): vscode.WorkspaceFolder {
             throw Error('No workspace folder!');            
         }
     }
+
+export function getDevtimeFolder(): vscode.Uri {
+    const workfolder = getWorkFolder();
+    return vscode.Uri.joinPath(workfolder.uri, '.devtime');
+}
+
+export function getDevtimeAppFolder(): vscode.Uri {
+    const workfolder = getWorkFolder();
+    return vscode.Uri.joinPath(workfolder.uri, '.devtime', 'applications');
+}
+
+export function getDevtimeDsFolder(): vscode.Uri {
+    const workfolder = getWorkFolder();
+    return vscode.Uri.joinPath(workfolder.uri, '.devtime', 'datasources');
+}
 
 export function dataSourceUriForName(dataSourceName: string): Promise<string> {
     return dataSourceUri(fromDataSourceName(dataSourceName));

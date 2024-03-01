@@ -193,6 +193,12 @@ export class DeploymentExplorerService {
         vscode.workspace.fs.delete(app.fileUri, {recursive: true});
     }
 
+    async cleanWorkspace(): Promise<void> {
+        this.deployService.cleanWorkspace();
+        vscode.workspace.fs.delete(util.getDevtimeAppFolder(), {recursive: true});
+        vscode.workspace.fs.delete(util.getDevtimeDsFolder(), {recursive: true});
+    }
+
     async loadService(service: Item): Promise<vscode.Uri> {
         // get service
         const spec = await this.deployService.getService(service.uri);
