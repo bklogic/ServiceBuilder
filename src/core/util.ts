@@ -8,11 +8,11 @@ let getWorkspace: () => Promise<string>;
 
 export function createGetWorkspaceUtil(context: vscode.ExtensionContext): void {
     getWorkspace = async () => { 
-        const workspace = await context.secrets.get('servicebuilder.workspace'); 
+        const workspace = await readWorkspace(context); 
         if (!workspace) {
             throw Error('No workspace connection configured.');
         }
-        return workspace;
+        return workspace.name;
     };
 }
 

@@ -46,9 +46,9 @@ export class HttpService {
                 form.append(key, data[key]);
             }
             form.append('archive', archive, 'archive.zip');
-            const headers = form.getHeaders();
-            headers['Authorization'] = config.headers['Authorization'];
-            config.headers = headers;
+            // const headers = form.getHeaders();
+            // headers['Authorization'] = config.headers['Authorization'];
+            config.headers['Content-Type'] = form.getHeaders()['content-type'];
             // post form
             const response = await axios.post(config.baseURL + url, form, {"headers": config.headers} );
             return response.data;
@@ -66,7 +66,8 @@ export class HttpService {
 
     async builderPost(url: string, data: any, timeout?: number): Promise<any> {
         const config = await this.builderHttpConfig(timeout);
-        return this.post(url, data, config);
+        const result =  this.post(url, data, config);
+        return result;
     }
 
     async builderHttpConfig(timeout?: number): Promise<HttpConfig> {
@@ -108,7 +109,6 @@ export class HttpService {
         };  
         return config; 
     }
-
 
     handleError(error: any): void {
         if (!error.response) {

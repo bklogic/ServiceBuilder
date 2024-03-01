@@ -9,8 +9,8 @@ export class DeployService {
 		this.http = http;
 	}
 
-	async getDataSources(workspace: string): Promise<DataSource[]> {
-		const url = '/inspect/getDataSources/' + workspace;
+	async getDataSources(): Promise<DataSource[]> {
+		const url = '/inspect/getDataSources';
 		const apps = await this.http.builderGet(url);
 		return apps;
 	}
@@ -22,7 +22,7 @@ export class DeployService {
 	}
 
 	async getApplications(workspace: string): Promise<Application[]> {
-		const url = '/inspect/getApplications/' + workspace;
+		const url = '/inspect/getApplications';
 		const apps = await this.http.builderGet(url);
 		return apps;
 	}
@@ -62,7 +62,7 @@ export class DeployService {
 	}
 
 	async cleanWorkspace(workspace: string): Promise<void> {
-		const url = '/inspect/cleanWorkspace/' + workspace;
+		const url = '/inspect/cleanWorkspace';
 		const result = await this.http.builderPost(url, {});
 		return result;
 	}

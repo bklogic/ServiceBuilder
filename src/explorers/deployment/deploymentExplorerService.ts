@@ -27,14 +27,8 @@ export class DeploymentExplorerService {
         if (!workfolder) {
             return;
         }
-        // get remote workspace
-        const workspace = await this.context.secrets.get('servicebuilder.workspace');
-        if (!workspace) {
-            vscode.window.setStatusBarMessage('Not connected to workspace.');
-            return;
-        }
         // get data source list
-        const dataSources = await this.deployService.getDataSources(workspace);
+        const dataSources = await this.deployService.getDataSources();
         // write app list
         const dataSourcesFolder = vscode.Uri.joinPath(workfolder.uri, '.devtime', 'datasources');
         await this.writeDataSourceList(dataSourcesFolder, dataSources);
