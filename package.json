@@ -39,13 +39,7 @@
 	"contributes": {
 		"configuration": {
 			"title": "Service Builder",
-			"properties": {
-				"servicebuilder.tryServiceEndpoint": {
-					"type": "string",
-					"default": "https://request.tryprod.backlogic.net",
-					"description": "Endpoint for try service"
-				}
-			}
+			"properties": {}
 		},
 		"commands": [
 			{
@@ -429,12 +423,12 @@
 		"views": {
 			"service-builder": [
 				{
-					"id": "servicebuilderDataSourceExplorer",
-					"name": "Data Sources"
-				},
-				{
 					"id": "servicebuilderExplorer",
 					"name": "Applications"
+				},
+				{
+					"id": "servicebuilderDataSourceExplorer",
+					"name": "Data Sources"
 				},
 				{
 					"id": "servicedeploymentExplorer",
@@ -457,22 +451,22 @@
 				},
 				{
 					"command": "servicebuilderWorkspace.register",
-					"when": "view == servicebuilderDataSourceExplorer",
+					"when": "view == servicebuilderExplorer",
 					"group": "more@1"
 				},
 				{
 					"command": "servicebuilderWorkspace.connect",
-					"when": "view == servicebuilderDataSourceExplorer",
+					"when": "view == servicebuilderExplorer",
 					"group": "more@2"
 				},
 				{
 					"command": "servicebuilderWorkspace.show",
-					"when": "view == servicebuilderDataSourceExplorer",
+					"when": "view == servicebuilderExplorer",
 					"group": "more@3"
 				},
 				{
 					"command": "servicebuilderWorkspace.about",
-					"when": "view == servicebuilderDataSourceExplorer",
+					"when": "view == servicebuilderExplorer",
 					"group": "more@5"
 				},
 				{
