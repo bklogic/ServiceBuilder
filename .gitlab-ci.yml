@@ -1,5 +1,5 @@
 
-image: node:20
+# image: node:20
 
 stages:
   - build
@@ -13,11 +13,6 @@ variables:
   GITLAB_PROJECT_PATH: "backlogic/UI/service-builder-vscode"  # Replace with your actual GitLab project path
   VSCE_PERSONAL_ACCESS_TOKEN: "your_vsce_personal_access_token"
 
-# before_script:
-#  - apt-get update -qy
-#  - apt-get install -y nodejs npm jq
-#  - npm install -g @vscode/vsce
-
 .pipeline_rules:
   rules:
     - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/
@@ -28,18 +23,17 @@ build:
     - .pipeline_rules
   stage: build
   before_script:
-    - apt-get update -qy
-#    - apt-get install -y nodejs npm jq
+    # - apt-get update -qy
+   - apt-get install -y nodejs npm jq
     - apt-get install -y jq
     - npm install -g @vscode/vsce
-    - export VSCE_PACKAGE_VERSION=$(cat package.json | jq -r .version)
-    - export VSCE_PACKAGE_NAME=service-builder-v$VSCE_PACKAGE_VERSION.vsix
-    - echo "VSCE_PACKAGE_VERSION=$VSCE_PACKAGE_VERSION"
+    - export VSCE_EXTENSION_NAME=$(cat package.json | jq -r .name)
+    - export VSCE_EXTENSION_VERSION=$(cat package.json | jq -r .version)
+    - export VSCE_PACKAGE_NAME=$VSCE_EXTENSION_NAME-v$VSCE_EXTENSION_VERSION.vsix
     - echo "VSCE_PACKAGE_NAME=$VSCE_PACKAGE_NAME"
   script:
     - npm install
-    - vsce package
-    - ls -l *.vsix
+    - vsce package -o ./$VSCE_PACKAGE_NAME
 
 deploy to gitlab:
   stage: deploy

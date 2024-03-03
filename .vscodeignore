@@ -1,17 +1,26 @@
-.vscode/**
-.vscode-test/**
-out/test/**
+# .vscode/**
+# .vscode-test/**
+# out/test/**
 
-CheatSheet.md
-TODO
-test.http
+# CheatSheet.md
+# TODO
+# test.http
 
-src/**
-.gitignore
-.yarnrc
-vsc-extension-quickstart.md
-**/tsconfig.json
-**/.eslintrc.json
-**/*.map
-**/*.ts
-*.vsix
+# src/**
+# .gitignore
+# .yarnrc
+# vsc-extension-quickstart.md
+# **/tsconfig.json
+# **/.eslintrc.json
+# **/*.map
+# **/*.ts
+# *.vsix
+
+# Ignore
+**
+
+# Keep
+!LICENSE
+!images/
+!out/**/*.js
+!resources/**/*
