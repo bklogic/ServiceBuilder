@@ -5,9 +5,9 @@ stages:
 
 variables:
   VSCE_PACKAGE_VERSION: $(cat package.json | jq -r .version)
-  VSCE_PACKAGE_NAME: my-extension-v$VSCE_PACKAGE_VERSION.vsix
+  VSCE_PACKAGE_NAME: service-builder-v$VSCE_PACKAGE_VERSION.vsix
   GITLAB_PACKAGE_REGISTRY: "registry.gitlab.com"
-  GITLAB_PROJECT_PATH: "your-group/your-project"  # Replace with your actual GitLab project path
+  GITLAB_PROJECT_PATH: "backlogic/UI/service-builder-vscode"  # Replace with your actual GitLab project path
 
 before_script:
   - apt-get update -qy
@@ -43,3 +43,4 @@ publish:
 
 variables:
   VSCE_PERSONAL_ACCESS_TOKEN: "your_vsce_personal_access_token"
+  
