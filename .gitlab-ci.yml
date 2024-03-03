@@ -1,5 +1,5 @@
 
-# image: node:20
+image: node:20
 
 stages:
   - build
@@ -24,15 +24,15 @@ build:
   stage: build
   before_script:
     - apt-get update -qy
-    - apt-get install -y nodejs npm jq
-    # - apt-get install -y jq
+    # - apt-get install -y nodejs npm jq
+    - apt-get install -y jq
     - npm install -g @vscode/vsce
     - export VSCE_EXTENSION_NAME=$(cat package.json | jq -r .name)
     - export VSCE_EXTENSION_VERSION=$(cat package.json | jq -r .version)
     - export VSCE_PACKAGE_NAME=$VSCE_EXTENSION_NAME-v$VSCE_EXTENSION_VERSION.vsix
     - echo "VSCE_PACKAGE_NAME=$VSCE_PACKAGE_NAME"
-    - vsce ls
     - ls out
+    - vsce ls
   script:
     - npm install
     - vsce package -o ./$VSCE_PACKAGE_NAME
