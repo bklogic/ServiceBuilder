@@ -1,5 +1,3 @@
-image: node:20  # Use Node.js image
-
 stages:
   - build
   - deploy
@@ -13,11 +11,18 @@ variables:
   VSCE_PERSONAL_ACCESS_TOKEN: "your_vsce_personal_access_token"
 
 before_script:
-#  - apt-get update -qy
-#  - apt-get install -y nodejs npm jq
-  - npm install -g vsce
+ - apt-get update -qy
+ - apt-get install -y nodejs npm jq
+- npm install -g vsce
+
+.pipeline_rules:
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 build:
+  extends:
+    - .pipeline_rules
   stage: build
   before_script:
     - echo "VSCE_PACKAGE_VERSION=$VSCE_PACKAGE_VERSION"
