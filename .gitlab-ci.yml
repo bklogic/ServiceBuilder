@@ -1,5 +1,5 @@
 
-image: node:14
+image: maven:3.9.5
 
 stages:
   - build
@@ -14,8 +14,8 @@ variables:
   VSCE_PERSONAL_ACCESS_TOKEN: "your_vsce_personal_access_token"
 
 before_script:
-#  - apt-get update -qy
-#  - apt-get install -y nodejs npm jq
+ - apt-get update -qy
+ - apt-get install -y nodejs npm jq
  - npm install -g vsce
 
 .pipeline_rules:
