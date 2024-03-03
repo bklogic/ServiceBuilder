@@ -23,9 +23,9 @@ build:
     - .pipeline_rules
   stage: build
   before_script:
-    # - apt-get update -qy
+    - apt-get update -qy
     - apt-get install -y nodejs npm jq
-    - apt-get install -y jq
+    # - apt-get install -y jq
     - npm install -g @vscode/vsce
     - export VSCE_EXTENSION_NAME=$(cat package.json | jq -r .name)
     - export VSCE_EXTENSION_VERSION=$(cat package.json | jq -r .version)
