@@ -38,7 +38,8 @@ build:
     - echo "VSCE_PACKAGE_NAME=$VSCE_PACKAGE_NAME"
   script:
     - npm install
-    - vsce package -o ./$VSCE_PACKAGE_NAME
+    - vsce package
+    - ls -l *.vsix
 
 deploy to gitlab:
   stage: deploy
