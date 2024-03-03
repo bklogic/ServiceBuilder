@@ -34,8 +34,10 @@ build:
     - npm install
     - vsce package -o ./$VSCE_PACKAGE_NAME
 
-deploy:
+deploy to gitlab:
   stage: deploy
+  services:
+    - docker:24.0.5-dind
   script:
     - mkdir deploy
     - cp ./$VSCE_PACKAGE_NAME deploy/
