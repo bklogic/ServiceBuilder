@@ -24,7 +24,7 @@ build:
   stage: build
   before_script:
     # - apt-get update -qy
-   - apt-get install -y nodejs npm jq
+    - apt-get install -y nodejs npm jq
     - apt-get install -y jq
     - npm install -g @vscode/vsce
     - export VSCE_EXTENSION_NAME=$(cat package.json | jq -r .name)
