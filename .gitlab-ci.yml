@@ -16,15 +16,17 @@ before_script:
 
 build:
   stage: build
+  before_script:
+    - echo "VSCE_PACKAGE_NAME=$VSCE_PACKAGE_NAME"
   script:
     - npm install
-    - vsce package -o $VSCE_PACKAGE_NAME
+    - vsce package -o ./$VSCE_PACKAGE_NAME
 
 deploy:
   stage: deploy
   script:
     - mkdir deploy
-    - cp $VSCE_PACKAGE_NAME deploy/
+    - cp ./$VSCE_PACKAGE_NAME deploy/
     - echo "$CI_JOB_TOKEN" | docker login -u "$CI_REGISTRY_USER" --password-stdin $GITLAB_PACKAGE_REGISTRY
     - docker tag $VSCE_PACKAGE_NAME $GITLAB_PACKAGE_REGISTRY/$GITLAB_PROJECT_PATH/$VSCE_PACKAGE_NAME
     - docker push $GITLAB_PACKAGE_REGISTRY/$GITLAB_PROJECT_PATH/$VSCE_PACKAGE_NAME
@@ -43,4 +45,3 @@ publish:
 
 variables:
   VSCE_PERSONAL_ACCESS_TOKEN: "your_vsce_personal_access_token"
-  
