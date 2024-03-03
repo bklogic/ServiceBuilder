@@ -1,4 +1,6 @@
 
+image: node:20
+
 stages:
   - build
   - deploy
@@ -27,7 +29,8 @@ build:
   stage: build
   before_script:
     - apt-get update -qy
-    - apt-get install -y nodejs npm jq
+#    - apt-get install -y nodejs npm jq
+    - apt-get install -y jq
     - npm install -g @vscode/vsce
     - export VSCE_PACKAGE_VERSION=$(cat package.json | jq -r .version)
     - export VSCE_PACKAGE_NAME=service-builder-v$VSCE_PACKAGE_VERSION.vsix
