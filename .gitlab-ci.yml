@@ -1,6 +1,4 @@
 
-image: maven:3.9.5
-
 stages:
   - build
   - deploy
@@ -16,7 +14,7 @@ variables:
 before_script:
  - apt-get update -qy
  - apt-get install -y nodejs npm jq
- - npm install -g vsce
+ - npm install -g @vscode/vsce
 
 .pipeline_rules:
   rules:
