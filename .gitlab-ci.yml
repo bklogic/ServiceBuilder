@@ -31,6 +31,8 @@ build:
     - export VSCE_EXTENSION_VERSION=$(cat package.json | jq -r .version)
     - export VSCE_PACKAGE_NAME=$VSCE_EXTENSION_NAME-v$VSCE_EXTENSION_VERSION.vsix
     - echo "VSCE_PACKAGE_NAME=$VSCE_PACKAGE_NAME"
+    - vsce ls
+    - ls out
   script:
     - npm install
     - vsce package -o ./$VSCE_PACKAGE_NAME
