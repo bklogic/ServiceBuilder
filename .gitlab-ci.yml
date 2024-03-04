@@ -36,33 +36,12 @@ build:
   script:
     - npm install
     - vsce package -o ./$VSCE_PACKAGE_NAME
-    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file $VSCE_PACKAGE_NAME "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/service-builder-vscode/$VSCE_PACKAGE_NAME"'
+    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file $VSCE_PACKAGE_NAME "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/service-builder-vscode/VSCE_EXTENSION_VERSION/$VSCE_PACKAGE_NAME"'
     - mkdir build
     - cp ./$VSCE_PACKAGE_NAME build/
-    # - echo "@backlogic:registry=https://${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/" > .npmrc
-    # - echo "//${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}" >> .npmrc
-    # - cat .npmrc
-    # - npm publish
   artifacts:
     paths:
       - build/
-
-# deploy to gitlab:
-#   stage: deploy
-#   before_script:
-#     - export VSCE_EXTENSION_NAME=$(cat package.json | jq -r .name)
-#     - export VSCE_EXTENSION_VERSION=$(cat package.json | jq -r .version)
-#     - export VSCE_PACKAGE_NAME=$VSCE_EXTENSION_NAME-v$VSCE_EXTENSION_VERSION.vsix
-#     - echo "VSCE_PACKAGE_NAME=$VSCE_PACKAGE_NAME"
-#   script:
-#     - mkdir deploy
-#     - cp ./$VSCE_PACKAGE_NAME deploy/
-#     - echo "@backlogic:registry=https://${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/" > .npmrc
-#     - echo "//${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}" >> .npmrc
-#     - npm publish
-#   artifacts:
-#     paths:
-#       - deploy/
 
 publish:
   stage: publish
