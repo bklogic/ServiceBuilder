@@ -7,8 +7,6 @@ stages:
   - publish
 
 variables:
-  VSCE_PACKAGE_VERSION: ${cat package.json | jq -r .version}
-  VSCE_PACKAGE_NAME: service-builder-v$VSCE_PACKAGE_VERSION.vsix
   GITLAB_PACKAGE_REGISTRY: "registry.gitlab.com"
   GITLAB_PROJECT_PATH: "backlogic/UI/service-builder-vscode"  # Replace with your actual GitLab project path
   VSCE_PERSONAL_ACCESS_TOKEN: "your_vsce_personal_access_token"
@@ -45,9 +43,9 @@ deploy to gitlab:
   script:
     - mkdir deploy
     - cp ./$VSCE_PACKAGE_NAME deploy/
-    - echo "$CI_JOB_TOKEN" | docker login -u "$CI_REGISTRY_USER" --password-stdin $GITLAB_PACKAGE_REGISTRY
-    - docker tag $VSCE_PACKAGE_NAME $GITLAB_PACKAGE_REGISTRY/$GITLAB_PROJECT_PATH/$VSCE_PACKAGE_NAME
-    - docker push $GITLAB_PACKAGE_REGISTRY/$GITLAB_PROJECT_PATH/$VSCE_PACKAGE_NAME
+    - echo "@backlogic:registry=https://${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/" > .npmrc
+    - echo "//${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}" >> .npmrc
+    - npm publish
   artifacts:
     paths:
       - deploy/
