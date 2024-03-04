@@ -36,7 +36,7 @@ build:
   script:
     - npm install
     - vsce package -o ./$VSCE_PACKAGE_NAME
-    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file $VSCE_PACKAGE_NAME "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/vsix/service-builder/$VSCE_PACKAGE_NAME"'
+    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file $VSCE_PACKAGE_NAME "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/service-builder/$VSCE_EXTENSION_VERSION/$VSCE_PACKAGE_NAME"'
     - mkdir build
     - cp ./$VSCE_PACKAGE_NAME build/
   artifacts:
