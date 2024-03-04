@@ -39,8 +39,8 @@ build:
 
 deploy to gitlab:
   stage: deploy
-  services:
-    - docker:24.0.5-dind
+  before_script:
+    - echo "VSCE_PACKAGE_NAME=$VSCE_PACKAGE_NAME"
   script:
     - mkdir deploy
     - cp ./$VSCE_PACKAGE_NAME deploy/
