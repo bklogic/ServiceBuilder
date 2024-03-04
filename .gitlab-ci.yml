@@ -32,7 +32,7 @@ build:
     - export VSCE_EXTENSION_VERSION=$(cat package.json | jq -r .version)
     - export VSCE_PACKAGE_NAME=$VSCE_EXTENSION_NAME-v$VSCE_EXTENSION_VERSION.vsix
     - echo "VSCE_PACKAGE_NAME=$VSCE_PACKAGE_NAME"
-    - tsc ./tsconfig.json
+    - tsc -p ./tsconfig.json
     - ls ./*
     - vsce ls
   script:
