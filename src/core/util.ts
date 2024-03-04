@@ -1,7 +1,6 @@
 import { TextDecoder } from 'util';
 import * as vscode from 'vscode';
 import * as constants from './constants';
-import { worker } from 'cluster';
 
 var ZIP = require("adm-zip");
 
