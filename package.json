@@ -1,7 +1,7 @@
 {
 	"name": "servicebuilder",
 	"displayName": "Service Builder",
-	"description": "Develop data access service.",
+	"description": "Develop data access services.",
 	"author": {
 		"name": "Ken Wang"
 	},
@@ -11,7 +11,7 @@
 		"type": "git",
 		"url": "https://github.com/bklogic/ServiceBuilder"
 	},
-	"homepage": "http://docs.backlogic.net",
+	"homepage": "http://www.backlogic.net",
 	"engines": {
 		"vscode": "^1.87.0"
 	},
@@ -19,13 +19,13 @@
 		"Other"
 	],
 	"keywords": [
-		"database",
-		"data",
-		"access",
-		"persistence",
-		"service"
+		"data access service",
+		"object-relational persistence",
+		"relational data access",
+		"relational database",
+		"object-relational mapping"
 	],
-	"preview": true,
+	"preview": false,
 	"icon": "resources/images/builder-icon-large.png",
 	"galleryBanner": {
 		"color": "#C80000",
