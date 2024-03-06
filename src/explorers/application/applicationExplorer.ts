@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as util from '../../core/util';
 import {ApplicationDataProvider} from './applicationDataProvider';
 import {ApplicationExplorerService} from "./applicationExplorerService";
-import {Entry, EntryType} from './applicationModel';
+import {Entry, EntryType, ApplicationFile} from './applicationModel';
 import { Application, Module, Service } from '../../backend/builder/deployModel';
 import { WorkspaceHandler } from './workspaceHandler';
 import { BuilderClient } from '../../backend/builder/builderClient';
@@ -114,6 +114,12 @@ export class ApplicationExplorer {
 			try {
 				// clear status message
 				vscode.window.setStatusBarMessage('');
+
+				// verify data source configured
+				const appFile = await util.readJsonFile(app.uri) as ApplicationFile;
+				if (!appFile.dataSource) {
+					throw Error("Data source not specified.");
+				}
 
 				// zip application
 				const appUri = await util.applicationUriForApplication(app.uri.path);

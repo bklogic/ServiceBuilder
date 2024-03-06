@@ -47,3 +47,11 @@ export enum EntryType {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	Other = 'other'
 }
+
+export interface ApplicationFile {
+    name: string;
+    description: string;
+    dbType: string;
+    dataSource: string;
+    schema: string;
+}

@@ -142,7 +142,7 @@ export class DeploymentExplorerService {
         // build tests contents
         let content : string[] = ['', '## Tests to run with REST Client for Visual Studio Code', ''];
         for (let test of tests) {
-            content = content.concat( this.writeTest(test, workspace.serviceEndpoint, workspace.token.token, service.type));
+            content = content.concat( this.writeTest(test, workspace.serviceEndpoint, workspace.token?.token, service.type));
         }
 
         // write tests file
