@@ -116,7 +116,7 @@ export class ApplicationExplorer {
 				vscode.window.setStatusBarMessage('');
 
 				// verify data source configured
-				const appFile = await util.readJsonFile(app.uri) as ApplicationFile;
+				const appFile = await util.readJsonFile(vscode.Uri.joinPath(app.uri, 'src', 'application.json')) as ApplicationFile;
 				if (!appFile.dataSource) {
 					throw Error("Data source not specified.");
 				}
