@@ -45,6 +45,8 @@ build:
       - build/
 
 publish-to-github:
+  extends:
+    - .pipeline_rules
   stage: publish
   image: alpine/git
   script:
