@@ -9,6 +9,7 @@ stages:
 variables:
   GITLAB_PACKAGE_REGISTRY: "registry.gitlab.com"
   GITLAB_PROJECT_PATH: "@backlogic/UI/service-builder-vscode"  # Replace with your actual GitLab project path
+  GITHUB_ACCESS_TOKEN: "$GITHUB_ACCESS_TOKEN"
   VSCE_PERSONAL_ACCESS_TOKEN: "your_vsce_personal_access_token"
 
 .pipeline_rules:
@@ -43,7 +44,16 @@ build:
     paths:
       - build/
 
-publish:
+publish-to-github:
+  stage: publish
+  image: alpine/git
+  script:
+    - git push -u https://bklogic:$GITHUB_ACCESS_TOKEN@github.com/bklogic/ServiceBuilder.git main
+  only:
+    - master
+  when: manual
+
+publish-to-marketplace:
   stage: publish
   script:
     - npm install

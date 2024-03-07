@@ -17,3 +17,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Workspace request
 - Data source explorer
 
+## 0.4.2 - 03/06/2023
+
+- changed workspace connection
+- bug fixes
