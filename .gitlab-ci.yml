@@ -50,6 +50,7 @@ publish-to-github:
   stage: publish
   image: alpine/git
   script:
+    - echo $GITHUB_ACCESS_TOKEN
     - git push https://bklogic:$GITHUB_ACCESS_TOKEN@github.com/bklogic/ServiceBuilder.git main
   when: manual
 
