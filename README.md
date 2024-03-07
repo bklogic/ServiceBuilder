@@ -1,10 +1,10 @@
 # Service Builder
 
-The development tool for data access services, including query, SQL (command) and CRUD (repository) services for accessing relational database.
+The development tool for data access services.
 
 With data access service, you have:
-- The simplicity to build your data access layer with SQL and JSON only, completely avoiding the object-relational impedance mismatch problem.
-- The flexibility to query objects of any shapes as your application needs from relational database, just like you do from document database.
+- The simplicity of building your entire data access layer with SQL and JSON only, avoiding the object-relational impedance mismatch problem completely.
+- The flexibility of querying objects of any shapes as your application needs from relational database, just like you do from document database.
 
 >For more information about data access services, visit [data access service concepts](https://www.backlogic.net/docs/concepts/).  
 
@@ -30,7 +30,7 @@ Follow the getting-started tutorials for `Service Builder` and `data access serv
   - Inspect data sources and applications deployed in remote workspace.
   - Test services deployed in remote workspace.  
 
-![Service Builder](resources/images/service-builder.png)
+![Service Builder](./resources/images/service-builder.png)
 
 # Development Server
 

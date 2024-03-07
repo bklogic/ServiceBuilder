@@ -33,7 +33,7 @@
 	},
 	"license": "MIT",
 	"activationEvents": [
-		"onView:servicebuilderExplorer"
+		"onView:service-builder"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
