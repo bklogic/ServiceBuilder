@@ -48,9 +48,9 @@ publish-to-github:
   extends:
     - .pipeline_rules
   stage: publish
-  image: alpine/git
+  before_script:
+    - git --version
   script:
-    - echo $GITHUB_ACCESS_TOKEN
     - git push https://bklogic:$GITHUB_ACCESS_TOKEN@github.com/bklogic/ServiceBuilder.git main
   when: manual
 
