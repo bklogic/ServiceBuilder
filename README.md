@@ -1,10 +1,10 @@
 # Service Builder
 
-The development tool for data access services.
+Service Builder is the development tool for data access services, a SQL-only solution to relational data access.
 
 With data access service, you have:
-- The simplicity of building your entire data access layer with SQL and JSON only, avoiding the object-relational impedance mismatch problem completely.
-- The flexibility of querying objects of any shapes as your application needs from relational database, just like you do from document database.
+- The simplicity of building your entire data access layer with only SQL and JSON, circumventing the object-relational impedance mismatch problem completely.
+- The flexibility of querying objects of any shape as needed by your application from relational database, just like you do from document database.
 
 >For more information about data access services, visit [data access service concepts](https://www.backlogic.net/docs/concepts/).  
 
@@ -30,13 +30,13 @@ Follow the getting-started tutorials for `Service Builder` and `data access serv
   - Inspect data sources and applications deployed in remote workspace.
   - Test services deployed in remote workspace.  
 
-![Service Builder](./resources/images/service-builder.png)
+![Service Builder](https://www.backlogic.net/images/service-builder.png)
 
 # Development Server
 
 `Service Builder` must connect to a `Development Server` to work. The `Development Server` provides backend services to the `Service Builder` and hosts development workspaces for users. Data access services can be deployed into a workspace on the `Development Server` and accessed through the service endpoint of the workspace by a client application in development for data access needs, as shown below:
 
-![Development Server](resources/images/development-server.png)
+![Development Server](https://www.backlogic.net/images/development-server.png)
 
 The `Development Server` is meant to be launched as a data access development platform in the cloud using a container service like AWS Fargate, so that different data access, as well client application, developers can work on the same `Development Server`. However, the `Development Server` can also be launched on the local machine for local development.
 
