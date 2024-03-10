@@ -10,7 +10,7 @@ variables:
   GITLAB_PACKAGE_REGISTRY: "registry.gitlab.com"
   GITLAB_PROJECT_PATH: "@backlogic/UI/service-builder-vscode"  # Replace with your actual GitLab project path
   GITHUB_ACCESS_TOKEN: "$GITHUB_ACCESS_TOKEN"
-  VSCE_PERSONAL_ACCESS_TOKEN: "your_vsce_personal_access_token"
+  VSCE_PERSONAL_ACCESS_TOKEN: "$VSCE_PERSONAL_ACCESS_TOKEN"
 
 .pipeline_rules:
   rules:
@@ -50,6 +50,7 @@ publish-to-github:
   stage: publish
   before_script:
     - git --version
+    - git status
   script:
     - git push -u https://bklogic:$GITHUB_ACCESS_TOKEN@github.com/bklogic/ServiceBuilder.git HEAD:main
   # when: manual
