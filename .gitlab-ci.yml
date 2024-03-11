@@ -49,7 +49,6 @@ publish-to-github:
     - .pipeline_rules
   stage: publish
   before_script:
-    - npm install -g @vscode/vsce
     - git --version
     - git status
   script:
@@ -60,6 +59,8 @@ publish-to-marketplace:
   extends:
     - .pipeline_rules
   stage: publish
+  before_script:
+    - npm install -g @vscode/vsce
   script:
     - npm install
     - vsce publish -p $VSCE_PERSONAL_ACCESS_TOKEN
