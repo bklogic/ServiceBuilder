@@ -33,16 +33,16 @@ build:
     - export VSCE_EXTENSION_VERSION=$(cat package.json | jq -r .version)
     - export VSCE_PACKAGE_NAME=$VSCE_EXTENSION_NAME-v$VSCE_EXTENSION_VERSION.vsix
     - echo "VSCE_PACKAGE_NAME=$VSCE_PACKAGE_NAME"
+    - echo "$VSCE_PACKAGE_NAME" >> build.env
     - tsc
   script:
     - npm install
     - vsce package -o ./$VSCE_PACKAGE_NAME
     - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file $VSCE_PACKAGE_NAME "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/service-builder-vscode/$VSCE_EXTENSION_VERSION/$VSCE_PACKAGE_NAME"'
-    - mkdir build
     - cp ./$VSCE_PACKAGE_NAME build/
   artifacts:
     paths:
-      - build/
+      dotenv: build.env
 
 publish-to-github:
   extends:
@@ -61,6 +61,10 @@ publish-to-marketplace:
   stage: publish
   before_script:
     - npm install -g @vscode/vsce
+    - npm install -g typescript
+    - npm i --save-dev @types/node
+    - npm i --save-dev @types/mocha
+    - tsc
   script:
     - npm install
     - vsce publish -p $VSCE_PERSONAL_ACCESS_TOKEN
