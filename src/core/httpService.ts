@@ -122,8 +122,11 @@ export class HttpService {
                 case 403:
                     error.message = "403 backend API not authorized";
                     break;
+                case 400:
+                    error.message = "400 backend service issue. " + error.response?.data?.message;
+                    break;
                 case 500:
-                    error.message = "500 backend server issue";
+                    error.message = "500 backend server issue. " + error.response?.data?.message;
                     break;
                 default:
                     error.message = error.response?.data?.message;                    
