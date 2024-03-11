@@ -56,7 +56,7 @@ export function crudServiceFile(serviceName: string): Uint8Array {
 	const content = {
 		"name": serviceName,
 		"type": "crud",  
-		"description": "crud service. Don't modify this file!",
+		"description": "crud/repository service. Don't modify this file!",
 		"object": "./object.json",  
 		"read": {
 			"input": "./read/input.json",

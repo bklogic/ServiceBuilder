@@ -191,7 +191,7 @@ export class ServiceHandler {
 		vscode.window.withProgress({
 			location: vscode.ProgressLocation.Window,
 			cancellable: false,
-			title: 'generating crud services'
+			title: 'generating repository services'
 		}, async (progress) => {
 			try {
 				// prepare request
@@ -203,10 +203,10 @@ export class ServiceHandler {
 				// process result
 				const services = await this.createCruds(module, results);
 				// inform user
-				vscode.window.setStatusBarMessage('CRUD services are generated');
+				vscode.window.setStatusBarMessage('Repository services are generated');
 			} catch (error: any) {
-				console.error('Error in generating crud services', error);
-				util.showErrorStatus('Failed to generate crud services.', error.message);
+				console.error('Error in generating repository services', error);
+				util.showErrorStatus('Failed to generate repository services.', error.message);
 			}
 		});
 	}
@@ -350,8 +350,8 @@ export class ServiceHandler {
 			// inform user
 			vscode.window.setStatusBarMessage('object is generated');
 		} catch (error: any) {
-			console.error('Error in generating crud object', error);
-			vscode.window.setStatusBarMessage('Failed to generate crud object: ' + error.message);
+			console.error('Error in generating repository object', error);
+			vscode.window.setStatusBarMessage('Failed to generate repository object: ' + error.message);
 		}
 	}
 
@@ -381,8 +381,8 @@ export class ServiceHandler {
 			// inform user
 			vscode.window.setStatusBarMessage('input and output bindings are generated');
 		} catch (error: any) {
-			console.error('Error in generating crud input and output bindings', error);
-			util.showErrorStatus('Failed to generate crud input and output bindings.', error.message);
+			console.error('Error in generating repository input and output bindings', error);
+			util.showErrorStatus('Failed to generate repository input and output bindings.', error.message);
 		}
 	}
 
@@ -434,8 +434,8 @@ export class ServiceHandler {
 			// inform user
 			vscode.window.setStatusBarMessage('table bindings are generated');
 		} catch (error: any) {
-			console.error('Error in generating crud tables bindings', error);
-			util.showErrorStatus('Failed to generate crud table bindings.', error.message);
+			console.error('Error in generating repository tables bindings', error);
+			util.showErrorStatus('Failed to generate repository table bindings.', error.message);
 		}
 	}
 

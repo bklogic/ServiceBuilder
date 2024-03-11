@@ -58,7 +58,7 @@ export class ApplicationDataProvider implements TreeDataProvider<Entry> {
 					dark: path.join(__filename, '..', '..', '..', '..', 'resources','dark', 'crud-service.svg'), 
 					light: path.join(__filename, '..', '..', '..', '..', 'resources','light', 'crud-service.svg')
 				};
-				treeItem.tooltip = 'crud service';
+				treeItem.tooltip = 'repository service';
 				break;			
 			case EntryType.Read:
 				treeItem.iconPath = {

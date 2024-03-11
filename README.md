@@ -24,7 +24,7 @@ Follow the getting-started tutorials for `Service Builder` and `data access serv
 - Application Explorer
   - Connect to remote workspace hosted on Development Server.
   - Create application and module.
-  - Create and test query, SQL command and CRUD repository services.
+  - Create and test query, SQL command and repository services.
   - Deploy application, module and service to remote workspace.
   
 - Data Source Explorer

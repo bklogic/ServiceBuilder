@@ -5,7 +5,7 @@
 	"author": {
 		"name": "Ken Wang"
 	},
-	"version": "0.4.2",
+	"version": "0.4.3",
 	"publisher": "BackLogic",
 	"repository": {
 		"type": "git",
@@ -124,7 +124,7 @@
 			},
 			{
 				"command": "servicebuilderExplorer.createCrudService",
-				"title": "New CRUD Service",
+				"title": "New Repository Service",
 				"icon": {
 					"light": "resources/light/crud-service.svg",
 					"dark": "resources/dark/crud-service.svg"
@@ -232,7 +232,7 @@
 			},
 			{
 				"command": "servicebuilderExplorer.generateCrud",
-				"title": "Generate CRUD from Table",
+				"title": "Generate Repository from Table",
 				"icon": {
 					"light": "resources/light/simple-crud.svg",
 					"dark": "resources/dark/simple-crud.svg"

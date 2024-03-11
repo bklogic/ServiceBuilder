@@ -77,7 +77,7 @@ export class DeploymentDataProvider implements TreeDataProvider<Item> {
 					dark: path.join(__filename, '..', '..', '..', '..', 'resources','dark', ((element.state === 'valid') ? 'crud-service.svg' : 'invalid-crud.svg')), 
 					light: path.join(__filename, '..', '..', '..', '..', 'resources','light', ((element.state === 'valid') ? 'crud-service.svg' : 'invalid-crud.svg'))
 				};
-				treeItem.tooltip = ((element.state === 'valid') ? '' : 'invalid ') + 'crud service';
+				treeItem.tooltip = ((element.state === 'valid') ? '' : 'invalid ') + 'repository service';
 				break;		
 		}	
 		treeItem.id = element.uri;
