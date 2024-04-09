@@ -1,4 +1,4 @@
-import { TextDecoder } from 'util';
+import { TextDecoder, TextEncoder } from 'util';
 import * as vscode from 'vscode';
 import * as constants from './constants';
 
@@ -274,10 +274,6 @@ export async function isService(uri: vscode.Uri): Promise<boolean> {
     return fileExists(vscode.Uri.joinPath(uri, 'service.json'));
 }
 
-export function testResultUri(): vscode.Uri {
-    return vscode.Uri.joinPath(getWorkFolder().uri, '.builder', 'test', 'TestResult');
-}
-
 export function localDsUri(): vscode.Uri {
     return vscode.Uri.joinPath(getWorkFolder().uri, '.builder', 'datasource');
 }
@@ -353,11 +349,7 @@ export function toUint8Array(content: any): Uint8Array {
 }
 
 export function strToBuffer(str: string): Uint8Array {
-    const buffer = new Uint8Array( new ArrayBuffer(str.length) );
-    for (let i = 0; i < str.length; i++) {
-        buffer[i] = str.charCodeAt(i);
-    }
-    return buffer;
+    return new TextEncoder().encode(str);
 }
 
 export class DoubleClick {

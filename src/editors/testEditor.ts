@@ -10,15 +10,16 @@ import {
     TestServiceRequest, TestServiceResult
 } from '../backend/builder/builderModel';
 
+
 export class TestEditor {
     private builderService: BuilderService; 
-    private outputChannel;
 
     constructor(context: vscode.ExtensionContext, builderClient: BuilderClient) {
+        const testResultScheme = 'TestResult';
         this.builderService = builderClient.builderService;
-        this.outputChannel = vscode.window.createOutputChannel('Service Builder Test');
 		vscode.commands.registerCommand('servicebuilderEditor.runTest', (resource) => this.runTest(resource.path, 'true'));
-		vscode.commands.registerCommand('servicebuilderEditor.runTestWithoutCommit', (resource) => this.runTest(resource.path, 'false'));
+		vscode.commands.registerCommand('servicebuilderEditor.runTestWithoutCommit', (resource) => this.runTest(resource.path, 'false'));        
+        vscode.workspace.registerTextDocumentContentProvider(testResultScheme, new TestResultContentProvider());
     }
 
     async runTest(path: string, withCommit: string) {
@@ -63,10 +64,21 @@ export class TestEditor {
 
                 // process result
                 const output = (result.succeed) ? result.output : result.exception;
-                const message = (result.succeed) ? `Test sucessful (${end-start} ms)` : `Test exception (${end-start} ms)`;
-                const uri = util.testResultUri();
-                await util.writeJsonFile(uri, output);
-                vscode.window.showTextDocument( uri, {viewColumn: vscode.ViewColumn.Beside, preview: false, preserveFocus: true} );
+                const message = (result.succeed) ? `Test successful (${end-start} ms)` : `Test exception (${end-start} ms)`;
+                const uri = vscode.Uri.parse('TestResult:TestResult');
+                const document = await vscode.workspace.openTextDocument(uri);
+                await vscode.window.showTextDocument(document, {viewColumn: vscode.ViewColumn.Beside, preview: false, preserveFocus: true});
+
+                // update document
+                const range = new vscode.Range(
+                    document.positionAt(0), // Start position (line 0, character 0)
+                    document.positionAt(document.getText().length) // End position (last character)
+                );
+                const edit = new vscode.WorkspaceEdit();
+                edit.replace(uri, range, JSON.stringify(output, undefined, 4));
+                await vscode.workspace.applyEdit(edit);
+
+                // update test status
                 vscode.window.setStatusBarMessage(message);
             } catch (error: any) {
                 console.error('Error in testing service', error);
@@ -80,11 +92,19 @@ export class TestEditor {
      * @param testPath 
      */
     serviceUri(testPath: string): vscode.Uri {
-        const servicePath = testPath.substr(0, testPath.indexOf('/tests'));
+        const servicePath = testPath.substring(0, testPath.indexOf('/tests')); 
         return vscode.Uri.file(servicePath);
     }
 
 }
+
+
+export class TestResultContentProvider implements vscode.TextDocumentContentProvider {
+    provideTextDocumentContent(uri: vscode.Uri): string {
+        return '';
+    }
+};
+
 
 export interface Test {
     name: string,
