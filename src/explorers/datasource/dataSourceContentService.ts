@@ -11,6 +11,9 @@ export class DataSourceContentService {
             case 'postgresql':
                 datasource = this.initializePostgreSQLDataSource();
                 break;
+            case 'oracle':
+                datasource = this.initializeOracleDataSource();
+                break;
             default:
                 datasource = this.initializeMySQLDataSource();
         }
@@ -40,6 +43,19 @@ export class DataSourceContentService {
             database: '', 
             username: '', password: '',
             ssl: false,
+            comments: "Complete host, port, database, username and password. Test data source using TEST button."
+        } as DataSource;
+        return datasource;
+    }
+
+    initializeOracleDataSource(): DataSource {
+        let datasource: DataSource;
+        datasource = {
+            dbType: 'oracle', 
+            host: 'localhost', 
+            port: 1521, 
+            database: '', 
+            username: '', password: '',
             comments: "Complete host, port, database, username and password. Test data source using TEST button."
         } as DataSource;
         return datasource;

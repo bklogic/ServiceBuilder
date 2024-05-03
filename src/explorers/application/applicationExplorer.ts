@@ -52,7 +52,7 @@ export class ApplicationExplorer {
 		vscode.window.showInputBox({ignoreFocusOut: true, placeHolder: "application name", prompt: "must be an alphanumberic"})
 			.then( name => {
 				if (name) {
-					vscode.window.showQuickPick(['mysql', 'postgresql'], {ignoreFocusOut: true, placeHolder: "database type", canPickMany: false}).then( (dbType) => {
+					vscode.window.showQuickPick(['mysql', 'postgresql', 'oracle'], {ignoreFocusOut: true, placeHolder: "database type", canPickMany: false}).then( (dbType) => {
 						if (dbType) {
 							this.createApplication(name, dbType);							
 						} else {
