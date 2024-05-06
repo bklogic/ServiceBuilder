@@ -14,6 +14,9 @@ export class DataSourceContentService {
             case 'oracle':
                 datasource = this.initializeOracleDataSource();
                 break;
+            case 'sqlserver':
+                datasource = this.initializeSqlServerDataSource();
+                break;
             default:
                 datasource = this.initializeMySQLDataSource();
         }
@@ -56,6 +59,20 @@ export class DataSourceContentService {
             port: 1521, 
             database: '', 
             username: '', password: '',
+            comments: "Complete host, port, database, username and password. Test data source using TEST button."
+        } as DataSource;
+        return datasource;
+    }
+
+    initializeSqlServerDataSource(): DataSource {
+        let datasource: DataSource;
+        datasource = {
+            dbType: 'sqlserver', 
+            host: 'localhost', 
+            port: 1433, 
+            database: '', 
+            username: '', password: '',
+            ssl: false,
             comments: "Complete host, port, database, username and password. Test data source using TEST button."
         } as DataSource;
         return datasource;

@@ -46,7 +46,7 @@ export class DataSourceExplorer {
         }
 
         // collect database type
-        const items = ['mysql', 'postgresql', 'oracle'];
+        const items = ['mysql', 'postgresql', 'oracle', 'sqlserver'];
         const dbType = await vscode.window.showQuickPick(items, {
             placeHolder: 'Database type',
             canPickMany: false
