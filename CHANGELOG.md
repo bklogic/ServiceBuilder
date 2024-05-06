@@ -21,3 +21,18 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 - changed workspace connection
 - bug fixes
+
+## 0.4.2 - 03/06/2023
+
+- changed workspace connection
+- bug fixes
+
+## 0.4.2 - 04/06/2023
+
+- postgres support
+- bug fixes
+
+## 0.4.2 - 05/06/2023
+
+- oracle and sql server support
+- bug fixes
